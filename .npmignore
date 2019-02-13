@@ -1,0 +1,5 @@
+.editorconfig
+.eslintrc.js
+.gitignore
+.npmignore
+*.test.js
