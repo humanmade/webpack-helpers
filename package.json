@@ -1,0 +1,41 @@
+{
+  "name": "@humanmade/webpack-helpers",
+  "public": true,
+  "version": "0.0.1",
+  "description": "Reusable Webpack configuration components & related helper utilities.",
+  "main": "index.js",
+  "author": "Human Made",
+  "license": "MIT",
+  "homepage": "https://github.com/humanmade/webpack-helpers#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/humanmade/webpack-helpers.git"
+  },
+  "bugs": {
+    "url": "https://github.com/humanmade/webpack-helpers/issues"
+  },
+  "keywords": [
+    "webpack"
+  ],
+  "scripts": {
+    "test": "jest"
+  },
+  "devDependencies": {
+    "eslint": "^5.13.0",
+    "jest": "^24.1.0",
+    "webpack": "^4.29.3",
+    "webpack-dev-server": "^3.1.14"
+  },
+  "dependencies": {
+    "autoprefixer": "^9.4.7",
+    "babel-loader": "^8.0.5",
+    "css-loader": "^2.1.0",
+    "eslint-loader": "^2.1.2",
+    "file-loader": "^3.0.1",
+    "postcss-flexbugs-fixes": "^4.1.0",
+    "postcss-loader": "^3.0.0",
+    "sass-loader": "^7.1.0",
+    "style-loader": "^0.23.1",
+    "url-loader": "^1.1.2"
+  }
+}
