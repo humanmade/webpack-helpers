@@ -99,6 +99,7 @@ const { presets } = require( '@humanmade/webpack-helpers' );
 
 module.exports = [
 	presets.devConfig( {
+		name: 'theme',
 		entry: {
 			theme: 'content/themes/best-theme-ever/src/theme.js',
 		},
@@ -107,6 +108,7 @@ module.exports = [
 		},
 	} ),
 	presets.devConfig( {
+		name: 'custom-editor-blocks',
 		entry: {
 			blocks: 'content/mu-plugins/custom-editor-blocks/src/blocks.js',
 		},
