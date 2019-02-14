@@ -18,6 +18,7 @@
     "webpack"
   ],
   "scripts": {
+		"lint": "eslint .",
     "test": "jest"
   },
   "devDependencies": {
