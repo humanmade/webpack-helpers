@@ -116,3 +116,85 @@ module.exports = [
 	} ),
 ];
 ```
+
+## Modules Overview
+
+This section elaborates on the modules and methods provided by `@humanmade/webpack-helpers`.
+
+### `presets`
+
+`const { presets } = require( '@humanmade/webpack-helpers' );`
+
+This module provides functions that generate full Webpack configuration objects based on some opinionated default configuration values.
+
+#### `presets.devConfig()`
+
+Generate a development-oriented webpack configuration configured for use with `webpack-dev-server`. Any options specified on the argument passed to `devConfig()` will be deeply merged into the default configuration options object. The only required properties are the `.entry` and the `.output.path`, but a `.name` can also be useful when working with an array of configuration objects.
+
+```js
+// webpack.config.dev.js
+const { join } = require( 'path' );
+const { presets } = require( '@humanmade/webpack-helpers' );
+
+module.exports = presets.devConfig( {
+	name: 'bundle-name',
+	entry: {
+		bundleName: 'relative/path/to/bundle/entry-point.js',
+	},
+	output: {
+		path: join( process.cwd(), 'path/to/output/folder' ),
+	},
+} );
+```
+
+#### `presets.prodConfig()`
+
+Coming Soon!
+
+### `externals`
+
+`const { externals } = require( '@humanmade/webpack-helpers' );`
+
+This module provides an `externals` object specifying all commonly-required admin-side WordPress core JavaScript libraries, such as `jquery` and `@wordpress/element`. Include `externals` in your webpack configuration and immediately begin `import`ing these modules from their corresponding browser globals, without any need to bundle them into your own package.
+
+### `loaders`
+
+`const { loaders } = require( '@humanmade/webpack-helpers' );`
+
+This module provides functions that generate configurations for commonly-needed Webpack loaders. Use them within the `.module.rules` array, or use `presets.devConfig` to opt-in to some opinionated defaults.
+
+- `loaders.eslint()`: Return a configured Webpack module loader rule for `eslint-loader`.
+- `loaders.js()`: Return a configured Webpack module loader rule for `js-loader`.
+- `loaders.url()`: Return a configured Webpack module loader rule for `url-loader`.
+- `loaders.style()`: Return a configured Webpack module loader rule for `style-loader`.
+- `loaders.css()`: Return a configured Webpack module loader rule for `css-loader`.
+- `loaders.postcss()`: Return a configured Webpack module loader rule for `postcss-loader`.
+- `loaders.sass()`: Return a configured Webpack module loader rule for `sass-loader`.
+- `loaders.file()`: Return a configured Webpack module loader rule for `file-loader`.
+
+### `plugins`
+
+`const { plugins } = require( '@humanmade/webpack-helpers' );`
+
+This module provides methods which create new instances of commonly-needed Webpack plugins.
+
+- `plugins.hotModuleReplacement()`: Create and return a new `webpack.HotModuleReplacementPlugin` instance.
+- `plugins.manifest()`: : Create and return a new `ManifestPlugin` instance.
+- `plugins.miniCssExtract()`: Create and return a new `MiniCssExtractPlugin` instance.
+- `plugins.terser()`: Create and return a new `TerserPlugin` instance, preconfigured with defaults based on `create-react-app`.
+
+### `manifest`
+
+`const { manifest } = require( '@humanmade/webpack-helpers' );`
+
+When using the `presets.devConfig()` generator, an `asset-manifest.json` will automatically be generated so long as a `publicPath` URI can be determined. When working with an `asset-manifest.json` file, the `manifest` module provides a `cleanOnExit` method to easily remove manifests once the `webpack-dev-server` shuts down.
+
+```js
+const { join } = require( 'path' );
+const { manifest } = require( '@humanmade/webpack-helpers' );
+
+manifest.cleanOnExit( [
+	join( process.cwd(), 'content/mu-plugins/custom-blocks/build/asset-manifest.json' ),
+	join( process.cwd(), 'content/themes/my-theme/build/asset-manifest.json' ),
+] );
+```
