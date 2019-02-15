@@ -6,7 +6,6 @@ module.exports = {
 	config: require( './lib/config' ),
 	externals: require( './lib/externals' ),
 	helpers: {
-		camelCaseDash: require( './lib/helpers/camel-case-dash' ),
 		choosePort: require( './lib/helpers/choose-port' ),
 		cleanOnExit: require( './lib/helpers/clean-on-exit' ),
 		filePath: require( './lib/helpers/file-path' ),
