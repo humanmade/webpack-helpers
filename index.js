@@ -3,16 +3,16 @@
  */
 module.exports = {
 	/* eslint-disable global-require */
-	config: require( './lib/config' ),
-	externals: require( './lib/externals' ),
+	config: require( './src/config' ),
+	externals: require( './src/externals' ),
 	helpers: {
-		choosePort: require( './lib/helpers/choose-port' ),
-		cleanOnExit: require( './lib/helpers/clean-on-exit' ),
-		filePath: require( './lib/helpers/file-path' ),
-		findInObject: require( './lib/helpers/find-in-object' ),
+		choosePort: require( './src/helpers/choose-port' ),
+		cleanOnExit: require( './src/helpers/clean-on-exit' ),
+		filePath: require( './src/helpers/file-path' ),
+		findInObject: require( './src/helpers/find-in-object' ),
 	},
-	loaders: require( './lib/loaders' ),
-	manifest: require( './lib/manifest' ),
-	plugins: require( './lib/plugins' ),
-	presets: require( './lib/presets' ),
+	loaders: require( './src/loaders' ),
+	manifest: require( './src/manifest' ),
+	plugins: require( './src/plugins' ),
+	presets: require( './src/presets' ),
 };
