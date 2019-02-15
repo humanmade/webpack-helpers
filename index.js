@@ -5,7 +5,13 @@ module.exports = {
 	/* eslint-disable global-require */
 	config: require( './lib/config' ),
 	externals: require( './lib/externals' ),
-	helpers: require( './lib/helpers' ),
+	helpers: {
+		camelCaseDash: require( './lib/helpers/camel-case-dash' ),
+		choosePort: require( './lib/helpers/choose-port' ),
+		cleanOnExit: require( './lib/helpers/clean-on-exit' ),
+		filePath: require( './lib/helpers/file-path' ),
+		findInObject: require( './lib/helpers/find-in-object' ),
+	},
 	loaders: require( './lib/loaders' ),
 	manifest: require( './lib/manifest' ),
 	plugins: require( './lib/plugins' ),
