@@ -180,6 +180,7 @@ This module provides functions that generate configurations for commonly-needed 
 
 This module provides methods which create new instances of commonly-needed Webpack plugins.
 
+- `plugins.bundleAnalyzer()`: Create and return a new [`webpack-bundle-analyzer`](https://github.com/webpack-contrib/webpack-bundle-analyzer) instance. When included this plugin is disabled by default unless the `--analyze` flag is passed on the command line.
 - `plugins.clean()`: Create and return a new [`clean-webpack-plugin`](https://github.com/johnagan/clean-webpack-plugin) instance.
 - `plugins.copy()`: Create and return a new [`copy-webpack-plugin`](https://github.com/webpack-contrib/copy-webpack-plugin) instance.
 - `plugins.fixStyleOnlyEntries()`: Create and return a plugin instance that removes empty JS bundles for style-only entrypoints after build.
