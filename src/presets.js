@@ -44,9 +44,21 @@ const devDefaults = {
 				test: /\.s?css$/,
 				use: [
 					require.resolve( 'style-loader' ),
-					loaders.css( { sourceMap: true } ),
-					loaders.postcss( { sourceMap: true } ),
-					loaders.sass( { sourceMap: true } ),
+					loaders.css( {
+						options: {
+							sourceMap: true,
+						},
+					} ),
+					loaders.postcss( {
+						options: {
+							sourceMap: true,
+						},
+					} ),
+					loaders.sass( {
+						options: {
+							sourceMap: true,
+						},
+					} ),
 				],
 			},
 			// "file" loader makes sure any non-matching assets still get served.
@@ -99,7 +111,7 @@ const devConfig = ( opts = {} ) => {
 		const hasManifestPlugin = plugins.findExistingInstance( opts.plugins, ManifestPlugin );
 		// Add a manifest with the inferred publicPath if none was present.
 		if ( ! hasManifestPlugin ) {
-			devDefaults.push( plugins.manifest( {
+			devDefaults.plugins.push( plugins.manifest( {
 				publicPath,
 			} ) );
 		}

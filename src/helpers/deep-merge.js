@@ -31,7 +31,7 @@ const deepMerge = ( obj1 = {}, obj2 = {} ) => {
 		if ( isArr( obj1[ key ] ) && isArr( obj2[ key ] ) ) {
 			return {
 				...merged,
-				[ key ]: [ ...obj1, ...obj2 ],
+				[ key ]: [ ...obj1[ key ], ...obj2[ key ] ],
 			};
 		}
 

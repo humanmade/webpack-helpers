@@ -12,7 +12,6 @@ module.exports = {
 		findInObject: require( './src/helpers/find-in-object' ),
 	},
 	loaders: require( './src/loaders' ),
-	manifest: require( './src/manifest' ),
 	plugins: require( './src/plugins' ),
 	presets: require( './src/presets' ),
 };
