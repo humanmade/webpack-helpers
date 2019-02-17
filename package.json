@@ -1,7 +1,7 @@
 {
   "name": "@humanmade/webpack-helpers",
   "public": true,
-  "version": "0.2.0-beta.2",
+  "version": "0.2.0",
   "description": "Reusable Webpack configuration components & related helper utilities.",
   "main": "index.js",
   "author": "Human Made",
@@ -52,6 +52,7 @@
     "webpack-manifest-plugin": "^2.0.4"
   },
   "peerDependencies": {
+		"node-sass": "*",
     "webpack": "^4.0.0",
     "webpack-dev-server": "^3.0.0"
   }
