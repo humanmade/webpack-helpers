@@ -26,7 +26,7 @@ const loaders = {
 
 	sass: ( options ) => deepMerge( loaders.sass.defaults, options ),
 
-	file: ( options ) => deepMerge( loaders.sass.defaults, options ),
+	file: ( options ) => deepMerge( loaders.file.defaults, options ),
 };
 
 loaders.eslint.defaults = {
