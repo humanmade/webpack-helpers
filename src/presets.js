@@ -35,35 +35,42 @@ const devDefaults = {
 		rules: [
 			// Run all JS files through ESLint.
 			loaders.eslint(),
-			// Process JS with Babel.
-			loaders.js(),
-			// Convert small files to data URIs.
-			loaders.url(),
-			// Parse styles using SASS, then PostCSS.
 			{
-				test: /\.s?css$/,
-				use: [
-					require.resolve( 'style-loader' ),
-					loaders.css( {
-						options: {
-							sourceMap: true,
-						},
-					} ),
-					loaders.postcss( {
-						options: {
-							sourceMap: true,
-						},
-					} ),
-					loaders.sass( {
-						options: {
-							sourceMap: true,
-						},
-					} ),
+				// "oneOf" will traverse all following loaders until one will
+				// match the requirements. If no loader matches, it will fall
+				// back to the "file" loader at the end of the loader list.
+				oneOf: [
+					// Process JS with Babel.
+					loaders.js(),
+					// Convert small files to data URIs.
+					loaders.url(),
+					// Parse styles using SASS, then PostCSS.
+					{
+						test: /\.s?css$/,
+						use: [
+							require.resolve( 'style-loader' ),
+							loaders.css( {
+								options: {
+									sourceMap: true,
+								},
+							} ),
+							loaders.postcss( {
+								options: {
+									sourceMap: true,
+								},
+							} ),
+							loaders.sass( {
+								options: {
+									sourceMap: true,
+								},
+							} ),
+						],
+					},
+					// "file" loader makes sure any non-matching assets still get served.
+					// When you `import` an asset you get its filename.
+					loaders.file(),
 				],
 			},
-			// "file" loader makes sure any non-matching assets still get served.
-			// When you `import` an asset you get its filename.
-			loaders.file(),
 		],
 	},
 
@@ -147,25 +154,32 @@ const prodDefaults = {
 		rules: [
 			// Run all JS files through ESLint.
 			loaders.eslint(),
-			// Process JS with Babel.
-			loaders.js(),
-			// Convert small files to data URIs.
-			loaders.url(),
-			// Parse styles using SASS, then PostCSS.
 			{
-				test: /\.s?css$/,
-				use: [
-					// Extract CSS to its own file.
-					MiniCssExtractPlugin.loader,
-					// Process SASS into CSS.
-					loaders.css(),
-					loaders.postcss(),
-					loaders.sass(),
+				// "oneOf" will traverse all following loaders until one will
+				// match the requirements. If no loader matches, it will fall
+				// back to the "file" loader at the end of the loader list.
+				oneOf: [
+					// Process JS with Babel.
+					loaders.js(),
+					// Convert small files to data URIs.
+					loaders.url(),
+					// Parse styles using SASS, then PostCSS.
+					{
+						test: /\.s?css$/,
+						use: [
+							// Extract CSS to its own file.
+							MiniCssExtractPlugin.loader,
+							// Process SASS into CSS.
+							loaders.css(),
+							loaders.postcss(),
+							loaders.sass(),
+						],
+					},
+					// "file" loader makes sure any non-matching assets still get served.
+					// When you `import` an asset you get its filename.
+					loaders.file(),
 				],
 			},
-			// "file" loader makes sure any non-matching assets still get served.
-			// When you `import` an asset you get its filename.
-			loaders.file(),
 		],
 	},
 
@@ -200,7 +214,12 @@ const prodConfig = ( opts = {} ) => {
 	return deepMerge( prodDefaults, opts );
 };
 
-// Expose all public-facing methods and objects to module consumers.
+/**
+ * Expose all public-facing methods and objects to module consumers.
+ *
+ * `devConfig()` and `prodConfig()` will generate configuration objects based on
+ * opinionated defaults. These default configurations are exposed in `.config`.
+ */
 module.exports = {
 	config: {
 		development: devDefaults,
