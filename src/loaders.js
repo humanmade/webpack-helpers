@@ -7,75 +7,89 @@ const postcssFlexbugsFixes = require( 'postcss-flexbugs-fixes' );
 const deepMerge = require( './helpers/deep-merge' );
 
 /**
- * Given an object, return a function to generate new objects based on that
- * template. The factory method accepts an object which will be merged with
- * the template to generate a final output object.
- *
- * @param {Object} options A template object of default values.
- * @returns {Function} A function accepting an object of property overrides
- * and returning a final, merged object.
+ * Export an object of named methods that generate corresponding loader config
+ * objects. To customize the default values of the loader, mutate the .defaults
+ * property exposed on each method.
  */
-const withOverrides = options => {
-	return ( overrides = {} ) => deepMerge( options, overrides );
+const loaders = {
+	eslint: ( options ) => deepMerge( loaders.eslint.defaults, options ),
+
+	js: ( options ) => deepMerge( loaders.js.defaults, options ),
+
+	url: ( options ) => deepMerge( loaders.url.defaults, options ),
+
+	style: ( options ) => deepMerge( loaders.style.defaults, options ),
+
+	css: ( options ) => deepMerge( loaders.css.defaults, options ),
+
+	postcss: ( options ) => deepMerge( loaders.postcss.defaults, options ),
+
+	sass: ( options ) => deepMerge( loaders.sass.defaults, options ),
+
+	file: ( options ) => deepMerge( loaders.sass.defaults, options ),
 };
 
-module.exports = {
-	eslint: withOverrides( {
-		test: /\.jsx?$/,
-		exclude: /(node_modules|bower_components)/,
-		enforce: 'pre',
-		loader: require.resolve( 'eslint-loader' ),
-	} ),
-
-	js: withOverrides( {
-		test: /\.jsx?$/,
-		exclude: /(node_modules|bower_components)/,
-		loader: require.resolve( 'babel-loader' ),
-		options: {
-			// Cache compilation results in ./node_modules/.cache/babel-loader/
-			cacheDirectory: true
-		}
-	} ),
-
-	url: withOverrides( {
-		test: /\.(png|jpg|jpeg|gif|svg|woff|woff2|eot|ttf)$/,
-		loader: require.resolve( 'url-loader' ),
-		options: {
-			limit: 10000,
-		},
-	} ),
-
-	style: withOverrides( {
-		loader: require.resolve( 'style-loader' ),
-	} ),
-
-	css: withOverrides( {
-		loader: require.resolve( 'css-loader' ),
-		options: {
-			importLoaders: 1,
-		},
-	} ),
-
-	postcss: withOverrides( {
-		loader: require.resolve( 'postcss-loader' ),
-		options: {
-			ident: 'postcss',
-			plugins: () => [
-				postcssFlexbugsFixes,
-				autoprefixer( {
-					flexbox: 'no-2009',
-				} ),
-			],
-		},
-	} ),
-
-	sass: withOverrides( {
-		loader: require.resolve( 'sass-loader' ),
-	} ),
-
-	file: withOverrides( {
-		// Exclude `js`, `html` and `json`, but match anything else.
-		exclude: /\.(js|html|json)$/,
-		loader: require.resolve( 'file-loader' ),
-	} ),
+loaders.eslint.defaults = {
+	test: /\.jsx?$/,
+	exclude: /(node_modules|bower_components)/,
+	enforce: 'pre',
+	loader: require.resolve( 'eslint-loader' ),
+	options: {},
 };
+
+loaders.js.defaults = {
+	test: /\.jsx?$/,
+	exclude: /(node_modules|bower_components)/,
+	loader: require.resolve( 'babel-loader' ),
+	options: {
+		// Cache compilation results in ./node_modules/.cache/babel-loader/
+		cacheDirectory: true
+	}
+};
+
+loaders.url.defaults = {
+	test: /\.(png|jpg|jpeg|gif|svg|woff|woff2|eot|ttf)$/,
+	loader: require.resolve( 'url-loader' ),
+	options: {
+		limit: 10000,
+	},
+};
+
+loaders.style.defaults = {
+	loader: require.resolve( 'style-loader' ),
+	options: {},
+};
+
+loaders.css.defaults = {
+	loader: require.resolve( 'css-loader' ),
+	options: {
+		importLoaders: 1,
+	},
+};
+
+loaders.postcss.defaults = {
+	loader: require.resolve( 'postcss-loader' ),
+	options: {
+		ident: 'postcss',
+		plugins: () => [
+			postcssFlexbugsFixes,
+			autoprefixer( {
+				flexbox: 'no-2009',
+			} ),
+		],
+	},
+};
+
+loaders.sass.defaults = {
+	loader: require.resolve( 'sass-loader' ),
+	options: {},
+};
+
+loaders.file.defaults = {
+	// Exclude `js`, `html` and `json`, but match anything else.
+	exclude: /\.(js|html|json)$/,
+	loader: require.resolve( 'file-loader' ),
+	options: {},
+};
+
+module.exports = loaders;
