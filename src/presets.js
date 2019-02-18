@@ -96,7 +96,9 @@ const development = ( opts = {} ) => {
 			stats,
 		},
 
-		plugins: [],
+		plugins: [
+			plugins.hotModuleReplacement(),
+		],
 	};
 
 	// Make some general assumptions about the publicPath URI based on the
