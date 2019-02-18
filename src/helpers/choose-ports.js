@@ -1,4 +1,12 @@
-// const { choosePort } = require( 'react-dev-utils/WebpackDevServerUtils' );
+/**
+ * This module is adapted from create-react-app's `react-dev-utils` Webpack
+ * utilities package. We forked this module rather than depending directly on
+ * the react-dev-utils package so that it would not clear the console before
+ * prompting the user for input.
+ *
+ * https://github.com/facebook/create-react-app/blob/59bf92e46dca2fd67f51d50cdd0dfcc55e5586cd/packages/react-dev-utils/WebpackDevServerUtils.js
+ *
+ */
 const chalk = require( 'chalk' );
 const inquirer = require( 'inquirer' );
 const detect = require( 'detect-port-alt' );
@@ -6,15 +14,11 @@ const isRoot = require( 'is-root' );
 
 const getProcessForPort = require( '../vendor/get-process-for-port' );
 
-const DEFAULT_PORT = parseInt( process.env.PORT, 10 ) || 8080;
+const DEFAULT_PORT = process.env.PORT || 8080;
 const HOST = process.env.HOST || '0.0.0.0';
 
 /**
- * choosePort method adapted from create-react-app's react-dev-utils Webpack
- * utilities package. We forked this module rather than depending directly on
- * the react-dev-utils package to make it not clear the console before prompt.
- *
- * https://github.com/facebook/create-react-app/blob/59bf92e46dca2fd67f51d50cdd0dfcc55e5586cd/packages/react-dev-utils/WebpackDevServerUtils.js
+ * choosePort method adapted from create-react-app's `react-dev-utils`.
  *
  * @param {String} host        A host string.
  * @param {Number} defaultPort The port to try to open.
@@ -57,23 +61,17 @@ const choosePort = ( host, defaultPort ) => detect( defaultPort, host ).then(
 );
 
 /**
- * Given an array of desired ports, find open ports.
+ * Check if the preferred port is available, and ask the developer if an alternative
+ * port should be used in the event that desired port is occupied.
  *
- * @param {Number[]} ports
- * @returns {Promise} A Promise resolving to an array of available ports.
+ * @param {Number} port The port number to check for availability.
+ * @returns {Promise} A promise resolving to an available port, or rejecting null.
  */
-const choosePorts = ( ports = [ DEFAULT_PORT ] ) => {
-	if ( ! Array.isArray( ports ) ) {
-		return choosePorts( [ ports ] );
-	}
-	// For each item in the provided array of desired ports, detect whether
-	// anything is running on that port and prompt to select an open port if
-	// the requested port is not available.
-	return ports.reduce( async ( chosenPortsPromise, nextDesiredPort ) => {
-		const chosenPorts = await chosenPortsPromise;
-		const selectedPort = await choosePort( HOST, nextDesiredPort );
-		return [ ...chosenPorts, selectedPort ];
-	}, Promise.resolve( [] ) );
-};
-
-module.exports = choosePorts;
+module.exports = ( port = DEFAULT_PORT ) => choosePort( HOST, parseInt( port, 10 ) )
+	.then( port => {
+		if ( port !== null ) {
+			return port;
+		}
+		// If the user declined to run on another port, we assume we cannot proceed.
+		chalk.red( 'Terminating process.' );
+	} );
