@@ -83,9 +83,7 @@ const devDefaults = {
 		stats,
 	},
 
-	plugins: [
-		plugins.hotModuleReplacement(),
-	],
+	plugins: [],
 };
 
 /**
