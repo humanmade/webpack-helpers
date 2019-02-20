@@ -68,10 +68,11 @@ const choosePort = ( host, defaultPort ) => detect( defaultPort, host ).then(
  * @returns {Promise} A promise resolving to an available port, or rejecting null.
  */
 module.exports = ( port = DEFAULT_PORT ) => choosePort( HOST, parseInt( port, 10 ) )
-	.then( port => {
-		if ( port !== null ) {
-			return port;
+	.then( selectedPort => {
+		if ( selectedPort !== null ) {
+			return selectedPort;
 		}
 		// If the user declined to run on another port, we assume we cannot proceed.
-		chalk.red( 'Terminating process.' );
+		console.error( chalk.red( `\nPort ${ port } busy: Terminating process.` ) );
+		process.exit( 0 );
 	} );
