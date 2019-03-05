@@ -95,28 +95,18 @@ module.exports = {
 If you manage multiple development and production Webpack configurations, reiterating the same properties in each config results in a lot of duplicate code that may drift out of sync over time. This package provides functions to generate a full Webpack configuration for both development and production builds. Nothing but the output path and entry object is required, and everything can be overridden: use as much or as little of these presets as you need.
 
 ```js
+// Example webpack.config.prod.js file.
 const { presets } = require( '@humanmade/webpack-helpers' );
 
-module.exports = [
-	presets.development( {
-		name: 'theme',
-		entry: {
-			theme: 'content/themes/best-theme-ever/src/theme.js',
-		},
-		output: {
-			path: 'content/themes/best-theme-ever/build',
-		},
-	} ),
-	presets.development( {
-		name: 'custom-editor-blocks',
-		entry: {
-			blocks: 'content/mu-plugins/custom-editor-blocks/src/blocks.js',
-		},
-		output: {
-			path: 'content/mu-plugins/custom-editor-blocks/build',
-		},
-	} ),
-];
+module.exports = presets.production( {
+	name: 'theme',
+	entry: {
+		theme: 'content/themes/best-theme-ever/src/theme.js',
+	},
+	output: {
+		path: 'content/themes/best-theme-ever/build',
+	},
+} );
 ```
 
 ## Modules Overview
@@ -144,7 +134,7 @@ module.exports = presets.development( {
 	name: 'bundle-name',
 	devServer: {
 		// Start the dev server on this port.
-		port,
+		port: 9090,
 	},
 	entry: {
 		bundleName: 'relative/path/to/bundle/entry-point.js',
@@ -314,26 +304,15 @@ Most Webpack configuration files require absolute paths to project assets in one
 const { helpers, plugins, presets } = require( '@humanmade/webpack-helpers' );
 const { filePath } = helpers;
 
-module.exports = [
-	presets.production( {
-		name: 'editor-blocks',
-		entry: {
-			'plugin': filePath( 'mu-plugins/project-editor-blocks/src/blocks.js' ),
-		},
-		output: {
-			path: filePath( 'mu-plugins/project-editor-blocks/build' ),
-		},
-	} ),
-	presets.production( {
-		name: 'theme',
-		entry: {
-			'plugin': filePath( 'themes/project-theme/src/theme.js' ),
-		},
-		output: {
-			path: filePath( 'themes/project-theme/build' ),
-		},
-	} ),
-];
+module.exports = presets.production( {
+	name: 'editor-blocks',
+	entry: {
+		'plugin': filePath( 'mu-plugins/project-editor-blocks/src/blocks.js' ),
+	},
+	output: {
+		path: filePath( 'mu-plugins/project-editor-blocks/build' ),
+	},
+} );
 ```
 
 #### `choosePort`
