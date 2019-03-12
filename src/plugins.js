@@ -5,6 +5,7 @@ const CopyPlugin = require( 'copy-webpack-plugin' );
 const ManifestPlugin = require( 'webpack-manifest-plugin' );
 const MiniCssExtractPlugin = require( 'mini-css-extract-plugin' );
 const TerserPlugin = require( 'terser-webpack-plugin' );
+const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 
 const deepMerge = require( './helpers/deep-merge' );
 const FixStyleOnlyEntriesPlugin = require( './plugins/webpack-fix-style-only-entries' );
@@ -128,6 +129,15 @@ module.exports = {
 		filename: '[name].css',
 		...opts,
 	} ),
+
+	/**
+	 * Create a new OptimizeCssAssetsPlugin instance.
+	 *
+	 * @param {Object} [opts]          Optional plugin configuration options.
+	 *
+	 * @returns {OptimizeCssAssetsPlugin} A configured OptimizeCssAssetsPlugin instance.
+	 */
+	optimizeCssAssets: ( opts = {} ) => new OptimizeCssAssetsPlugin( opts ),
 
 	/**
 	 * Create a new TerserPlugin instance, defaulting to a set of options
