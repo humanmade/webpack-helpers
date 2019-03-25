@@ -5,7 +5,7 @@ const CopyPlugin = require( 'copy-webpack-plugin' );
 const ManifestPlugin = require( 'webpack-manifest-plugin' );
 const MiniCssExtractPlugin = require( 'mini-css-extract-plugin' );
 const TerserPlugin = require( 'terser-webpack-plugin' );
-const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const OptimizeCssAssetsPlugin = require( 'optimize-css-assets-webpack-plugin' );
 
 const deepMerge = require( './helpers/deep-merge' );
 const FixStyleOnlyEntriesPlugin = require( './plugins/webpack-fix-style-only-entries' );
