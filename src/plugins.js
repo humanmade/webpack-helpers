@@ -33,7 +33,7 @@ module.exports = {
 	 * @param {Object[]} plugins           Array of plugin instance objects.
 	 * @param {Function} PluginConstructor Constructor function for which to check
 	 *                                     for existing plugin instances.
-	 * @returns {Object} The matched plugin instance object, or null.
+	 * @returns {(Object|null)} The matched plugin instance object, or null.
 	 */
 	findExistingInstance: ( plugins, PluginConstructor ) => {
 		if ( ! Array.isArray( plugins ) ) {
@@ -46,6 +46,9 @@ module.exports = {
 	/**
 	 * Create a new BundleAnalyzerPlugin instance. The analyzer is enabled by default
 	 * only if `--analyze` is passed on the command line.
+	 *
+	 * @param {Object} [options] Plugin configuration options.
+	 * @returns {BundleAnalyzerPlugin} A configured BundleAnalyzerPlugin instance.
 	 */
 	bundleAnalyzer: ( options = {} ) => new BundleAnalyzerPlugin( {
 		analyzerMode: process.argv.indexOf( '--analyze' ) >= 0 ? 'static' : 'disabled',
@@ -62,7 +65,7 @@ module.exports = {
 	 * @param {String}   [options.root] Absolute path to your webpack root folder;
 	 *                                  defaults to process.cwd(). The values in
 	 *                                  `paths` are relative to this directory.
-	 * @returns {CleanPlugin}
+	 * @returns {CleanPlugin} A configured CleanPlugin instance.
 	 */
 	clean: ( paths, options = {} ) => new CleanPlugin( paths, {
 		root: process.cwd(),
@@ -81,6 +84,7 @@ module.exports = {
 	 *
 	 * @param {CopyPattern[]} patterns  Array of pattern objects ( `{ from, to[, test] }` ).
 	 * @param {Object}        [options] Optional plugin options object.
+	 * @returns {CopyPlugin} A configured CopyPlugin instance.
 	 */
 	copy: ( patterns, options ) => new CopyPlugin( patterns, options ),
 
@@ -88,8 +92,9 @@ module.exports = {
 	 * Create a new FixStyleOnlyEntriesPlugin instance to remove unnecessary JS
 	 * files generated for style-only bundle entries.
 	 *
-	 * @param {Object} [options] Plugin options object
+	 * @param {Object} [options]         Plugin options object
 	 * @param {RegExp} [options.exclude] Regular expression to filter what gets cleaned.
+	 * @returns {FixStyleOnlyEntriesPlugin} A configured FixStyleOnlyEntriesPlugin instance.
 	 */
 	fixStyleOnlyEntries: ( options ) => new FixStyleOnlyEntriesPlugin( options ),
 
@@ -97,7 +102,7 @@ module.exports = {
 	 * Create a webpack.HotModuleReplacementPlugin instance.
 	 *
 	 * @param {Object} [opts] Optional plugin options object.
-	 * @returns {HotModuleReplacementPlugin}
+	 * @returns {HotModuleReplacementPlugin} A configured HMR Plugin instance.
 	 */
 	hotModuleReplacement: ( opts = {} ) => new HotModuleReplacementPlugin( opts ),
 
@@ -122,7 +127,6 @@ module.exports = {
 	 *
 	 * @param {Object} [opts]          Optional plugin configuration options.
 	 * @param {Object} [opts.filename] The filename to use for the output CSS.
-	 *
 	 * @returns {MiniCssExtractPlugin} A configured MiniCssExtractPlugin instance.
 	 */
 	miniCssExtract: ( opts = {} ) => new MiniCssExtractPlugin( {
@@ -133,8 +137,7 @@ module.exports = {
 	/**
 	 * Create a new OptimizeCssAssetsPlugin instance.
 	 *
-	 * @param {Object} [opts]          Optional plugin configuration options.
-	 *
+	 * @param {Object} [opts]  Optional plugin configuration options.
 	 * @returns {OptimizeCssAssetsPlugin} A configured OptimizeCssAssetsPlugin instance.
 	 */
 	optimizeCssAssets: ( opts = {} ) => new OptimizeCssAssetsPlugin( opts ),
@@ -144,8 +147,9 @@ module.exports = {
 	 * borrowed from create-react-app's configuration.
 	 *
 	 * @param {Object} [opts]               Plugin configuration option overrides
-	 *                                         to merge into the defaults.
+	 *                                      to merge into the defaults.
 	 * @param {Object} [opts.terserOptions] Terser compressor options object.
+	 * @returns {TerserPlugin} A configured TerserPlugin instance.
 	 */
 	terser: ( opts = {} ) => new TerserPlugin( deepMerge( {
 		terserOptions: {
