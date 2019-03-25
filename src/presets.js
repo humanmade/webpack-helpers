@@ -202,6 +202,7 @@ const production = ( opts = {} ) => {
 		optimization: {
 			minimizer: [
 				plugins.terser(),
+				plugins.optimizeCssAssets(),
 			],
 			nodeEnv: 'production',
 			noEmitOnErrors: true,
