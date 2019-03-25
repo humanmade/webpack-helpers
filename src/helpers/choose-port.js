@@ -73,6 +73,5 @@ module.exports = ( port = DEFAULT_PORT ) => choosePort( HOST, parseInt( port, 10
 			return selectedPort;
 		}
 		// If the user declined to run on another port, we assume we cannot proceed.
-		console.error( chalk.red( `\nPort ${ port } busy: Terminating process.` ) );
-		process.exit( 0 );
+		throw new Error( chalk.red( `\nPort ${ port } busy: Terminating process.` ) );
 	} );
