@@ -53,6 +53,6 @@ describe( 'presets', () => {
 		} );
 
 		// TODO: Add test cases for all logic branches in production().
-		// it( 'injects a MiniCssExtractPlugin if none is present in opts' );
+		// it( 'injects a MiniCssExtractPlugin if none is present in options' );
 	} );
 } );

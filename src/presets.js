@@ -19,10 +19,10 @@ const { ManifestPlugin, MiniCssExtractPlugin } = plugins.constructors;
  * - an `.output.publicPath` string (unless a devServer.port is specified,
  *   in which case publicPath defaults to `http://localhost:${ port }`)
  *
- * @param {Object} opts Configuration options to deeply merge into the defaults.
+ * @param {Object} options Configuration options to deeply merge into the defaults.
  * @returns {Object} A merged Webpack configuration object.
  */
-const development = ( opts = {} ) => {
+const development = ( options = {} ) => {
 	/**
 	 * Default development environment-oriented Webpack options. This object is
 	 * defined at the time of function execution so that any changes to the
@@ -102,24 +102,24 @@ const development = ( opts = {} ) => {
 	};
 
 	// Make some general assumptions about the publicPath URI based on the
-	// configuration values provided in opts.
-	const port = findInObject( opts, 'devServer.port' );
-	let publicPath = findInObject( opts, 'output.publicPath' );
+	// configuration values provided in options.
+	const port = findInObject( options, 'devServer.port' );
+	let publicPath = findInObject( options, 'output.publicPath' );
 	if ( ! publicPath && port ) {
 		publicPath = `${
-			findInObject( opts, 'devServer.https' ) ? 'https' : 'http'
+			findInObject( options, 'devServer.https' ) ? 'https' : 'http'
 		}://localhost:${ port }/`;
 	}
 
 	// If we had enough value to guess a publicPath, set that path as a default
 	// wherever appropriate and inject a ManifestPlugin instance to expose that
 	// public path to consuming applications. Any inferred values will still be
-	// overridden with their relevant values from `opts`, when provided.
+	// overridden with their relevant values from `options`, when provided.
 	if ( publicPath ) {
 		devDefaults.output.publicPath = publicPath;
 
-		// Check for an existing ManifestPlugin instance in opts.plugins.
-		const hasManifestPlugin = plugins.findExistingInstance( opts.plugins, ManifestPlugin );
+		// Check for an existing ManifestPlugin instance in options.plugins.
+		const hasManifestPlugin = plugins.findExistingInstance( options.plugins, ManifestPlugin );
 		// Add a manifest with the inferred publicPath if none was present.
 		if ( ! hasManifestPlugin ) {
 			devDefaults.plugins.push( plugins.manifest( {
@@ -128,7 +128,7 @@ const development = ( opts = {} ) => {
 		}
 	}
 
-	return deepMerge( devDefaults, opts );
+	return deepMerge( devDefaults, options );
 };
 
 /**
@@ -142,10 +142,10 @@ const development = ( opts = {} ) => {
  * - an `.entry` object,
  * - an `.output.path` string
  *
- * @param {Object} opts Configuration options to deeply merge into the defaults.
+ * @param {Object} options Configuration options to deeply merge into the defaults.
  * @returns {Object} A merged Webpack configuration object.
  */
-const production = ( opts = {} ) => {
+const production = ( options = {} ) => {
 	/**
 	 * Default development environment-oriented Webpack options. This object is
 	 * defined at the time of function execution so that any changes to the
@@ -213,13 +213,13 @@ const production = ( opts = {} ) => {
 		plugins: [],
 	};
 
-	// Add a MiniCssExtractPlugin instance if none is already present in opts.
-	const hasCssPlugin = plugins.findExistingInstance( opts.plugins, MiniCssExtractPlugin );
+	// Add a MiniCssExtractPlugin instance if none is already present in options.
+	const hasCssPlugin = plugins.findExistingInstance( options.plugins, MiniCssExtractPlugin );
 	if ( ! hasCssPlugin ) {
 		prodDefaults.plugins.push( plugins.miniCssExtract() );
 	}
 
-	return deepMerge( prodDefaults, opts );
+	return deepMerge( prodDefaults, options );
 };
 
 /**
