@@ -349,9 +349,9 @@ When using the `presets.development()` generator, an `asset-manifest.json` will 
 
 ```js
 const { join } = require( 'path' );
-const { manifest } = require( '@humanmade/webpack-helpers' );
+const { helpers } = require( '@humanmade/webpack-helpers' );
 
-manifest.cleanOnExit( [
+helpers.cleanOnExit( [
 	join( process.cwd(), 'content/mu-plugins/custom-blocks/build/asset-manifest.json' ),
 	join( process.cwd(), 'content/themes/my-theme/build/asset-manifest.json' ),
 ] );
