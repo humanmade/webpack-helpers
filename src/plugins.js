@@ -5,7 +5,7 @@ const CopyPlugin = require( 'copy-webpack-plugin' );
 const ManifestPlugin = require( 'webpack-manifest-plugin' );
 const MiniCssExtractPlugin = require( 'mini-css-extract-plugin' );
 const TerserPlugin = require( 'terser-webpack-plugin' );
-const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const OptimizeCssAssetsPlugin = require( 'optimize-css-assets-webpack-plugin' );
 
 const deepMerge = require( './helpers/deep-merge' );
 const FixStyleOnlyEntriesPlugin = require( './plugins/webpack-fix-style-only-entries' );
@@ -33,7 +33,7 @@ module.exports = {
 	 * @param {Object[]} plugins           Array of plugin instance objects.
 	 * @param {Function} PluginConstructor Constructor function for which to check
 	 *                                     for existing plugin instances.
-	 * @returns {Object} The matched plugin instance object, or null.
+	 * @returns {(Object|null)} The matched plugin instance object, or null.
 	 */
 	findExistingInstance: ( plugins, PluginConstructor ) => {
 		if ( ! Array.isArray( plugins ) ) {
@@ -46,6 +46,9 @@ module.exports = {
 	/**
 	 * Create a new BundleAnalyzerPlugin instance. The analyzer is enabled by default
 	 * only if `--analyze` is passed on the command line.
+	 *
+	 * @param {Object} [options] Optional plugin options object.
+	 * @returns {BundleAnalyzerPlugin} A configured BundleAnalyzerPlugin instance.
 	 */
 	bundleAnalyzer: ( options = {} ) => new BundleAnalyzerPlugin( {
 		analyzerMode: process.argv.indexOf( '--analyze' ) >= 0 ? 'static' : 'disabled',
@@ -58,11 +61,11 @@ module.exports = {
 	 * Create a CleanPlugin instance.
 	 *
 	 * @param {String[]} paths          Array of (relative) string paths to clean.
-	 * @param {Object}   [options]      Plugin configuration options.
+	 * @param {Object}   [options]      Optional plugin options object.
 	 * @param {String}   [options.root] Absolute path to your webpack root folder;
 	 *                                  defaults to process.cwd(). The values in
 	 *                                  `paths` are relative to this directory.
-	 * @returns {CleanPlugin}
+	 * @returns {CleanPlugin} A configured CleanPlugin instance.
 	 */
 	clean: ( paths, options = {} ) => new CleanPlugin( paths, {
 		root: process.cwd(),
@@ -81,6 +84,7 @@ module.exports = {
 	 *
 	 * @param {CopyPattern[]} patterns  Array of pattern objects ( `{ from, to[, test] }` ).
 	 * @param {Object}        [options] Optional plugin options object.
+	 * @returns {CopyPlugin} A configured CopyPlugin instance.
 	 */
 	copy: ( patterns, options ) => new CopyPlugin( patterns, options ),
 
@@ -88,18 +92,19 @@ module.exports = {
 	 * Create a new FixStyleOnlyEntriesPlugin instance to remove unnecessary JS
 	 * files generated for style-only bundle entries.
 	 *
-	 * @param {Object} [options] Plugin options object
+	 * @param {Object} [options]         Optional plugin options object.
 	 * @param {RegExp} [options.exclude] Regular expression to filter what gets cleaned.
+	 * @returns {FixStyleOnlyEntriesPlugin} A configured FixStyleOnlyEntriesPlugin instance.
 	 */
 	fixStyleOnlyEntries: ( options ) => new FixStyleOnlyEntriesPlugin( options ),
 
 	/**
 	 * Create a webpack.HotModuleReplacementPlugin instance.
 	 *
-	 * @param {Object} [opts] Optional plugin options object.
-	 * @returns {HotModuleReplacementPlugin}
+	 * @param {Object} [options] Optional plugin options object.
+	 * @returns {HotModuleReplacementPlugin} A configured HMR Plugin instance.
 	 */
-	hotModuleReplacement: ( opts = {} ) => new HotModuleReplacementPlugin( opts ),
+	hotModuleReplacement: ( options = {} ) => new HotModuleReplacementPlugin( options ),
 
 	/**
 	 * Create a new ManifestPlugin instance to output an asset-manifest.json
@@ -107,47 +112,46 @@ module.exports = {
 	 * assets from the development server. A publicPath matching the URL
 	 * in the configuration's output.publicPath is required.
 	 *
-	 * @param {Object} opts            Plugin options overrides.
-	 * @param {String} opts.publicPath The base URI to prepend to build asset URIs.
+	 * @param {Object} options            Plugin options overrides.
+	 * @param {String} options.publicPath The base URI to prepend to build asset URIs.
 	 * @returns {ManifestPlugin} A configured ManifestPlugin instance.
 	 */
-	manifest: ( opts = {} ) => new ManifestPlugin( {
+	manifest: ( options = {} ) => new ManifestPlugin( {
 		fileName: 'asset-manifest.json',
 		writeToFileEmit: true,
-		...opts,
+		...options,
 	} ),
 
 	/**
 	 * Create a new MiniCssExtractPlugin instance.
 	 *
-	 * @param {Object} [opts]          Optional plugin configuration options.
-	 * @param {Object} [opts.filename] The filename to use for the output CSS.
-	 *
+	 * @param {Object} [options]          Optional plugin configuration options.
+	 * @param {Object} [options.filename] The filename to use for the output CSS.
 	 * @returns {MiniCssExtractPlugin} A configured MiniCssExtractPlugin instance.
 	 */
-	miniCssExtract: ( opts = {} ) => new MiniCssExtractPlugin( {
+	miniCssExtract: ( options = {} ) => new MiniCssExtractPlugin( {
 		filename: '[name].css',
-		...opts,
+		...options,
 	} ),
 
 	/**
 	 * Create a new OptimizeCssAssetsPlugin instance.
 	 *
-	 * @param {Object} [opts]          Optional plugin configuration options.
-	 *
+	 * @param {Object} [options] Optional plugin configuration options.
 	 * @returns {OptimizeCssAssetsPlugin} A configured OptimizeCssAssetsPlugin instance.
 	 */
-	optimizeCssAssets: ( opts = {} ) => new OptimizeCssAssetsPlugin( opts ),
+	optimizeCssAssets: ( options = {} ) => new OptimizeCssAssetsPlugin( options ),
 
 	/**
 	 * Create a new TerserPlugin instance, defaulting to a set of options
 	 * borrowed from create-react-app's configuration.
 	 *
-	 * @param {Object} [opts]               Plugin configuration option overrides
+	 * @param {Object} [options]               Plugin configuration option overrides
 	 *                                         to merge into the defaults.
-	 * @param {Object} [opts.terserOptions] Terser compressor options object.
+	 * @param {Object} [options.terserOptions] Terser compressor options object.
+	 * @returns {TerserPlugin} A configured TerserPlugin instance.
 	 */
-	terser: ( opts = {} ) => new TerserPlugin( deepMerge( {
+	terser: ( options = {} ) => new TerserPlugin( deepMerge( {
 		terserOptions: {
 			parse: {
 				// we want terser to parse ecma 8 code. However, we don't want it
@@ -189,5 +193,5 @@ module.exports = {
 		cache: true,
 		// Output sourcemaps.
 		sourceMap: true,
-	}, opts ) ),
+	}, options ) ),
 };
