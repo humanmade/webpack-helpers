@@ -57,7 +57,7 @@ This library provides a preset designed to leverage the WordPress core default b
 module.exports = require( '@humanmade/webpack-helpers/.babelrc.js' );
 ```
 
-**Webpack**
+**Starting the Production Build Configuration**
 
 Finally, let's create our first Webpack configuration file, `.config/webpack.config.prod.js`. We'll start by making a production bundle for our block editor mu-plugin.
 
@@ -153,8 +153,37 @@ To add our theme configuration, we'll convert the `module.exports` to return an 
 
 Note that we've given each config object a `name` property. If you pass a name to the `--config-name` flag when running the build, webpack will only build that specific configuration; _e.g._ `npm run build -- --config-name=theme` would build only the theme's bundle.
 
+We've also chosen here to omit the `externals` definition from our theme configuration. If you do wish to make use of WP core packages, you may include it here as well; however, if your theme JS makes use purely of native DOM functionality or bundled npm packages, there is no strict need to specify these externals if they will not be used. That's your choice to make as the author of the bundle.
+
 With this new second configuration object in place, when we run `npm run build` we should see three bundles created: our admin-facing editor blocks, frontend-facing editor block styles & functionality, and finally our frontend theme scripts and styles.
+
+Our production build configuration is complete!
 
 ## Development Builds & Webpack DevServer
 
+With our production build sorted, it's time to set our our hot-reloading development server. Improving this part of the process was the major reason we created these Webpack helpers; we hope you'll find them easy to work with!
 
+First, let's create an empty file `.config/webpack.config.dev.js`, and add another line to our `package.json` "scripts" definition:
+
+```diff
+ 	"scripts": {
++		"start": "webpack-dev-server --config=./config/webpack.config.dev.js",
+ 		"build": "webpack --config=.config/webpack.config.prod.js"
+ 	}
+```
+
+Once we complete our development configuration file, this command will let us run `npm start` to spin up our hot-reloading development server.
+
+**A Note on Asset Manifests**
+
+Your local WordPress environment will usually be running within a container or virtual machine, but Webpack will start the development server on `localhost`. While the development server is running, files aren't written to disk; for performance reasons, they're served entirely from memory. WordPress won't know where to find these dynamically-generated files, so we make use of a special JSON file called an "asset manifest" to tell our PHP code the URLs for the generated bundles.
+
+The `presets.development` generator will set up an asset manifest for you, but you may include your own instance of the manifest plugin if you wish to customize the behavior or formatting of the manifest. These customizations are outside the scope of this Getting Started guide, but you may refer to the [plugins module](https://humanmade.github.io/webpack-helpers/modules/plugins) for a link to the manifest plugin documentation.
+
+A manifest only helps us if WordPress can load and interpret the file, so for the remainder of this guide we will assume you have the **[Asset Loader](https://github.com/humanmade/asset-loader) plugin** loaded and running within your project. The Asset Loader is available on Packagist as [`humanmade/asset-loader`](https://packagist.org/packages/humanmade/asset-loader), and the plugin is designed specifically to provide a complete PHP-side set of utilities to ingest and load the bundles generated using these Webpack helpers.
+
+**Populating the Development Configuration**
+
+The easiest way to begin your development configuration file is to copy the production configuration, and change the generators from `presets.production` to `presets.development`. Out of the box, doing nothing more than this will let you run `webpack --config=.config/webpack.config.dev.js` to build all development bundles in your project to disk in the specified output directories.
+
+We don't want to use the `webpack` command, though: we want to use `webpack-dev-server`. To best make use of DevServer, we need to spell out where we expect these files to be served.
