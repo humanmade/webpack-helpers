@@ -44,7 +44,7 @@ By the end of this guide Webpack will take our source JavaScript files from thes
 
 **ESLint**
 
-This project assumes you have [ESLint](https://eslint.org/) installed and configured in your project, but we do not provide or assume any specific configuration or rules. If you aren't using ESLint you may install and configure it with basic syntax and style rules by following the [official getting started guide](https://eslint.org/docs/user-guide/getting-started), or by installing Human Made's [`eslint-config-humanmade`](https://www.npmjs.com/package/eslint-config-humanmade) preset.
+If [ESLint](https://eslint.org/) is installed, `eslint-loader` will be used to validate that your code compiles and passes required style rules before the bundle is generated. While ESLint will be used if present, these helpers do not assume any specific configuration or rules. If you aren't using ESLint you may install and configure it with basic syntax and style rules by following the [official getting started guide](https://eslint.org/docs/user-guide/getting-started), or by installing Human Made's [`eslint-config-humanmade`](https://www.npmjs.com/package/eslint-config-humanmade) preset.
 
 **Babel**
 
@@ -167,7 +167,7 @@ First, let's create an empty file `.config/webpack.config.dev.js`, and add anoth
 
 ```diff
  	"scripts": {
-+		"start": "webpack-dev-server --config=./config/webpack.config.dev.js",
++		"start": "webpack-dev-server --config=.config/webpack.config.dev.js",
  		"build": "webpack --config=.config/webpack.config.prod.js"
  	}
 ```
@@ -186,4 +186,75 @@ A manifest only helps us if WordPress can load and interpret the file, so for th
 
 The easiest way to begin your development configuration file is to copy the production configuration, and change the generators from `presets.production` to `presets.development`. Out of the box, doing nothing more than this will let you run `webpack --config=.config/webpack.config.dev.js` to build all development bundles in your project to disk in the specified output directories.
 
-We don't want to use the `webpack` command, though: we want to use `webpack-dev-server`. To best make use of DevServer, we need to spell out where we expect these files to be served.
+In order to use `webpack-dev-server`, though, we need to specify a new value `output.publicPath` so that our manifests can tell WordPress where to find the DevServer's files.
+
+We can hard-code the default public path Webpack uses, but if you ever find you need to run another dev server at once, you will encounter a port conflict. This package provides a `choosePort()` utility to work around this: when the server starts it will occupy the next available public port.
+
+To make use of this utility, we wrap our development config in a `choosePort` promise callback, then specify the `devServer.port` and and `output.publicPath` based on that port in the returned array of configurations. Each configuration's `publicPath` option must be unique, but the URL path does not have to precisely match the hierarchy of the files on disk.
+
+```diff
+ const { helpers, externals, presets } = require( '@humanmade/webpack-helpers' );
+-const { filePath } = helpers;
++const { choosePort, filePath } = helpers;
+
+-module.exports = [
++module.exports = choosePort( 8080 ).then( port => [
+   presets.development( {
+     name: 'blocks',
++    devServer: {
++      port,
++    },
+     externals,
+     entry: {
+       editor: filePath( 'mu-plugins/myproject-blocks/src/editor.js' ),
+       frontend: filePath( 'mu-plugins/myproject-blocks/src/frontend.js' ),
+     },
+     output: {
+       path: filePath( 'mu-plugins/myproject-blocks/build' ),
++      publicPath: `http://localhost:${ port }/myproject-blocks/`,
+     },
+   } ),
+   presets.development( {
+     name: 'theme',
++    devServer: {
++      port,
++    },
+     entry: {
+       'frontend': filePath( 'themes/myproject/src/frontend.js' ),
+     },
+     output: {
+       path: filePath( 'themes/myproject/build' ),
++      publicPath: `http://localhost:${ port }/myproject-theme/`,
+     },
+   } ),
+-];
++] );
+```
+
+While these bundles are served from memory, now that we've specified a `publicPath`, a new file `asset-manifest.json` will be output into each project's `build/` folder. `themes/myproject/build/asset-manifest.json` will look like this:
+```json
+{
+  "frontend.js": "http://localhost:8080/myproject-theme/frontend.js",
+  "frontend.js.map": "http://localhost:8080/myproject-theme/frontend.js.map"
+}
+```
+The Asset Loader plugin can now read this file in and instruct WordPress how to load the files from the development server. Configure the asset loader, run `npm start`, and you'll be up and running!
+
+**Cleaning Up Manifests**
+
+The only remaining task is to ensure that we clean up the manifest after the Webpack DevServer shuts down; otherwise, WordPress will continue to try to load the files from localhost indefinitely.
+
+We use the `cleanOnExit` helper to delete these files when the server shuts down:
+
+```diff
+ const { helpers, externals, presets } = require( '@humanmade/webpack-helpers' );
+-const { choosePort, filePath } = helpers;
++const { choosePort, cleanOnExit, filePath } = helpers;
++
++// Clean up manifests on exit.
++cleanOnExit( [
++	filePath( 'mu-plugins/myproject-blocks/build/asset-manifest.json' ),
++	filePath( 'themes/myproject/build/asset-manifest.json' ),
++] );
+```
+
