@@ -1,6 +1,7 @@
 ---
 title: Helpers Module
 parent: Modules
+nav_order: 5
 ---
 
 # `helpers`

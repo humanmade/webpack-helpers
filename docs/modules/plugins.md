@@ -1,6 +1,7 @@
 ---
 title: Plugins Module
 parent: Modules
+nav_order: 4
 ---
 
 # `plugins`

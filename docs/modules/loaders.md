@@ -1,6 +1,7 @@
 ---
 title: Loaders Module
 parent: Modules
+nav_order: 3
 ---
 
 # `loaders`

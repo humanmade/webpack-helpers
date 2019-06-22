@@ -10,7 +10,9 @@ Your comprehensive toolkit for asset bundling in complex WordPress projects!
 
 ## Background
 
-An enterprise-scale WordPress project involves a large number of individual themes & custom plugins, and any of these components may contain frontend scripts or styles. This package provides **configuration generators, reusable Webpack configuration fragments, and associated helper methods** that would otherwise need to be duplicated across each project component.
+An enterprise-scale WordPress project involves a large number of individual themes & custom plugins, and any of these components may contain frontend scripts or styles. This package provides _**configuration generators, reusable Webpack configuration fragments, and associated helper methods**_ that would otherwise need to be duplicated across each project component.
+
+**What about `@wordpress/scripts`?**
 
 `@humanmade/webpack-helpers` is not meant to replace the core [`@wordpress/scripts` package](https://developer.wordpress.org/block-editor/packages/packages-scripts/) — if you need to package a single bundle for a theme or custom block plugin, that library may be a better option for your project.
 

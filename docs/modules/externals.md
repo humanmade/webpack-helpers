@@ -1,6 +1,7 @@
 ---
 title: Externals Module
 parent: Modules
+nav_order: 2
 ---
 
 # `externals`
