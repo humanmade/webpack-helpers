@@ -4,7 +4,7 @@ parent: Modules
 nav_order: 3
 ---
 
-# `loaders`
+# Loaders Module
 
 `const { loaders } = require( '@humanmade/webpack-helpers' );`
 

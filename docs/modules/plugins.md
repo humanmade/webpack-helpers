@@ -4,7 +4,7 @@ parent: Modules
 nav_order: 4
 ---
 
-# `plugins`
+# Plugins Module
 
 `const { plugins } = require( '@humanmade/webpack-helpers' );`
 

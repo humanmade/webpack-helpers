@@ -4,7 +4,7 @@ parent: Modules
 nav_order: 1
 ---
 
-# `presets`
+# Presets Module
 
 `const { presets } = require( '@humanmade/webpack-helpers' );`
 
