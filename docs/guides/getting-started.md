@@ -1,6 +1,7 @@
 ---
 title: Getting Started
 parent: Guides
+nav_order: 0
 ---
 
 # Headline
