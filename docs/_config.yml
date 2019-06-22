@@ -1,1 +1,4 @@
 theme: jekyll-theme-minimal
+
+title: Webpack Helpers
+description: Human Made's toolkit for modern frontend asset bundling.
