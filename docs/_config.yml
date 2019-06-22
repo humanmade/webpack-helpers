@@ -1,4 +1,4 @@
-theme: just-the-docs
+remote_theme: pmarsceill/just-the-docs
 
 title: Webpack Helpers
 description: Human Made's toolkit for modern frontend asset bundling.
