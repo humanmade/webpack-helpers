@@ -32,7 +32,7 @@ module.exports = presets.production( {
 
 ## `choosePort`
 
-A complex project may require multiple development servers to be run in parallel while developing interrelated theme and plugin functionality. While ports in related projects can be hard-coded to avoid conflicts, this package also exposes a `choosePort` helper adapted from `create-react-app` which will automatically detect port conflicts and propose an available port if there is an unforseen port collision.
+A complex project may require multiple development servers to be run in parallel while developing interrelated theme and plugin functionality. While ports in related projects can be hard-coded to avoid conflicts, this package also exposes a `choosePort` helper adapted from `create-react-app` which will automatically detect port conflicts and propose an available port if there is an unforeseen port collision.
 
 ```js
 // webpack.config.dev.js
