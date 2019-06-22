@@ -2,3 +2,10 @@ remote_theme: pmarsceill/just-the-docs
 
 title: Webpack Helpers
 description: Human Made's toolkit for modern frontend asset bundling.
+
+# Auxiary navigation links to display in the the upper right corner
+aux_links:
+  "Human Made":
+    - "//humanmade.com"
+  "Webpack-Helpers on GitHub":
+    - "//github.com/humanmade/webpack-helpers"

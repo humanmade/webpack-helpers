@@ -1,5 +1,6 @@
 ---
 title: Getting Started
+parent: Guides
 ---
 
 # Headline
