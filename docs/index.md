@@ -1,6 +1,6 @@
 ---
 # Webpack Helpers
-title: Webpack Helpers
+title: Introduction
 nav_order: 0
 ---
 
@@ -109,7 +109,8 @@ module.exports = {
 		new MiniCssExtractPlugin( { filename: '[name].css' } ),
 	]
 };
-
+```
+```js
 // After
 const { plugins } = require( '@humanmade/webpack-helpers' );
 module.exports = {
