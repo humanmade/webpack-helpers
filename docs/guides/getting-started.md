@@ -48,13 +48,27 @@ If [ESLint](https://eslint.org/) is installed, `eslint-loader` will be used to v
 
 **Babel**
 
-Because Babel is more core to your Webpack bundling strategy than ESLint, we do package Babel as a part of this library. To properly configure Webpack, Jest, your editor and other tools which need to know about Babel, however, we must manually create a configuration file in our project root to specify our Babel configuration.
+Because [Babel](https://babeljs.io/) (the library we use to enable us to write modern JavaScript and run it in all browsers) is more core to your Webpack bundling strategy than ESLint, we do package Babel as a part of this library. To properly configure Webpack, Jest, your editor and other tools which need to know about Babel, however, we must manually create a configuration file at the root of our project to specify our Babel configuration.
 
-This library provides a preset designed to leverage the WordPress core default babel presets, and to utilize the core WordPress `@wordpress/element` wrapper around React to parse JSX. To install and use this preset, create a file in your project root called `.babelrc.js` with the following content:
+This package provides a default Babel configuration which leverages the WordPress core default babel presets, and uses the core WordPress `@wordpress/element` wrapper around React to parse JSX. To install and use this preset, create a file in your project root called `.babelrc.js` with the following content:
 
 ```js
 // .babelrc.js
-module.exports = require( '@humanmade/webpack-helpers/.babelrc.js' );
+module.exports = require( '@humanmade/webpack-helpers/babel-preset' );
+```
+
+If you would rather explicitly declare the entire Babel configuration, the above equates to this:
+
+```js
+// .babelrc.js
+module.exports = {
+	presets: [ '@wordpress/default' ],
+	plugins: [
+		[ 'transform-react-jsx', {
+			pragma: 'wp.element.createElement',
+		} ],
+	],
+};
 ```
 
 **Starting the Production Build Configuration**
@@ -80,9 +94,15 @@ module.exports = presets.production( {
 } );
 ```
 
-By using our `presets.production` factory, we will generate a configuration object set up to use Babel, SCSS,and PostCSS. `entry` and `output` are the only required parameters we must provide; `entry` tells Webpack where to find the bundle entrypoint (`src/editor.js` in the editor blocks plugin will be packaged into a bundle named `editor`), and `output.path` tells Webpack to output the bundled file into the plugin's `build/` directory.
+By using our `presets.production` factory, we will generate a configuration object set up to use Babel, SCSS, and PostCSS.
 
-Including the `externals` object in our configuration (using a modern JS shorthand notation, which is equivalent to having said `externals: externals`) allows our block editor plugin scripts to reference WordPress core packages using their full package names, _e.g._ `import { withSelect } from '@wordpress/data';`.
+`entry` and `output` are the only required parameters: `entry` tells Webpack where to find the bundle entrypoint (`src/editor.js` in the editor blocks plugin will be packaged into a bundle named `editor`), and `output.path` tells Webpack to output the bundled file into the plugin's `build/` directory.
+
+Including the `externals` object in our configuration (using a modern JS shorthand notation, which is equivalent to having said `externals: externals`) allows our block editor plugin scripts to reference WordPress core packages using their full package names without including those existing files in the bundle, _e.g._
+
+```
+import { withSelect } from '@wordpress/data';
+```
 
 The [`filePath` helper](https://humanmade.github.io/webpack-helpers/modules/helpers) returns an absolute file system path relative to the current working directory, which will be the project root where our `package.json` lives.
 
@@ -151,9 +171,13 @@ To add our theme configuration, we'll convert the `module.exports` to return an 
 +];
 ```
 
-Note that we've given each config object a `name` property. If you pass a name to the `--config-name` flag when running the build, webpack will only build that specific configuration; _e.g._ `npm run build -- --config-name=theme` would build only the theme's bundle.
+Note that we've given each config object a `name` property. If you pass a name to the `--config-name` flag when running the build, webpack will only build that specific configuration. For example,
+```
+npm run build -- --config-name=theme
+```
+would build only the theme's bundle.
 
-We've also chosen here to omit the `externals` definition from our theme configuration. If you do wish to make use of WP core packages, you may include it here as well; however, if your theme JS makes use purely of native DOM functionality or bundled npm packages, there is no strict need to specify these externals if they will not be used. That's your choice to make as the author of the bundle.
+We've also chosen here to omit the `externals` definition from our theme's build configuration. If you do wish to make use of WP core packages, you may include `externals` here as well; however, if your theme JS makes use purely of native DOM functionality or bundled npm packages, there is no strict need to specify these externals if they will not be used. That's your choice to make as the author of the bundle.
 
 With this new second configuration object in place, when we run `npm run build` we should see three bundles created: our admin-facing editor blocks, frontend-facing editor block styles & functionality, and finally our frontend theme scripts and styles.
 
@@ -242,7 +266,7 @@ The Asset Loader plugin can now read this file in and instruct WordPress how to 
 
 **Cleaning Up Manifests**
 
-The only remaining task is to ensure that we clean up the manifest after the Webpack DevServer shuts down; otherwise, WordPress will continue to try to load the files from localhost indefinitely.
+The only remaining task is to ensure that we clean up the manifest after the Webpack DevServer shuts down. If we don't, WordPress will continue to try to load the files from localhost indefinitely.
 
 We use the `cleanOnExit` helper to delete these files when the server shuts down:
 
@@ -258,3 +282,16 @@ We use the `cleanOnExit` helper to delete these files when the server shuts down
 +] );
 ```
 
+## Conclusion
+
+Congratulations! You should now have a complete Webpack build, supporting both development and production environments, that's capable of expanding to serve as many themes, plugins, and bundles therein as you project needs. Run `npm start` to kick off the development server, and `npm run build` to generate production-ready assets. Pair this library with the [Asset Loader](https://packagist.org/packages/humanmade/asset-loader) PHP package to load your bundles in your application.
+
+Whether you're using this module or not, if you remember a few basic rules you should be able to debug most issues you may run into using Webpack:
+
+- If bundles share an output folder, use different entries within one configuration. If they should be build to different output folders, use a multi-configuration setup.
+- A multi-configuration setup lets each bundle use a different set of loaders, plugins, externals, and other Webpack configuration options, as needed.
+- Nothing we do here is magic: every option maps to specific behavior within Webpack. You can log the entire exported Webpack configuration object and look up each property in the [Webpack documentation](https://webpack.js.org/) to understand exactly what is happening under the hood, if you want to.
+  - Loaders in particular can feel like magic, but a loader's nothing more than a small module that puts a JavaScript wrapper around a bundled asset. Check out this [tutorial on writing a simple Webpack loader](https://bocoup.com/blog/webpack-a-simple-loader) for more information.
+- If nothing is working, delete your entire build directory and try again 😀
+
+Happy bundling!
