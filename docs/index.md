@@ -8,6 +8,16 @@ nav_order: 0
 
 Your comprehensive toolkit for asset bundling in complex WordPress projects!
 
+## Beta Notice
+
+This documentation applies to the v0.5.0 beta version of this library, scheduled for release at the end of June 2019.
+
+To install the beta version, run
+
+```
+npm install --save-dev @humanmade/webpack-helpers@beta
+```
+
 ## Background
 
 An enterprise-scale WordPress project involves a large number of individual themes & custom plugins, and any of these components may contain frontend scripts or styles. This package provides _**configuration generators, reusable Webpack configuration fragments, and associated helper methods**_ that would otherwise need to be duplicated across each project component.

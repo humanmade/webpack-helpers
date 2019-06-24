@@ -3,3 +3,5 @@
 .gitignore
 .npmignore
 *.test.js
+package-lock.json
+docs

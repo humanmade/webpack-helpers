@@ -1,6 +1,7 @@
 const { devServer, stats } = require( './config' );
 const deepMerge = require( './helpers/deep-merge' );
 const findInObject = require( './helpers/find-in-object' );
+const isInstalled = require( './helpers/is-installed' );
 const loaders = require( './loaders' );
 const plugins = require( './plugins' );
 const { ManifestPlugin, MiniCssExtractPlugin } = plugins.constructors;
@@ -46,8 +47,8 @@ const development = ( options = {} ) => {
 		module: {
 			strictExportPresence: true,
 			rules: [
-				// Run all JS files through ESLint.
-				loaders.eslint(),
+				// Run all JS files through ESLint, if installed.
+				...( isInstalled( 'eslint' ) ? [ loaders.eslint() ] : [] ),
 				{
 					// "oneOf" will traverse all following loaders until one will
 					// match the requirements. If no loader matches, it will fall
@@ -168,8 +169,8 @@ const production = ( options = {} ) => {
 		module: {
 			strictExportPresence: true,
 			rules: [
-				// Run all JS files through ESLint.
-				loaders.eslint(),
+				// Run all JS files through ESLint, if installed.
+				...( isInstalled( 'eslint' ) ? [ loaders.eslint() ] : [] ),
 				{
 					// "oneOf" will traverse all following loaders until one will
 					// match the requirements. If no loader matches, it will fall
