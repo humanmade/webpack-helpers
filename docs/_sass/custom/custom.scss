@@ -1,0 +1,14 @@
+.page-content a {
+	// Don't nowrap links in post content.
+	white-space: normal !important;
+}
+
+// Adjust the colors of the ```diff fenced code blocks to make removed lines red.
+.language-diff .highlight {
+	.gd {
+		color: #af2b2b;
+	}
+	.gi {
+		color: #8d9900;
+	}
+}
