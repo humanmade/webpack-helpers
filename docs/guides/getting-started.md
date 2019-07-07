@@ -64,6 +64,7 @@ If you would rather explicitly declare the entire Babel configuration, the above
 module.exports = {
 	presets: [ '@wordpress/default' ],
 	plugins: [
+		'@babel/plugin-proposal-class-properties',
 		[ 'transform-react-jsx', {
 			pragma: 'wp.element.createElement',
 		} ],
