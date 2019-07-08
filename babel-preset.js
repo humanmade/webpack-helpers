@@ -1,8 +1,12 @@
-module.exports = {
-	presets: [ '@wordpress/default' ],
-	plugins: [
-		[ 'transform-react-jsx', {
-			pragma: 'wp.element.createElement',
-		} ],
-	],
+module.exports = ( api ) => {
+	api.cache.forever();
+
+	return {
+		presets: [ '@wordpress/default' ],
+		plugins: [
+			[ 'transform-react-jsx', {
+				pragma: 'wp.element.createElement',
+			} ],
+		],
+	};
 };
