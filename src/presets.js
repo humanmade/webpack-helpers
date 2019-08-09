@@ -1,5 +1,6 @@
 const { devServer, stats } = require( './config' );
 const deepMerge = require( './helpers/deep-merge' );
+const filePath = require( './helpers/file-path' );
 const findInObject = require( './helpers/find-in-object' );
 const isInstalled = require( './helpers/is-installed' );
 const loaders = require( './loaders' );
@@ -12,12 +13,10 @@ const { ManifestPlugin, MiniCssExtractPlugin } = plugins.constructors;
  * This function accepts an incomplete Webpack configuration object and deeply
  * merges any specified options into an opinionated set of development-oriented
  * configuration defaults. This default template is incomplete on its own, and
- * requires at minimum several other properties to be specified in order to
+ * requires at minimum the following property to be specified in order to
  * create a complete configuration:
  *
- * - an `.entry` object,
- * - an `.output.path` string,
- * - an `.output.publicPath` string (unless a devServer.port is specified,
+ * - `.output.publicPath` string (unless a devServer.port is specified,
  *   in which case publicPath defaults to `http://localhost:${ port }`)
  *
  * @param {Object} options Configuration options to deeply merge into the defaults.
@@ -36,8 +35,15 @@ const development = ( options = {} ) => {
 
 		context: process.cwd(),
 
-		// `path` and `publicPath` should be specified by the consumer.
+		// Provide a default entry point.
+		entry: {
+			index: filePath( 'src/index.js' ),
+		},
+
+		// `publicPath` should be specified by the consumer.
 		output: {
+			// Provide a default output path.
+			path: filePath( 'build' ),
 			// Add /* filename */ comments to generated require()s in the output.
 			pathinfo: true,
 			// Provide a default output name.
@@ -137,11 +143,7 @@ const development = ( options = {} ) => {
  *
  * The function accepts an incomplete Webpack configuration object and deeply
  * merges specified options into an opinionated default production configuration
- * template. This template is incomplete on its own, and requires at minimum
- * several other properties in order to generate a complete configuration:
- *
- * - an `.entry` object,
- * - an `.output.path` string
+ * template.
  *
  * @param {Object} options Configuration options to deeply merge into the defaults.
  * @returns {Object} A merged Webpack configuration object.
@@ -159,8 +161,14 @@ const production = ( options = {} ) => {
 
 		context: process.cwd(),
 
-		// `path` should be specified by the consumer.
+		// Provide a default entry point.
+		entry: {
+			index: filePath( 'src/index.js' ),
+		},
+
 		output: {
+			// Provide a default output path.
+			path: filePath( 'build' ),
 			pathinfo: false,
 			// Provide a default output name.
 			filename: '[name].js',
