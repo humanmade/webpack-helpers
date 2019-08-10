@@ -16,7 +16,7 @@ const { ManifestPlugin, MiniCssExtractPlugin } = plugins.constructors;
  * requires at minimum the following property to be specified in order to
  * create a complete configuration:
  *
- * - `.output.publicPath` string (unless a devServer.port is specified,
+ * - an `.output.publicPath` string (unless a devServer.port is specified,
  *   in which case publicPath defaults to `http://localhost:${ port }`)
  *
  * @param {Object} options Configuration options to deeply merge into the defaults.
