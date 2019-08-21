@@ -24,6 +24,23 @@ describe( 'presets', () => {
 			} );
 		} );
 
+		it( 'supplies a default entry if none is provided', () => {
+			const config = development();
+			expect( config.entry ).toHaveProperty( 'index' );
+			expect( config.entry.index ).toMatchFilePath( 'cwd/src/index.js' );
+		} );
+
+		it( 'uses a provided entry object without alteration', () => {
+			const config = development( {
+				entry: {
+					main: 'some-file.js',
+				},
+			} );
+			expect( config.entry ).toEqual( {
+				main: 'some-file.js',
+			} );
+		} );
+
 		// TODO: Add test cases for all logic branches in development().
 		// it( 'assumes a default output.publicPath if a port is specified' );
 		// it( 'accounts for the value of devServer.https when inferring publicPath URI' );
@@ -49,6 +66,23 @@ describe( 'presets', () => {
 				pathinfo: false,
 				filename: '[name].js',
 				path: 'build/',
+			} );
+		} );
+
+		it( 'supplies a default entry if none is provided', () => {
+			const config = production();
+			expect( config.entry ).toHaveProperty( 'index' );
+			expect( config.entry.index ).toMatchFilePath( 'cwd/src/index.js' );
+		} );
+
+		it( 'uses a provided entry object without alteration', () => {
+			const config = production( {
+				entry: {
+					main: 'some-file.js',
+				},
+			} );
+			expect( config.entry ).toEqual( {
+				main: 'some-file.js',
 			} );
 		} );
 

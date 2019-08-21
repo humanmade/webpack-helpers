@@ -21,6 +21,11 @@
     "lint": "eslint .",
     "test": "jest"
   },
+  "jest": {
+    "setupFilesAfterEnv": [
+      "<rootDir>/src/setupTests.js"
+    ]
+  },
   "devDependencies": {
     "eslint": "^5.13.0",
     "jest": "^24.8.0",

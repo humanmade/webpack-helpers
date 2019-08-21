@@ -35,10 +35,7 @@ const development = ( options = {} ) => {
 
 		context: process.cwd(),
 
-		// Provide a default entry point.
-		entry: {
-			index: filePath( 'src/index.js' ),
-		},
+		// Inject a default entry point later on if none was specified.
 
 		// `publicPath` should be specified by the consumer.
 		output: {
@@ -108,6 +105,13 @@ const development = ( options = {} ) => {
 		],
 	};
 
+	// If no entry was provided, inject a default entry value.
+	if ( ! options.entry ) {
+		devDefaults.entry = {
+			index: filePath( 'src/index.js' ),
+		};
+	}
+
 	// Make some general assumptions about the publicPath URI based on the
 	// configuration values provided in options.
 	const port = findInObject( options, 'devServer.port' );
@@ -161,10 +165,7 @@ const production = ( options = {} ) => {
 
 		context: process.cwd(),
 
-		// Provide a default entry point.
-		entry: {
-			index: filePath( 'src/index.js' ),
-		},
+		// Inject a default entry point later on if none was specified.
 
 		output: {
 			// Provide a default output path.
@@ -221,6 +222,13 @@ const production = ( options = {} ) => {
 
 		plugins: [],
 	};
+
+	// If no entry was provided, inject a default entry value.
+	if ( ! options.entry ) {
+		prodDefaults.entry = {
+			index: filePath( 'src/index.js' ),
+		};
+	}
 
 	// Add a MiniCssExtractPlugin instance if none is already present in options.
 	const hasCssPlugin = plugins.findExistingInstance( options.plugins, MiniCssExtractPlugin );
