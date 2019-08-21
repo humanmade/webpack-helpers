@@ -20,6 +20,7 @@ describe( 'presets', () => {
 			expect( config.output ).toEqual( {
 				pathinfo: true,
 				filename: '[name].js',
+				chunkFilename: '[name].[contenthash].chunk.js',
 				path: 'build/',
 			} );
 		} );
@@ -48,6 +49,7 @@ describe( 'presets', () => {
 			expect( config.output ).toEqual( {
 				pathinfo: false,
 				filename: '[name].js',
+				chunkFilename: '[name].[contenthash].chunk.js',
 				path: 'build/',
 			} );
 		} );
