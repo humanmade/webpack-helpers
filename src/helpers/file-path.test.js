@@ -1,6 +1,6 @@
 const filePath = require( './file-path' );
 
-// Depends on custom matchers defined in __tests__/setup.js.
+jest.mock( 'process', () => ( { cwd: () => 'cwd' } ) );
 
 describe( 'helpers/file-path', () => {
 	it( 'properly generates a file system theme file path', () => {

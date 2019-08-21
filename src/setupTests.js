@@ -1,4 +1,6 @@
-jest.mock( 'process', () => ( { cwd: () => 'cwd' } ) );
+/**
+ * Define custom Jest matchers.
+ */
 
 expect.extend( {
 	toMatchFilePath: ( received, expected ) => {

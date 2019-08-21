@@ -3,6 +3,8 @@ const {
 	production,
 } = require( './presets' );
 
+jest.mock( 'process', () => ( { cwd: () => 'cwd' } ) );
+
 describe( 'presets', () => {
 	describe( 'development()', () => {
 		it( 'is a function', () => {
