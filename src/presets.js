@@ -49,7 +49,7 @@ const development = ( options = {} ) => {
 			// Provide a default output name.
 			filename: '[name].js',
 			// Provide chunk filename. Requires content hash for cache busting.
-			chunkFilename: '[name].[contenthash].chunk.js'
+			chunkFilename: '[name].[contenthash].chunk.js',
 		},
 
 		module: {
@@ -175,7 +175,7 @@ const production = ( options = {} ) => {
 			// Provide a default output name.
 			filename: '[name].js',
 			// Provide chunk filename. Requires content hash for cache busting.
-			chunkFilename: '[name].[contenthash].chunk.js'
+			chunkFilename: '[name].[contenthash].chunk.js',
 		},
 
 		module: {
