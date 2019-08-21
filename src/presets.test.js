@@ -3,6 +3,8 @@ const {
 	production,
 } = require( './presets' );
 
+jest.mock( 'process', () => ( { cwd: () => 'cwd' } ) );
+
 describe( 'presets', () => {
 	describe( 'development()', () => {
 		it( 'is a function', () => {
@@ -22,6 +24,23 @@ describe( 'presets', () => {
 				filename: '[name].js',
 				chunkFilename: '[name].[contenthash].chunk.js',
 				path: 'build/',
+			} );
+		} );
+
+		it( 'supplies a default entry if none is provided', () => {
+			const config = development();
+			expect( config.entry ).toHaveProperty( 'index' );
+			expect( config.entry.index ).toMatchFilePath( 'cwd/src/index.js' );
+		} );
+
+		it( 'uses a provided entry object without alteration', () => {
+			const config = development( {
+				entry: {
+					main: 'some-file.js',
+				},
+			} );
+			expect( config.entry ).toEqual( {
+				main: 'some-file.js',
 			} );
 		} );
 
@@ -51,6 +70,23 @@ describe( 'presets', () => {
 				filename: '[name].js',
 				chunkFilename: '[name].[contenthash].chunk.js',
 				path: 'build/',
+			} );
+		} );
+
+		it( 'supplies a default entry if none is provided', () => {
+			const config = production();
+			expect( config.entry ).toHaveProperty( 'index' );
+			expect( config.entry.index ).toMatchFilePath( 'cwd/src/index.js' );
+		} );
+
+		it( 'uses a provided entry object without alteration', () => {
+			const config = production( {
+				entry: {
+					main: 'some-file.js',
+				},
+			} );
+			expect( config.entry ).toEqual( {
+				main: 'some-file.js',
 			} );
 		} );
 
