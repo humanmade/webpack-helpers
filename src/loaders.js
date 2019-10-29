@@ -16,6 +16,8 @@ const loaders = {
 
 	js: ( options ) => deepMerge( loaders.js.defaults, options ),
 
+	ts: ( options ) => deepMerge( loaders.ts.defaults, options ),
+
 	url: ( options ) => deepMerge( loaders.url.defaults, options ),
 
 	style: ( options ) => deepMerge( loaders.style.defaults, options ),
@@ -45,6 +47,12 @@ loaders.js.defaults = {
 		// Cache compilation results in ./node_modules/.cache/babel-loader/
 		cacheDirectory: true
 	}
+};
+
+loaders.ts.defaults = {
+	test: /\.tsx?$/,
+	exclude: /(node_modules|bower_components)/,
+	loader: require.resolve( 'ts-loader' ),
 };
 
 loaders.url.defaults = {
