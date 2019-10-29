@@ -12,6 +12,7 @@ This module provides functions that generate configurations for commonly-needed 
 
 - `loaders.eslint()`: Return a configured Webpack module loader rule for `eslint-loader`.
 - `loaders.js()`: Return a configured Webpack module loader rule for `js-loader`.
+- `loaders.ts()`: Return a configured Webpack module loader rule for `ts-loader`.
 - `loaders.url()`: Return a configured Webpack module loader rule for `url-loader`.
 - `loaders.style()`: Return a configured Webpack module loader rule for `style-loader`.
 - `loaders.css()`: Return a configured Webpack module loader rule for `css-loader`.
