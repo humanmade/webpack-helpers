@@ -59,6 +59,8 @@ const development = ( options = {} ) => {
 					// match the requirements. If no loader matches, it will fall
 					// back to the "file" loader at the end of the loader list.
 					oneOf: [
+						// Enable processing TypeScript, if installed.
+						...( isInstalled( 'typescript' ) ? [ loaders.ts() ] : [] ),
 						// Process JS with Babel.
 						loaders.js(),
 						// Convert small files to data URIs.
@@ -189,6 +191,8 @@ const production = ( options = {} ) => {
 					// match the requirements. If no loader matches, it will fall
 					// back to the "file" loader at the end of the loader list.
 					oneOf: [
+						// Enable processing TypeScript, if installed.
+						...( isInstalled( 'typescript' ) ? [ loaders.ts() ] : [] ),
 						// Process JS with Babel.
 						loaders.js(),
 						// Convert small files to data URIs.
