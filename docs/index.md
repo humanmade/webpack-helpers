@@ -43,6 +43,19 @@ module.exports = presets.production( {
 } );
 ```
 
+### WordPress Core Externals
+
+If you are building custom blocks for the WordPress Block Editor, you can easily include a list of WordPress core scripts as [externals](https://webpack.js.org/configuration/externals) so that you may write code like
+
+```js
+import { Button } from '@wordpress/components';
+import { __ } from '@wordpress/i18n';
+```
+
+in your modules and have those "imports" automatically mapped to the proper `wp.{package name}` browser globals. This lets you use core block editor modules, as well as JavaScript libraries like React or jQuery which are bundled within WordPress, without increasing the size of your first-party code bundle.
+
+If you use this externals config, please note that you must ensure your script registration lists the WordPress core script handles on which your bundle depends. If you require your build process to generate a list of required script handles per-bundle, consider an alternative approach such as the [WordPress dependency extraction Webpack plugin](https://developer.wordpress.org/block-editor/packages/packages-dependency-extraction-webpack-plugin/).
+
 ### Loader Helpers
 
 Instead of manually declaring the same loader rules in every Webpack configuration, specify only those configuration options specific to your project: including `loaders.js()` in your configuration, for example, brings along sensible defaults for transpiling modern JavaScript with Babel.
