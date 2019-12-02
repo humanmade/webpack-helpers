@@ -72,6 +72,10 @@ module.exports = {
 };
 ```
 
+**TypeScript**
+
+If [TypeScript](https://www.typescriptlang.org/) is installed, `ts-loader` will be used to automatically compile `.ts` and `.tsx` files. TypeScript itself is not bundled, so you must install the `typescript` package manually to enable TS compilation.
+
 **Starting the Production Build Configuration**
 
 Finally, let's create our first Webpack configuration file, `.config/webpack.config.prod.js`. We'll start by making a production bundle for our block editor mu-plugin.
