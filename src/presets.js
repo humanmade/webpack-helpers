@@ -16,13 +16,13 @@ const { ManifestPlugin, MiniCssExtractPlugin } = plugins.constructors;
  *         ...ifInstalled( 'eslint', loaders.eslint() ),
  *     ],
  *
- * @param {String} package The string name of the dependency for which to test.
- * @param {Object} loader  A configuration object returned from a loader factory.
+ * @param {String} packageName The string name of the dependency for which to test.
+ * @param {Object} loader      A configuration object returned from a loader factory.
  *
  * @returns {Array} An array containing one loader, or an empty array.
  */
-const ifInstalled = ( package, loader ) => {
-	if ( ! isInstalled( package ) ) {
+const ifInstalled = ( packageName, loader ) => {
+	if ( ! isInstalled( packageName ) ) {
 		return [];
 	}
 	return [ loader ];
