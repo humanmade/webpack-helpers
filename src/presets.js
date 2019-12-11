@@ -185,7 +185,16 @@ const production = ( options = {} ) => {
 			strictExportPresence: true,
 			rules: [
 				// Run all JS files through ESLint, if installed.
-				...( isInstalled( 'eslint' ) ? [ loaders.eslint( { emitWarning: true } ) ] : [] ),
+				...( isInstalled( 'eslint' ) ?
+					[
+						loaders.eslint( {
+							options: {
+								emitWarning: true,
+							},
+						} ),
+					] :
+					[]
+				),
 				{
 					// "oneOf" will traverse all following loaders until one will
 					// match the requirements. If no loader matches, it will fall
