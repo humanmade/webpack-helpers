@@ -6,6 +6,10 @@ nav_order: 10
 
 # Changelog
 
+## v0.6.1
+
+- Set `emitWarning: true` in development preset's `eslint-loader` configuration so that lint errors do not block hot updates.
+
 ## v0.6.0
 
 - Add TypeScript support. If the `typescript` package is detected, the presets will use `ts-loader` to interpret `.ts` and `.tsx` files. [#38](https://github.com/humanmade/webpack-helpers/pull/38)
@@ -14,7 +18,7 @@ nav_order: 10
 ## v0.5.2
 
 - Fix bug where bundle keys in the `entry` configuration object were not respected. [#30](https://github.com/humanmade/webpack-helpers/issues/30)
-  
+
 ## v0.5.1
 
 - Provide default values for `entry` and `output.path` configuration options. [#28](https://github.com/humanmade/webpack-helpers/pull/28)
