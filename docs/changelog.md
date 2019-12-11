@@ -8,7 +8,7 @@ nav_order: 10
 
 ## v0.6.1
 
-- Set `emitWarning: true` in development preset's `eslint-loader` configuration so that lint errors do not block hot updates.
+- Set `emitWarning: true` in development preset's `eslint-loader` configuration so that lint errors do not block hot updates. [#39](https://github.com/humanmade/webpack-helpers/pull/39)
 
 ## v0.6.0
 
