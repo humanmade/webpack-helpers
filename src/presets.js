@@ -8,6 +8,27 @@ const plugins = require( './plugins' );
 const { ManifestPlugin, MiniCssExtractPlugin } = plugins.constructors;
 
 /**
+ * Helper to detect whether a given package is installed, and return a spreadable
+ * array containing an appropriate loader if so.
+ *
+ * @example
+ *     rules: [
+ *         ...ifInstalled( 'eslint', loaders.eslint() ),
+ *     ],
+ *
+ * @param {String} packageName The string name of the dependency for which to test.
+ * @param {Object} loader      A configuration object returned from a loader factory.
+ *
+ * @returns {Array} An array containing one loader, or an empty array.
+ */
+const ifInstalled = ( packageName, loader ) => {
+	if ( ! isInstalled( packageName ) ) {
+		return [];
+	}
+	return [ loader ];
+};
+
+/**
  * Promote a partial Webpack config into a full development-oriented configuration.
  *
  * This function accepts an incomplete Webpack configuration object and deeply
@@ -53,14 +74,18 @@ const development = ( options = {} ) => {
 			strictExportPresence: true,
 			rules: [
 				// Run all JS files through ESLint, if installed.
-				...( isInstalled( 'eslint' ) ? [ loaders.eslint() ] : [] ),
+				...ifInstalled( 'eslint', loaders.eslint( {
+					options: {
+						emitWarning: true,
+					},
+				} ) ),
 				{
 					// "oneOf" will traverse all following loaders until one will
 					// match the requirements. If no loader matches, it will fall
 					// back to the "file" loader at the end of the loader list.
 					oneOf: [
 						// Enable processing TypeScript, if installed.
-						...( isInstalled( 'typescript' ) ? [ loaders.ts() ] : [] ),
+						...ifInstalled( 'typescript', loaders.ts() ),
 						// Process JS with Babel.
 						loaders.js(),
 						// Convert small files to data URIs.
@@ -185,14 +210,14 @@ const production = ( options = {} ) => {
 			strictExportPresence: true,
 			rules: [
 				// Run all JS files through ESLint, if installed.
-				...( isInstalled( 'eslint' ) ? [ loaders.eslint() ] : [] ),
+				...ifInstalled( 'eslint', loaders.eslint() ),
 				{
 					// "oneOf" will traverse all following loaders until one will
 					// match the requirements. If no loader matches, it will fall
 					// back to the "file" loader at the end of the loader list.
 					oneOf: [
 						// Enable processing TypeScript, if installed.
-						...( isInstalled( 'typescript' ) ? [ loaders.ts() ] : [] ),
+						...ifInstalled( 'typescript', loaders.ts() ),
 						// Process JS with Babel.
 						loaders.js(),
 						// Convert small files to data URIs.
