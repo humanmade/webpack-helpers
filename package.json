@@ -1,7 +1,7 @@
 {
   "name": "@humanmade/webpack-helpers",
   "public": true,
-  "version": "0.6.0",
+  "version": "0.6.1-beta.0",
   "description": "Reusable Webpack configuration components & related helper utilities.",
   "main": "index.js",
   "author": "Human Made",
