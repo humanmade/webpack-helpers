@@ -9,8 +9,9 @@ nav_order: 10
 ## v0.7.0
 
 - Include `plugins.fixStyleOnlyEntries()` in the production preset. [#33](https://github.com/humanmade/webpack-helpers/issues/33)
-- Bump dependency minor and patch versions to resolve `npm audit` security warnings. [#40](https://github.com/humanmade/webpack-helpers/issues/40)
-- Upgrade `copy-webpack-plugin` from v4.6 to major version 5.1.1 to resolve additional security warnings. Consult the [breaking changes in `copy-webpack-plugin` 5.0](https://github.com/webpack-contrib/copy-webpack-plugin/blob/master/CHANGELOG.md#500-2019-02-20) if you utilize this plugin with any custom configuration or options.
+- Bump dependency versions to resolve `npm audit` security warnings. [#40](https://github.com/humanmade/webpack-helpers/issues/40)
+  - `copy-webpack-plugin` has been upgraded from 4.6 to 5.1.1. Consult the [breaking changes in `copy-webpack-plugin` 5.0](https://github.com/webpack-contrib/copy-webpack-plugin/blob/master/CHANGELOG.md#500-2019-02-20) if you utilize this plugin with any custom configuration or options.
+  - `terser-webpack-plugin` has been upgraded from 1.3 to 32.3.5. Consult the [breaking changes in `terser-webpack-plugin` 2.0](https://github.com/webpack-contrib/terser-webpack-plugin/blob/master/CHANGELOG.md#200-2019-09-05) if you utilize this plugin with any custom configuration or options. Several flags in our Terser configuration within `plugins.js` have been removed because those options are now Terser's default behavior.
 
 ## v0.6.1
 
