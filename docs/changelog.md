@@ -6,6 +6,11 @@ nav_order: 10
 
 # Changelog
 
+## v0.7.0
+
+- Bump dependency minor and patch versions to resolve `npm audit` security warnings. [#40](https://github.com/humanmade/webpack-helpers/issues/40), [#43](https://github.com/humanmade/webpack-helpers/pull/43)
+- Upgrade `copy-webpack-plugin` from v4.6 to major version 5.1.1 to resolve additional security warnings. Consult the [breaking changes in `copy-webpack-plugin` 5.0](https://github.com/webpack-contrib/copy-webpack-plugin/blob/master/CHANGELOG.md#500-2019-02-20) if you utilize this plugin with any custom configuration or options.
+
 ## v0.6.1
 
 - Set `emitWarning: true` in development preset's `eslint-loader` configuration so that lint errors do not block hot updates. [#39](https://github.com/humanmade/webpack-helpers/pull/39)
