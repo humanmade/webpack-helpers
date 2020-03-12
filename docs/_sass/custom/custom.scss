@@ -50,9 +50,37 @@ $grey-dk-000: white;
 	}
 }
 
+.search-result.active,
+.search-result:hover {
+	&,
+	.search-result-preview,
+	.search-result-rel-url {
+		color: white;
+
+		.search-result-highlight {
+			color: white;
+		}
+	}
+}
+.search .search-icon {
+	fill: $hm-red;
+}
+
 // GH and HM links in the dropdown header.
 @media (max-width: 799px ) {
 	.page-header a {
 		color: white;
+	}
+
+	.search-result {
+		.search-result-title {
+			color: $hm-red;
+		}
+		&.active,
+		&:hover {
+			.search-result-title {
+				color: white;
+			}
+		}
 	}
 }
