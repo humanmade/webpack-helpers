@@ -186,5 +186,6 @@ module.exports = {
 				ascii_only: true,
 			},
 		},
+		extractComments: false,
 	}, options ) ),
 };
