@@ -57,7 +57,7 @@
     "postcss-loader": "^3.0.0",
     "react-dev-utils": "^7.0.3",
     "sass-loader": "^7.1.0",
-    "serialize-javascript": "^2.1.2",
+    "serialize-javascript": "^3.0.0",
     "signal-exit": "^3.0.2",
     "style-loader": "^0.23.1",
     "terser-webpack-plugin": "^2.3.5",
