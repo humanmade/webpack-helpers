@@ -6,6 +6,7 @@ const isInstalled = require( './helpers/is-installed' );
 const loaders = require( './loaders' );
 const plugins = require( './plugins' );
 const { ManifestPlugin, MiniCssExtractPlugin } = plugins.constructors;
+const webpack = require( 'webpack' );
 
 /**
  * Helper to detect whether a given package is installed, and return a spreadable
@@ -40,14 +41,16 @@ const ifInstalled = ( packageName, loader ) => {
  * - an `.output.publicPath` string (unless a devServer.port is specified,
  *   in which case publicPath defaults to `http://localhost:${ port }`)
  *
- * @param {Object} options Configuration options to deeply merge into the defaults.
- * @returns {Object} A merged Webpack configuration object.
+ * @param {webpack.Configuration} options Configuration options to deeply merge into the defaults.
+ * @returns {webpack.Configuration} A merged Webpack configuration object.
  */
 const development = ( options = {} ) => {
 	/**
 	 * Default development environment-oriented Webpack options. This object is
 	 * defined at the time of function execution so that any changes to the
 	 * `.defaults` loaders properties will be reflected in the generated config.
+	 *
+	 * @type {webpack.Configuration}
 	 */
 	const devDefaults = {
 		mode: 'development',
@@ -178,14 +181,16 @@ const development = ( options = {} ) => {
  * merges specified options into an opinionated default production configuration
  * template.
  *
- * @param {Object} options Configuration options to deeply merge into the defaults.
- * @returns {Object} A merged Webpack configuration object.
+ * @param {webpack.Configuration} options Configuration options to deeply merge into the defaults.
+ * @returns {webpack.Configuration} A merged Webpack configuration object.
  */
 const production = ( options = {} ) => {
 	/**
 	 * Default development environment-oriented Webpack options. This object is
 	 * defined at the time of function execution so that any changes to the
 	 * `.defaults` loaders properties will be reflected in the generated config.
+	 *
+	 * @type {webpack.Configuration}
 	 */
 	const prodDefaults = {
 		mode: 'production',
