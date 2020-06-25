@@ -258,6 +258,7 @@ const production = ( options = {} ) => {
 		stats,
 
 		plugins: [
+			plugins.clean(),
 			plugins.fixStyleOnlyEntries(),
 		],
 	};

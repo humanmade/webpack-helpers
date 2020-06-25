@@ -10,6 +10,7 @@ nav_order: 10
 
 - **Breaking**: End support for Node v8. Node v10 or later is now required.
 - **Breaking**: Update `clean-webpack-plugin` factory to reflect API changes in the latest bundled version. `plugins.clean()` can now be added to a webpack configuration's `plugins` array with no additional arguments. [#31](https://github.com/humanmade/webpack-helpers/issues/31)
+- Include `clean-webpack-plugin` instance in plugins list when using `presets.production()` factory. [#31](https://github.com/humanmade/webpack-helpers/issues/31)
 
 ## v0.7.1
 
