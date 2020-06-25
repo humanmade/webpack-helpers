@@ -60,17 +60,10 @@ module.exports = {
 	/**
 	 * Create a CleanPlugin instance.
 	 *
-	 * @param {String[]} paths          Array of (relative) string paths to clean.
-	 * @param {Object}   [options]      Optional plugin options object.
-	 * @param {String}   [options.root] Absolute path to your webpack root folder;
-	 *                                  defaults to process.cwd(). The values in
-	 *                                  `paths` are relative to this directory.
+	 * @param {Object} [options] Optional plugin options object.
 	 * @returns {CleanPlugin} A configured CleanPlugin instance.
 	 */
-	clean: ( paths, options = {} ) => new CleanPlugin( paths, {
-		root: process.cwd(),
-		...options,
-	} ),
+	clean: ( options ) => new CleanPlugin( options ),
 
 	/**
 	 * @typedef CopyPattern
