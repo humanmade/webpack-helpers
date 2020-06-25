@@ -18,6 +18,7 @@ module.exports = {
 	 * @prop {Object} constructors
 	 */
 	constructors: {
+		BellOnBundleErrorPlugin,
 		BundleAnalyzerPlugin,
 		CleanPlugin,
 		CopyPlugin,
