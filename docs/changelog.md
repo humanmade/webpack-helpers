@@ -6,6 +6,10 @@ nav_order: 10
 
 # Changelog
 
+## v0.7.1
+
+- Resolve issue where `{bundle name}.LICENSE.txt` files were output by Terser in situations where these files were not generated prior to 0.7.0. [#51](https://github.com/humanmade/webpack-helpers/pull/51)
+
 ## v0.7.0
 
 - Include `plugins.fixStyleOnlyEntries()` in the production preset. [#33](https://github.com/humanmade/webpack-helpers/issues/33)

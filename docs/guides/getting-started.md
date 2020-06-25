@@ -121,6 +121,8 @@ Now that we have our first Webpack configuration file, we can begin adding the p
 	}
 ```
 
+**Important:** If you're migrating from an existing configuration with multiple `package.json` files in subdirectories, now is the time to ensure you've moved your dependencies into the root and deleted the `package.json` files in those subdirectories, otherwise they will affect your build.
+
 We should now be able to run `npm run build` to generate our bundle at `mu-plugins/myproject-blocks/build/editor.js`. If the bundle includes any CSS or SCSS files, another file `editor.css` will be generated as well which contains all referenced styles.
 
 ## Multiple Entries

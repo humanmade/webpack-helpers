@@ -1,6 +1,11 @@
-.page-content a {
-	// Don't nowrap links in post content.
-	white-space: normal !important;
+// Don't nowrap links in post content.
+.main-content .page-content a {
+	white-space: normal;
+}
+
+// Lists should remain bulleted.
+.main-content .page-content ul {
+	list-style: initial;
 }
 
 // Adjust the colors of the ```diff fenced code blocks to make removed lines red.
@@ -8,9 +13,6 @@
 	.gd {
 		color: #af2b2b;
 	}
-	// .gi {
-	// 	color: #8d9900;
-	// }
 }
 
 $hm-red: #d24632;
@@ -36,14 +38,51 @@ $grey-dk-000: white;
 .side-bar .btn-outline {
 	color: white !important;
 }
-.page-header a {
-
+.site-header .menu-button {
+	color: white;
 }
 
+.page-header.nav-open,
+.side-bar,
 .site-footer {
 	background-color: $hm-red;
 	color: white;
 	a {
 		color: white;
+	}
+}
+
+.search-result.active,
+.search-result:hover {
+	&,
+	.search-result-preview,
+	.search-result-rel-url {
+		color: white;
+
+		.search-result-highlight {
+			color: white;
+		}
+	}
+}
+.search .search-icon {
+	fill: $hm-red;
+}
+
+// GH and HM links in the dropdown header.
+@media (max-width: 799px ) {
+	.page-header a {
+		color: white;
+	}
+
+	.search-result {
+		.search-result-title {
+			color: $hm-red;
+		}
+		&.active,
+		&:hover {
+			.search-result-title {
+				color: white;
+			}
+		}
 	}
 }
