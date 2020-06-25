@@ -28,7 +28,7 @@
   },
   "devDependencies": {
     "eslint": "^5.13.0",
-    "jest": "^24.8.0",
+    "jest": "^26.1.0",
     "node-sass": "^4.13.1",
     "typescript": "^3.6.4",
     "webpack": "^4.35.0",
