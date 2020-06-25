@@ -70,4 +70,3 @@ module.exports = [
 	backbone: 'Backbone',
 	lodash: 'lodash',
 } );
-
