@@ -6,7 +6,6 @@ const isInstalled = require( './helpers/is-installed' );
 const loaders = require( './loaders' );
 const plugins = require( './plugins' );
 const { ManifestPlugin, MiniCssExtractPlugin } = plugins.constructors;
-const webpack = require( 'webpack' );
 
 /**
  * Helper to detect whether a given package is installed, and return a spreadable
