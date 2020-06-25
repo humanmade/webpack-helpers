@@ -90,7 +90,9 @@ loaders.postcss.defaults = {
 
 loaders.sass.defaults = {
 	loader: require.resolve( 'sass-loader' ),
-	options: {},
+	options: {
+		sassOptions: {},
+	},
 };
 
 loaders.file.defaults = {
