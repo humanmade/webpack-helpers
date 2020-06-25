@@ -55,7 +55,6 @@
     "optimize-css-assets-webpack-plugin": "^5.0.1",
     "postcss-flexbugs-fixes": "^4.1.0",
     "postcss-loader": "^3.0.0",
-    "react-dev-utils": "^7.0.3",
     "sass-loader": "^8.0.2",
     "serialize-javascript": "^2.1.2",
     "signal-exit": "^3.0.2",
