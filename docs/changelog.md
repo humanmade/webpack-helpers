@@ -9,6 +9,7 @@ nav_order: 10
 ## v0.8.0
 
 - **Breaking**: End support for Node v8. Node v10 or later is now required.
+- Add [postcss-preset-env](https://github.com/csstools/postcss-preset-env) to postcss webpack configuration and configure it to transform Stage 3 CSS features [#91](https://github.com/humanmade/webpack-helpers/pull/91)
 
 ## v0.7.1
 
