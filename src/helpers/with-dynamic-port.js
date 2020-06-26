@@ -8,22 +8,6 @@ const choosePort = require( './choose-port' );
 const DEFAULT_PORT = 9090;
 
 /**
- * Given the publicPath from a Webpack configuration's output settings, replace
- * the ":port" token with a valid port value if such a token is present, or
- * return the publicPath string as is.
- *
- * @param {String} publicPath User-specified public path string.
- * @param {Number} port       An HTTP port value.
- */
-const derivePublicPath = ( publicPath, port ) => {
-	const portPlaceholder = /:port|:<%= port %>|:%port%/i;
-	if ( publicPath && portPlaceholder.test( publicPath ) ) {
-		return publicPath.replace( portPlaceholder, `:${ port }` );
-	}
-	return publicPath;
-};
-
-/**
  *
  * @param {Number} [port] (Optional) Port to try first when looking for free port.
  * @param {Object} config Development Webpack configuration object.

@@ -1,7 +1,6 @@
 const withDynamicPort = require( './with-dynamic-port' );
 
 const choosePortMock = require( './choose-port' );
-const choosePort = require('./choose-port');
 
 jest.mock( './choose-port', () => jest.fn() );
 
