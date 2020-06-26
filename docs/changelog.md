@@ -9,6 +9,7 @@ nav_order: 10
 ## v0.8.0
 
 - **Breaking**: End support for Node v8. Node v10 or later is now required.
+- Introduce [`withDynamicPort` helper function](https://humanmade.github.io/webpack-helpers/modules/helpers.html#withdynamicport) to simplify implementation of open port fallback logic. [#89](https://github.com/humanmade/webpack-helpers/pull/89)
 
 ## v0.7.1
 
