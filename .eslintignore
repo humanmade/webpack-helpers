@@ -6,3 +6,5 @@
 # Ignore documentation site
 docs/
 
+# Ignore third-party code
+src/vendor
