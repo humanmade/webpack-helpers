@@ -6,6 +6,10 @@ nav_order: 10
 
 # Changelog
 
+## v0.8.0
+
+- **Breaking**: End support for Node v8. Node v10 or later is now required.
+
 ## v0.7.1
 
 - Resolve issue where `{bundle name}.LICENSE.txt` files were output by Terser in situations where these files were not generated prior to 0.7.0. [#51](https://github.com/humanmade/webpack-helpers/pull/51)
