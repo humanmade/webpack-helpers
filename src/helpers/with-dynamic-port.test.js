@@ -43,6 +43,10 @@ describe( 'withDynamicPort', () => {
 			choosePortMock.mockImplementation( ( port ) => Promise.resolve( port ) );
 		} );
 
+		afterEach( () => {
+			choosePortMock.mockReset();
+		} );
+
 		it( 'uses the provided port, if available', async () => {
 			const config = {
 				entry: {},
@@ -127,6 +131,41 @@ describe( 'withDynamicPort', () => {
 				output: {
 					publicPath: 'http://localhost:8080',
 				},
+			} );
+		} );
+
+		it( 'does not overwrite existing config properties', async () => {
+			const config = {
+				devServer: {
+					https: true,
+				},
+				entry: {
+					'name': './bundle.js',
+				},
+				output: {
+					filename: '[name].js',
+					publicPath: 'https://localhost:9090',
+				},
+				plugins: [
+					'Plugin goes here',
+				],
+			};
+			choosePort.mockImplementationOnce( () => Promise.resolve( 8082 ) );
+			expect( await withDynamicPort( 9090, config ) ).toEqual( {
+				devServer: {
+					https: true,
+					port: 8082,
+				},
+				entry: {
+					'name': './bundle.js',
+				},
+				output: {
+					filename: '[name].js',
+					publicPath: 'https://localhost:8082',
+				},
+				plugins: [
+					'Plugin goes here',
+				],
 			} );
 		} );
 	} );
