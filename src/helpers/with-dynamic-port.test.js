@@ -1,6 +1,6 @@
 const withDynamicPort = require( './with-dynamic-port' );
 
-const choosePortMock = require( './choose-port' );
+const choosePort = require( './choose-port' );
 
 jest.mock( './choose-port', () => jest.fn() );
 
@@ -39,11 +39,11 @@ describe( 'withDynamicPort', () => {
 				'/usr/bin/node',
 				'/project/dir/node_modules/.bin/webpack-dev-server',
 			];
-			choosePortMock.mockImplementation( ( port ) => Promise.resolve( port ) );
+			choosePort.mockImplementation( ( port ) => Promise.resolve( port ) );
 		} );
 
 		afterEach( () => {
-			choosePortMock.mockReset();
+			choosePort.mockReset();
 		} );
 
 		it( 'uses the provided port, if available', async () => {
