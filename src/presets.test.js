@@ -44,12 +44,11 @@ describe( 'presets', () => {
 			} );
 		} );
 
-		// TODO: Add test cases for all logic branches in development().
-		// it( 'assumes a default output.publicPath if a port is specified' );
-		// it( 'accounts for the value of devServer.https when inferring publicPath URI' );
-		// it( 'injects a ManifestPlugin if publicPath can be inferred and no manifest plugin is already present' );
-		// it( 'does not inject a ManifestPlugin if publicPath cannot be inferred' );
-		// it( 'does not inject a ManifestPlugin if a manifest plugin is already present' );
+		it.todo( 'assumes a default output.publicPath if a port is specified' );
+		it.todo( 'accounts for the value of devServer.https when inferring publicPath URI' );
+		it.todo( 'injects a ManifestPlugin if publicPath can be inferred and no manifest plugin is already present' );
+		it.todo( 'does not inject a ManifestPlugin if publicPath cannot be inferred' );
+		it.todo( 'does not inject a ManifestPlugin if a manifest plugin is already present' );
 	} );
 
 	describe( 'production()', () => {
@@ -90,7 +89,6 @@ describe( 'presets', () => {
 			} );
 		} );
 
-		// TODO: Add test cases for all logic branches in production().
-		// it( 'injects a MiniCssExtractPlugin if none is present in options' );
+		it.todo( 'injects a MiniCssExtractPlugin if none is present in options' );
 	} );
 } );
