@@ -10,6 +10,7 @@ module.exports = {
 		cleanOnExit: require( './src/helpers/clean-on-exit' ),
 		filePath: require( './src/helpers/file-path' ),
 		findInObject: require( './src/helpers/find-in-object' ),
+		withDynamicPort: require( './src/helpers/with-dynamic-port' ),
 	},
 	loaders: require( './src/loaders' ),
 	plugins: require( './src/plugins' ),
