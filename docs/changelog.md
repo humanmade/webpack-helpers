@@ -9,6 +9,7 @@ nav_order: 10
 ## v0.8.0
 
 - **Breaking**: End support for Node v8. Node v10 or later is now required.
+- **Breaking**: Remove `fix-style-only-entries` plugin from production preset. This plugin can incorrectly remove files in certain [multi-configuration](https://webpack.js.org/configuration/configuration-types/#exporting-multiple-configurations) scenarios. [#93](https://github.com/humanmade/webpack-helpers/pull/93)
 
 ## v0.7.1
 
