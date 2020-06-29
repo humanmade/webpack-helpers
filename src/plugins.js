@@ -1,5 +1,5 @@
 const { BundleAnalyzerPlugin } = require( 'webpack-bundle-analyzer' );
-const { CleanWebpackPlugin } = require( 'clean-webpack-plugin' );
+const { CleanPlugin } = require( 'clean-webpack-plugin' );
 const { HotModuleReplacementPlugin } = require( 'webpack' );
 const BellOnBundleErrorPlugin = require( 'bell-on-bundler-error-plugin' );
 const CopyPlugin = require( 'copy-webpack-plugin' );
@@ -20,7 +20,7 @@ module.exports = {
 	constructors: {
 		BellOnBundleErrorPlugin,
 		BundleAnalyzerPlugin,
-		CleanWebpackPlugin,
+		CleanPlugin,
 		CopyPlugin,
 		FixStyleOnlyEntriesPlugin,
 		HotModuleReplacementPlugin,
@@ -60,12 +60,12 @@ module.exports = {
 	} ),
 
 	/**
-	 * Create a CleanWebpackPlugin instance.
+	 * Create a CleanPlugin instance.
 	 *
 	 * @param {Object} [options] Optional plugin options object.
-	 * @returns {CleanWebpackPlugin} A configured CleanWebpackPlugin instance.
+	 * @returns {CleanPlugin} A configured CleanPlugin instance.
 	 */
-	clean: ( options ) => new CleanWebpackPlugin( options ),
+	clean: ( options ) => new CleanPlugin( options ),
 
 	/**
 	 * @typedef CopyPattern
