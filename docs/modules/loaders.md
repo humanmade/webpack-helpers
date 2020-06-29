@@ -41,7 +41,7 @@ module.exports = {
 };
 ```
 
-These loaders are also used by the presets methods described above. To alter the configuration for a loader prior to use within a preset, you may mutate the `.defaults` property on the loader method.
+To alter the configuration for a loader prior to use within a preset, you may mutate the `.defaults` property on the loader method.
 
 ```js
 const { helpers, loaders, presets } = require( '@humanmade/webpack-helpers' );
@@ -52,3 +52,5 @@ loaders.css.defaults.options.url = false;
 
 module.exports = presets.development( { /* ... */ } );
 ```
+
+These loaders are also used by the [presets](https://humanmade.github.io/webpack-helpers/modules/presets.html) methods described above. To adjust the behavior of a loader for a specific configuration generated using a preset, you may pass a second argument to the preset defining a filter function which can modify loader options as they are computed. See ["Customizing Presets"](https://humanmade.github.io/webpack-helpers/modules/presets.html#customizing-presets) for more information.

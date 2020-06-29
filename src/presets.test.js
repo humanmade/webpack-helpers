@@ -5,6 +5,27 @@ const {
 
 jest.mock( 'process', () => ( { cwd: () => 'cwd' } ) );
 
+/**
+ * Find a loader of a given type within a module.rules configuration.
+ *
+ * @param {Object[]} rules Webpack configuration module.rules array.
+ * @returns {Object|null} A matched loader definition, or null.
+ */
+const getLoaderFromRules = ( rules, loaderType ) => {
+	for ( let rule of rules ) {
+		if ( rule.loader && rule.loader.indexOf( loaderType ) > -1 ) {
+			return rule;
+		}
+		if ( rule.oneOf ) {
+			const nestedMatch = getLoaderFromRules( rule.oneOf, loaderType );
+			if ( nestedMatch ) {
+				return nestedMatch;
+			}
+		}
+	}
+	return null;
+};
+
 describe( 'presets', () => {
 	describe( 'development()', () => {
 		it( 'is a function', () => {
@@ -49,6 +70,40 @@ describe( 'presets', () => {
 		it.todo( 'injects a ManifestPlugin if publicPath can be inferred and no manifest plugin is already present' );
 		it.todo( 'does not inject a ManifestPlugin if publicPath cannot be inferred' );
 		it.todo( 'does not inject a ManifestPlugin if a manifest plugin is already present' );
+
+		it( 'permits filtering the computed output of individual loaders', () => {
+			const config = development( {
+				entry: {
+					main: 'some-file.js',
+				},
+			}, {
+				filterLoaders: ( loader, loaderType ) => {
+					if ( loaderType === 'file' ) {
+						loader.options.publicPath = '../../';
+					}
+					if ( loaderType === 'url' ) {
+						loader.test = /\.(png|jpg|jpeg|gif|svg)$/;
+					}
+					return loader;
+				},
+			} );
+			const fileLoader = getLoaderFromRules( config.module.rules, 'file-loader' );
+			const urlLoader = getLoaderFromRules( config.module.rules, 'url-loader' );
+			const jsLoader = getLoaderFromRules( config.module.rules, 'babel-loader' );
+			expect( fileLoader ).toEqual( expect.objectContaining( {
+				exclude: /\.(js|html|json)$/,
+				options: {
+					publicPath: '../../',
+				},
+			} ) );
+			expect( urlLoader ).toEqual( expect.objectContaining( {
+				test: /\.(png|jpg|jpeg|gif|svg)$/,
+				options: {
+					limit: 10000,
+				},
+			} ) );
+			expect( jsLoader ).not.toBeNull();
+		} );
 	} );
 
 	describe( 'production()', () => {
@@ -90,5 +145,39 @@ describe( 'presets', () => {
 		} );
 
 		it.todo( 'injects a MiniCssExtractPlugin if none is present in options' );
+
+		it( 'permits filtering the computed output of individual loaders', () => {
+			const config = production( {
+				entry: {
+					main: 'some-file.js',
+				},
+			}, {
+				filterLoaders: ( loader, loaderType ) => {
+					if ( loaderType === 'file' ) {
+						loader.options.publicPath = '../../';
+					}
+					if ( loaderType === 'url' ) {
+						loader.test = /\.(png|jpg|jpeg|gif|svg)$/;
+					}
+					return loader;
+				},
+			} );
+			const fileLoader = getLoaderFromRules( config.module.rules, 'file-loader' );
+			const urlLoader = getLoaderFromRules( config.module.rules, 'url-loader' );
+			const jsLoader = getLoaderFromRules( config.module.rules, 'babel-loader' );
+			expect( fileLoader ).toEqual( expect.objectContaining( {
+				exclude: /\.(js|html|json)$/,
+				options: {
+					publicPath: '../../',
+				},
+			} ) );
+			expect( urlLoader ).toEqual( expect.objectContaining( {
+				test: /\.(png|jpg|jpeg|gif|svg)$/,
+				options: {
+					limit: 10000,
+				},
+			} ) );
+			expect( jsLoader ).not.toBeNull();
+		} );
 	} );
 } );
