@@ -220,6 +220,16 @@ const production = ( config = {}, options = {} ) => {
 		return loaders[ loaderKey ]( options, filterLoaders );
 	};
 
+	// Determine whether source maps have been requested, and prepare an options
+	// object to be passed to all CSS loaders to honor that request.
+	const cssOptions = config.devtool ?
+		{
+			options: {
+				sourceMap: true,
+			},
+		} :
+		undefined;
+
 	/**
 	 * Default development environment-oriented Webpack options. This object is
 	 * defined at the time of function execution so that any changes to the
@@ -269,9 +279,9 @@ const production = ( config = {}, options = {} ) => {
 								// Extract CSS to its own file.
 								MiniCssExtractPlugin.loader,
 								// Process SASS into CSS.
-								getFilteredLoader( 'css' ),
-								getFilteredLoader( 'postcss' ),
-								getFilteredLoader( 'sass' ),
+								getFilteredLoader( 'css', cssOptions ),
+								getFilteredLoader( 'postcss', cssOptions ),
+								getFilteredLoader( 'sass', cssOptions ),
 							],
 						},
 						// "file" loader makes sure any non-matching assets still get served.
@@ -285,7 +295,18 @@ const production = ( config = {}, options = {} ) => {
 		optimization: {
 			minimizer: [
 				plugins.terser(),
-				plugins.optimizeCssAssets(),
+				plugins.optimizeCssAssets( (
+					// Set option to output source maps if devtool is set.
+					config.devtool && ! ( /inline-/ ).test( config.devtool ) ?
+						{
+							cssProcessorOptions: {
+								map: {
+									inline: false,
+								},
+							},
+						} :
+						undefined
+				) ),
 			],
 			nodeEnv: 'production',
 			noEmitOnErrors: true,
