@@ -30,9 +30,50 @@ module.exports = presets.production( {
 } );
 ```
 
-## `choosePort`
+## `cleanOnExit`
 
-A complex project may require multiple development servers to be run in parallel while developing interrelated theme and plugin functionality. While ports in related projects can be hard-coded to avoid conflicts, this package also exposes a `choosePort` helper adapted from `create-react-app` which will automatically detect port conflicts and propose an available port if there is an unforeseen port collision.
+
+When using the `presets.development()` generator, an `asset-manifest.json` will automatically be generated so long as a `publicPath` URI can be determined. When working with an `asset-manifest.json` file, the `manifest` module provides a `cleanOnExit` method to easily remove manifests once the `webpack-dev-server` shuts down.
+
+```js
+const { join } = require( 'path' );
+const { helpers } = require( '@humanmade/webpack-helpers' );
+
+helpers.cleanOnExit( [
+	join( process.cwd(), 'content/mu-plugins/custom-blocks/build/asset-manifest.json' ),
+	join( process.cwd(), 'content/themes/my-theme/build/asset-manifest.json' ),
+] );
+```
+
+## `withDynamicPort`
+
+A complex project may require multiple development servers to be run in parallel while developing interrelated theme and plugin functionality. While ports in related projects can be hard-coded to avoid conflicts, the `withDynamicPort` helper can take a webpack configuration and update it to reflect an available port in the event of a port collision.
+
+```js
+// webpack.config.dev.js
+const { join } = require( 'path' );
+const { helpers, presets } = require( '@humanmade/webpack-helpers' );
+const { withDynamicPort } = helpers;
+
+// Write your config assuming it will use port 9090, but fall back to an open
+// port if 9090 ends up being taken when the server starts.
+module.exports = withDynamicPort( 9090, presets.development( {
+	name: 'theme',
+	entry: {
+		bundleName: 'relative/path/to/bundle/entry-point.js',
+	},
+	output: {
+		path: join( process.cwd(), 'path/to/output/folder' ),
+		publicPath: 'http://localhost:9090',
+	},
+} ) );
+```
+
+Note that no `devServer` config is needed, and that the `publicPath` is authored assuming the preferred port specified in the `withDynamicPort` function call: these values will be filled in or updated to reflect the final port, once chosen.
+
+### `choosePort`
+
+In addition to `withDynamicPort` the helpers module also exposes a lower-level `choosePort` method adapted from `create-react-app`. This method can be used to manually implement the behavior of `withDynamicPort`:
 
 ```js
 // webpack.config.dev.js
@@ -52,22 +93,8 @@ module.exports = helpers.choosePort( 9090 ).then( port => [
 		},
 		output: {
 			path: join( process.cwd(), 'path/to/output/folder' ),
+			publicPath: `http://localhost:${ port }`,
 		},
 	} ),
-] );
-```
-
-## `cleanOnExit`
-
-
-When using the `presets.development()` generator, an `asset-manifest.json` will automatically be generated so long as a `publicPath` URI can be determined. When working with an `asset-manifest.json` file, the `manifest` module provides a `cleanOnExit` method to easily remove manifests once the `webpack-dev-server` shuts down.
-
-```js
-const { join } = require( 'path' );
-const { helpers } = require( '@humanmade/webpack-helpers' );
-
-helpers.cleanOnExit( [
-	join( process.cwd(), 'content/mu-plugins/custom-blocks/build/asset-manifest.json' ),
-	join( process.cwd(), 'content/themes/my-theme/build/asset-manifest.json' ),
 ] );
 ```
