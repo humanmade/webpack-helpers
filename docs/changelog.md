@@ -9,6 +9,7 @@ nav_order: 10
 ## v0.8.0
 
 - **Breaking**: End support for Node v8. Node v10 or later is now required.
+- **Breaking**: Remove `fix-style-only-entries` plugin from production preset. This plugin can incorrectly remove files in certain [multi-configuration](https://webpack.js.org/configuration/configuration-types/#exporting-multiple-configurations) scenarios. [#93](https://github.com/humanmade/webpack-helpers/pull/93)
 - **Breaking**: Update `clean-webpack-plugin` factory to reflect API changes in the latest bundled version. `plugins.clean()` can now be added to a webpack configuration's `plugins` array with no additional arguments. [#31](https://github.com/humanmade/webpack-helpers/issues/31)
 - **Breaking**: Update `copy-webpack-plugin` factory to reflect API changes in the latest bundled version. `plugins.copy()` now takes a sole object argument specifying a `patterns: []` array key, where before patterns were passed as a first argument. [#96](https://github.com/humanmade/webpack-helpers/pull/96)
 - Output CSS sourcemaps in production if `devtool` option is set. [#94](https://github.com/humanmade/webpack-helpers/issues/94)

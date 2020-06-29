@@ -314,9 +314,7 @@ const production = ( config = {}, options = {} ) => {
 
 		stats,
 
-		plugins: [
-			plugins.fixStyleOnlyEntries(),
-		],
+		plugins: [],
 	};
 
 	// If no entry was provided, inject a default entry value.
