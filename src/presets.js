@@ -40,10 +40,28 @@ const ifInstalled = ( packageName, loader ) => {
  * - an `.output.publicPath` string (unless a devServer.port is specified,
  *   in which case publicPath defaults to `http://localhost:${ port }`)
  *
- * @param {webpack.Configuration} options Configuration options to deeply merge into the defaults.
+ * @param {webpack.Configuration} config                  Configuration options to deeply merge into the defaults.
+ * @param {Object}                [options]               Optional options to modify configuration generation.
+ * @param {Function}              [options.filterLoaders] An optional filter function that receives each
+ *                                                        computed loader definition and the name of that
+ *                                                        loader as it is generated, to permit per-config
+ *                                                        customization of loader options.
  * @returns {webpack.Configuration} A merged Webpack configuration object.
  */
-const development = ( options = {} ) => {
+const development = ( config = {}, options = {} ) => {
+	const { filterLoaders } = options;
+
+	/**
+	 * Helper method to reduce duplication when accessing and invoking loader factories.
+	 *
+	 * @param {String} loaderKey String key of a loader factory in the loaders object.
+	 * @param {Object} [options] Options for this loader (optional).
+	 * @returns {Object} Configured and filtered loader definition.
+	 */
+	const getFilteredLoader = ( loaderKey, options ) => {
+		return loaders[ loaderKey ]( options, filterLoaders );
+	};
+
 	/**
 	 * Default development environment-oriented Webpack options. This object is
 	 * defined at the time of function execution so that any changes to the
@@ -76,7 +94,7 @@ const development = ( options = {} ) => {
 			strictExportPresence: true,
 			rules: [
 				// Run all JS files through ESLint, if installed.
-				...ifInstalled( 'eslint', loaders.eslint( {
+				...ifInstalled( 'eslint', getFilteredLoader( 'eslint', {
 					options: {
 						emitWarning: true,
 					},
@@ -87,27 +105,27 @@ const development = ( options = {} ) => {
 					// back to the "file" loader at the end of the loader list.
 					oneOf: [
 						// Enable processing TypeScript, if installed.
-						...ifInstalled( 'typescript', loaders.ts() ),
+						...ifInstalled( 'typescript', getFilteredLoader( 'ts' ) ),
 						// Process JS with Babel.
-						loaders.js(),
+						getFilteredLoader( 'js' ),
 						// Convert small files to data URIs.
-						loaders.url(),
+						getFilteredLoader( 'url' ),
 						// Parse styles using SASS, then PostCSS.
 						{
 							test: /\.s?css$/,
 							use: [
-								require.resolve( 'style-loader' ),
-								loaders.css( {
+								getFilteredLoader( 'style' ),
+								getFilteredLoader( 'css', {
 									options: {
 										sourceMap: true,
 									},
 								} ),
-								loaders.postcss( {
+								getFilteredLoader( 'postcss', {
 									options: {
 										sourceMap: true,
 									},
 								} ),
-								loaders.sass( {
+								getFilteredLoader( 'sass', {
 									options: {
 										sourceMap: true,
 									},
@@ -116,7 +134,7 @@ const development = ( options = {} ) => {
 						},
 						// "file" loader makes sure any non-matching assets still get served.
 						// When you `import` an asset you get its filename.
-						loaders.file(),
+						getFilteredLoader( 'file' ),
 					],
 				},
 			],
@@ -137,31 +155,31 @@ const development = ( options = {} ) => {
 	};
 
 	// If no entry was provided, inject a default entry value.
-	if ( ! options.entry ) {
+	if ( ! config.entry ) {
 		devDefaults.entry = {
 			index: filePath( 'src/index.js' ),
 		};
 	}
 
 	// Make some general assumptions about the publicPath URI based on the
-	// configuration values provided in options.
-	const port = findInObject( options, 'devServer.port' );
-	let publicPath = findInObject( options, 'output.publicPath' );
+	// configuration values provided in config.
+	const port = findInObject( config, 'devServer.port' );
+	let publicPath = findInObject( config, 'output.publicPath' );
 	if ( ! publicPath && port ) {
 		publicPath = `${
-			findInObject( options, 'devServer.https' ) ? 'https' : 'http'
+			findInObject( config, 'devServer.https' ) ? 'https' : 'http'
 		}://localhost:${ port }/`;
 	}
 
 	// If we had enough value to guess a publicPath, set that path as a default
 	// wherever appropriate and inject a ManifestPlugin instance to expose that
 	// public path to consuming applications. Any inferred values will still be
-	// overridden with their relevant values from `options`, when provided.
+	// overridden with their relevant values from `config`, when provided.
 	if ( publicPath ) {
 		devDefaults.output.publicPath = publicPath;
 
-		// Check for an existing ManifestPlugin instance in options.plugins.
-		const hasManifestPlugin = plugins.findExistingInstance( options.plugins, ManifestPlugin );
+		// Check for an existing ManifestPlugin instance in config.plugins.
+		const hasManifestPlugin = plugins.findExistingInstance( config.plugins, ManifestPlugin );
 		// Add a manifest with the inferred publicPath if none was present.
 		if ( ! hasManifestPlugin ) {
 			devDefaults.plugins.push( plugins.manifest( {
@@ -170,7 +188,7 @@ const development = ( options = {} ) => {
 		}
 	}
 
-	return deepMerge( devDefaults, options );
+	return deepMerge( devDefaults, config );
 };
 
 /**
@@ -180,10 +198,38 @@ const development = ( options = {} ) => {
  * merges specified options into an opinionated default production configuration
  * template.
  *
- * @param {webpack.Configuration} options Configuration options to deeply merge into the defaults.
+ * @param {webpack.Configuration} config                  Configuration options to deeply merge into the defaults.
+ * @param {Object}                [options]               Optional options to modify configuration generation.
+ * @param {Function}              [options.filterLoaders] An optional filter function that receives each
+ *                                                        computed loader definition and the name of that
+ *                                                        loader as it is generated, to permit per-config
+ *                                                        customization of loader options.
  * @returns {webpack.Configuration} A merged Webpack configuration object.
  */
-const production = ( options = {} ) => {
+const production = ( config = {}, options = {} ) => {
+	const { filterLoaders } = options;
+
+	/**
+	 * Helper method to reduce duplication when accessing and invoking loader factories.
+	 *
+	 * @param {String} loaderKey String key of a loader factory in the loaders object.
+	 * @param {Object} [options] Options for this loader (optional).
+	 * @returns {Object} Configured and filtered loader definition.
+	 */
+	const getFilteredLoader = ( loaderKey, options ) => {
+		return loaders[ loaderKey ]( options, filterLoaders );
+	};
+
+	// Determine whether source maps have been requested, and prepare an options
+	// object to be passed to all CSS loaders to honor that request.
+	const cssOptions = config.devtool ?
+		{
+			options: {
+				sourceMap: true,
+			},
+		} :
+		undefined;
+
 	/**
 	 * Default development environment-oriented Webpack options. This object is
 	 * defined at the time of function execution so that any changes to the
@@ -214,18 +260,18 @@ const production = ( options = {} ) => {
 			strictExportPresence: true,
 			rules: [
 				// Run all JS files through ESLint, if installed.
-				...ifInstalled( 'eslint', loaders.eslint() ),
+				...ifInstalled( 'eslint', getFilteredLoader( 'eslint' ) ),
 				{
 					// "oneOf" will traverse all following loaders until one will
 					// match the requirements. If no loader matches, it will fall
 					// back to the "file" loader at the end of the loader list.
 					oneOf: [
 						// Enable processing TypeScript, if installed.
-						...ifInstalled( 'typescript', loaders.ts() ),
+						...ifInstalled( 'typescript', getFilteredLoader( 'ts' ) ),
 						// Process JS with Babel.
-						loaders.js(),
+						getFilteredLoader( 'js' ),
 						// Convert small files to data URIs.
-						loaders.url(),
+						getFilteredLoader( 'url' ),
 						// Parse styles using SASS, then PostCSS.
 						{
 							test: /\.s?css$/,
@@ -233,14 +279,14 @@ const production = ( options = {} ) => {
 								// Extract CSS to its own file.
 								MiniCssExtractPlugin.loader,
 								// Process SASS into CSS.
-								loaders.css(),
-								loaders.postcss(),
-								loaders.sass(),
+								getFilteredLoader( 'css', cssOptions ),
+								getFilteredLoader( 'postcss', cssOptions ),
+								getFilteredLoader( 'sass', cssOptions ),
 							],
 						},
 						// "file" loader makes sure any non-matching assets still get served.
 						// When you `import` an asset you get its filename.
-						loaders.file(),
+						getFilteredLoader( 'file' ),
 					],
 				},
 			],
@@ -249,7 +295,18 @@ const production = ( options = {} ) => {
 		optimization: {
 			minimizer: [
 				plugins.terser(),
-				plugins.optimizeCssAssets(),
+				plugins.optimizeCssAssets( (
+					// Set option to output source maps if devtool is set.
+					config.devtool && ! ( /inline-/ ).test( config.devtool ) ?
+						{
+							cssProcessorOptions: {
+								map: {
+									inline: false,
+								},
+							},
+						} :
+						undefined
+				) ),
 			],
 			nodeEnv: 'production',
 			noEmitOnErrors: true,
@@ -257,25 +314,23 @@ const production = ( options = {} ) => {
 
 		stats,
 
-		plugins: [
-			plugins.fixStyleOnlyEntries(),
-		],
+		plugins: [],
 	};
 
 	// If no entry was provided, inject a default entry value.
-	if ( ! options.entry ) {
+	if ( ! config.entry ) {
 		prodDefaults.entry = {
 			index: filePath( 'src/index.js' ),
 		};
 	}
 
-	// Add a MiniCssExtractPlugin instance if none is already present in options.
-	const hasCssPlugin = plugins.findExistingInstance( options.plugins, MiniCssExtractPlugin );
+	// Add a MiniCssExtractPlugin instance if none is already present in config.
+	const hasCssPlugin = plugins.findExistingInstance( config.plugins, MiniCssExtractPlugin );
 	if ( ! hasCssPlugin ) {
 		prodDefaults.plugins.push( plugins.miniCssExtract() );
 	}
 
-	return deepMerge( prodDefaults, options );
+	return deepMerge( prodDefaults, config );
 };
 
 /**
