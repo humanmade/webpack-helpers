@@ -1,8 +1,8 @@
 /**
  * Export generator functions for common Webpack loader configurations.
  */
-const autoprefixer = require( 'autoprefixer' );
 const postcssFlexbugsFixes = require( 'postcss-flexbugs-fixes' );
+const postcssPresetEnv = require( 'postcss-preset-env' );
 
 const deepMerge = require( './helpers/deep-merge' );
 
@@ -86,8 +86,11 @@ loaders.postcss.defaults = {
 		ident: 'postcss',
 		plugins: () => [
 			postcssFlexbugsFixes,
-			autoprefixer( {
-				flexbox: 'no-2009',
+			postcssPresetEnv( {
+				autoprefixer: {
+					flexbox: 'no-2009',
+				},
+				stage: 3,
 			} ),
 		],
 	},
