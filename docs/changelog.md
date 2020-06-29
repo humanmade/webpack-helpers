@@ -9,6 +9,7 @@ nav_order: 10
 ## v0.8.0
 
 - **Breaking**: End support for Node v8. Node v10 or later is now required.
+- Output CSS sourcemaps in production if `devtool` option is set. [#94](https://github.com/humanmade/webpack-helpers/issues/94)
 
 ## v0.7.1
 
