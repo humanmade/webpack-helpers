@@ -9,7 +9,11 @@ nav_order: 10
 ## v0.8.0
 
 - **Breaking**: End support for Node v8. Node v10 or later is now required.
+- **Breaking**: Update `clean-webpack-plugin` factory to reflect API changes in the latest bundled version. `plugins.clean()` can now be added to a webpack configuration's `plugins` array with no additional arguments. [#31](https://github.com/humanmade/webpack-helpers/issues/31)
+- **Breaking**: Update `copy-webpack-plugin` factory to reflect API changes in the latest bundled version. `plugins.copy()` now takes a sole object argument specifying a `patterns: []` array key, where before patterns were passed as a first argument. [#96](https://github.com/humanmade/webpack-helpers/pull/96)
 - Output CSS sourcemaps in production if `devtool` option is set. [#94](https://github.com/humanmade/webpack-helpers/issues/94)
+- Add [postcss-preset-env](https://github.com/csstools/postcss-preset-env) to postcss webpack configuration and configure it to transform Stage 3 CSS features [#91](https://github.com/humanmade/webpack-helpers/pull/91)
+- Include `clean-webpack-plugin` instance in plugins list when using `presets.production()` factory. [#31](https://github.com/humanmade/webpack-helpers/issues/31)
 
 ## v0.7.1
 
