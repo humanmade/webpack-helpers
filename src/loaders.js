@@ -9,27 +9,32 @@ const deepMerge = require( './helpers/deep-merge' );
 /**
  * Export an object of named methods that generate corresponding loader config
  * objects. To customize the default values of the loader, mutate the .defaults
- * property exposed on each method.
+ * property exposed on each method (or pass a filterLoaders option to a preset).
  */
-const loaders = {
-	eslint: ( options ) => deepMerge( loaders.eslint.defaults, options ),
+const loaders = {};
 
-	js: ( options ) => deepMerge( loaders.js.defaults, options ),
+const createLoaderFactory = loaderKey => {
+	const getFilteredLoader = ( options, filterMethod ) => {
+		// Handle missing options object.
+		if ( typeof options === 'function' ) {
+			return getFilteredLoader( {}, options );
+		}
 
-	ts: ( options ) => deepMerge( loaders.ts.defaults, options ),
+		// Generate and optionally filter the requested loader definition.
+		const mergedOptions = deepMerge( loaders[ loaderKey ].defaults, options );
+		if ( typeof filterMethod === 'function' ) {
+			return filterMethod( mergedOptions, loaderKey );
+		}
+		return mergedOptions;
+	};
 
-	url: ( options ) => deepMerge( loaders.url.defaults, options ),
-
-	style: ( options ) => deepMerge( loaders.style.defaults, options ),
-
-	css: ( options ) => deepMerge( loaders.css.defaults, options ),
-
-	postcss: ( options ) => deepMerge( loaders.postcss.defaults, options ),
-
-	sass: ( options ) => deepMerge( loaders.sass.defaults, options ),
-
-	file: ( options ) => deepMerge( loaders.file.defaults, options ),
+	return getFilteredLoader;
 };
+
+// Define all supported loader factories within the loaders object.
+[ 'eslint', 'js', 'ts', 'url', 'style', 'css', 'postcss', 'sass', 'file' ].forEach( loaderKey => {
+	loaders[ loaderKey ] = createLoaderFactory( loaderKey );
+} );
 
 loaders.eslint.defaults = {
 	test: /\.jsx?$/,
