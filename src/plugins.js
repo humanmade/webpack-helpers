@@ -1,6 +1,7 @@
 const { BundleAnalyzerPlugin } = require( 'webpack-bundle-analyzer' );
 const { CleanWebpackPlugin } = require( 'clean-webpack-plugin' );
 const { HotModuleReplacementPlugin } = require( 'webpack' );
+const BellOnBundleErrorPlugin = require( 'bell-on-bundler-error-plugin' );
 const CopyPlugin = require( 'copy-webpack-plugin' );
 const FixStyleOnlyEntriesPlugin = require( 'webpack-fix-style-only-entries' );
 const ManifestPlugin = require( 'webpack-manifest-plugin' );
@@ -17,6 +18,7 @@ module.exports = {
 	 * @prop {Object} constructors
 	 */
 	constructors: {
+		BellOnBundleErrorPlugin,
 		BundleAnalyzerPlugin,
 		CleanWebpackPlugin,
 		CopyPlugin,
@@ -80,6 +82,13 @@ module.exports = {
 	 * @returns {CopyPlugin} A configured CopyPlugin instance.
 	 */
 	copy: ( patterns, options ) => new CopyPlugin( patterns, options ),
+
+	/**
+	 * Create a BellOnBundleErrorPlugin instance.
+	 *
+	 * @returns {BellOnBundleErrorPlugin} A BellOnBundleErrorPlugin instance.
+	 */
+	errorBell: () => new BellOnBundleErrorPlugin(),
 
 	/**
 	 * Create a new FixStyleOnlyEntriesPlugin instance to remove unnecessary JS
