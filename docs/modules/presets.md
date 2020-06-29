@@ -110,3 +110,24 @@ module.exports.optimization.minimizer = [
 ```
 
 Note that array values are _merged_, not overwritten. This allows you to easily add plugins, but it can make it hard to _remove_ values from array properties like the module loader rules. To change loader configuration options without completely removing a loader, we recommend the approach described below in "Customizing Loaders". However, if you do need to completely change or remove the loaders from a default, you may overwrite the `.module.rules` array using one of the above methods.
+
+### Modify loaders within a generated configuration
+
+Adjusting loaders within a generated configuration tree is difficult because loader arrays are not keyed and module rules may be nested. Instead, each `preset` generator accepts a second argument in which you can pass a callback function that will be run on the output of each computed loader definition.
+
+```js
+// Alter the publicPath value of the files-loader and url-loader.
+const config = production.preset(
+	{ /* ...configuration options described above ... */ },
+	{
+		filterLoaders: ( loader, loaderType ) => {
+			if ( loaderType === 'file' || loaderType === 'url' ) {
+				loader.options.publicPath = '../../';
+			}
+			return loader;
+		}
+	}
+);
+```
+
+The values of the `loaderType` argument in this callback correspond to the names of the available [loader factory functions](https://humanmade.github.io/webpack-helpers/modules/loaders.html).
