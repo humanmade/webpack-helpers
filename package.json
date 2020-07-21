@@ -29,7 +29,7 @@
   "devDependencies": {
     "eslint": "^7.3.1",
     "jest": "^26.1.0",
-    "node-sass": "^4.13.1",
+    "sass": "^1.26.10",
     "typescript": "^3.9.5",
     "webpack": "^4.35.0",
     "webpack-dev-server": "^3.7.2"
@@ -67,7 +67,7 @@
     "webpack-manifest-plugin": "^2.0.4"
   },
   "peerDependencies": {
-    "node-sass": "*",
+    "sass": "*",
     "typescript": "*",
     "webpack-cli": "*",
     "webpack": "^4.0.0",

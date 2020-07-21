@@ -8,10 +8,11 @@ nav_order: 10
 
 ## v0.8.0
 
-- **Breaking**: End support for Node v8. Node v10 or later is now required.
+- **Breaking**: End support for Node v8. Node v10.13 or later is now required.
 - **Breaking**: Remove `fix-style-only-entries` plugin from production preset. This plugin can incorrectly remove files in certain [multi-configuration](https://webpack.js.org/configuration/configuration-types/#exporting-multiple-configurations) scenarios. [#93](https://github.com/humanmade/webpack-helpers/pull/93)
 - **Breaking**: Update `clean-webpack-plugin` factory to reflect API changes in the latest bundled version. `plugins.clean()` can now be added to a webpack configuration's `plugins` array with no additional arguments. [#31](https://github.com/humanmade/webpack-helpers/issues/31)
 - **Breaking**: Update `copy-webpack-plugin` factory to reflect API changes in the latest bundled version. `plugins.copy()` now takes a sole object argument specifying a `patterns: []` array key, where before patterns were passed as a first argument. [#96](https://github.com/humanmade/webpack-helpers/pull/96)
+- Switch optional SCSS dependency from `node-sass` to `sass` (a pure JavaScript implementation of `dart-sass`), to avoid the need to compile our sass dependency.
 - Introduce [`withDynamicPort` helper function](https://humanmade.github.io/webpack-helpers/modules/helpers.html#withdynamicport) to simplify implementation of open port fallback logic. [#89](https://github.com/humanmade/webpack-helpers/pull/89)
 - Output CSS sourcemaps in production if `devtool` option is set. [#94](https://github.com/humanmade/webpack-helpers/issues/94)
 - Add [postcss-preset-env](https://github.com/csstools/postcss-preset-env) to postcss webpack configuration and configure it to transform Stage 3 CSS features [#91](https://github.com/humanmade/webpack-helpers/pull/91)
