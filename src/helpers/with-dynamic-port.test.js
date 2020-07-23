@@ -184,7 +184,6 @@ describe( 'withDynamicPort', () => {
 		} );
 
 		describe( 'multi-configuration webpack file', () => {
-
 			it( 'uses the provided port, if available', async () => {
 				const config = [
 					{
@@ -233,23 +232,24 @@ describe( 'withDynamicPort', () => {
 						},
 					},
 				];
-				expect( await withDynamicPort( 8081, config ) ).toEqual( [
+				choosePort.mockImplementationOnce( () => Promise.resolve( 8080 ) );
+				expect( await withDynamicPort( 9090, config ) ).toEqual( [
 					{
 						devServer: {
-							port: 8081,
+							port: 8080,
 						},
 						entry: {},
 						output: {
-							publicPath: 'http://localhost:8081',
+							publicPath: 'http://localhost:8080',
 						},
 					},
 					{
 						devServer: {
-							port: 8081,
+							port: 8080,
 						},
 						entry: {},
 						output: {
-							publicPath: 'http://localhost:8081',
+							publicPath: 'http://localhost:8080',
 						},
 					},
 				] );
