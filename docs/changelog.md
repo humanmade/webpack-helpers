@@ -6,6 +6,10 @@ nav_order: 10
 
 # Changelog
 
+## v0.8.1
+
+- Permit `withDynamicPort` helper to work with multi-configuration Webpack files. [#103](https://github.com/humanmade/webpack-helpers/pull/103)
+
 ## v0.8.0
 
 - **Breaking**: End support for Node v8. Node v10.13 or later is now required.
