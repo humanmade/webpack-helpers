@@ -35,42 +35,42 @@ const withDynamicPort = ( port, config ) => {
 	 * the ":port" token with a valid port value if such a token is present, of
 	 * else return the publicPath string as-is.
 	 *
-	 * @param {String} publicPath User-specified public path string.
-	 * @param {Number} port       An HTTP port value.
+	 * @param {String} publicPath   User-specified public path string.
+	 * @param {Number} selectedPort Final HTTP port value.
 	 * @returns {String} Updated publicPath string.
 	 */
-	const getPublicPath = ( publicPath, port ) => {
+	const getPublicPath = ( publicPath, selectedPort ) => {
 		if ( publicPath && portPlaceholder.test( publicPath ) ) {
-			return publicPath.replace( portPlaceholder, `:${ port }` );
+			return publicPath.replace( portPlaceholder, `:${ selectedPort }` );
 		}
 	};
 
 	/**
 	 * Given a port and a configuration object, merge the port into that config.
 	 *
-	 * @param {Object} config Development Webpack configuration object.
-	 * @param {Number} port   HTTP port value.
+	 * @param {Object} config       Development Webpack configuration object.
+	 * @param {Number} selectedPort Final HTTP port value.
 	 * @returns {Object} Updated configuration object.
 	 */
-	const setConfigurationPort = ( config, port ) => ( {
+	const setConfigurationPort = ( config, selectedPort ) => ( {
 		...config,
 		devServer: {
 			...( config.devServer || {} ),
-			port,
+			port: selectedPort,
 		},
 		output: {
 			...( config.output || {} ),
-			publicPath: getPublicPath( config.output.publicPath, port ),
+			publicPath: getPublicPath( config.output.publicPath, selectedPort ),
 		},
 	} );
 
 	// Return config wrapped in a function that will choose an available port
 	// and modify the provided config to operate on that port.
-	return choosePort( port || DEFAULT_PORT ).then( port => {
+	return choosePort( port || DEFAULT_PORT ).then( selectedPort => {
 		if ( Array.isArray( config ) ) {
-			return config.map( subConfig => setConfigurationPort( subConfig, port ) );
+			return config.map( subConfig => setConfigurationPort( subConfig, selectedPort ) );
 		}
-		return setConfigurationPort( config, port );
+		return setConfigurationPort( config, selectedPort );
 	} );
 };
 
