@@ -11,6 +11,7 @@ const DEFAULT_PORT = 9090;
  *
  * @param {Number} [port] (Optional) Port to try first when looking for free port.
  * @param {Object} config Development Webpack configuration object.
+ * @returns {Promise<Object>} Promise resolving to a final configuration object.
  */
 const withDynamicPort = ( port, config ) => {
 	// Handle signature where config is passed without port.
@@ -36,6 +37,7 @@ const withDynamicPort = ( port, config ) => {
 	 *
 	 * @param {String} publicPath User-specified public path string.
 	 * @param {Number} port       An HTTP port value.
+	 * @returns {String} Updated publicPath string.
 	 */
 	const getPublicPath = ( publicPath, port ) => {
 		if ( publicPath && portPlaceholder.test( publicPath ) ) {
@@ -43,9 +45,14 @@ const withDynamicPort = ( port, config ) => {
 		}
 	};
 
-	// Return config wrapped in a function that will choose an available port
-	// and modify the provided config to operate on that port.
-	return choosePort( port || DEFAULT_PORT ).then( port => ( {
+	/**
+	 * Given a port and a configuration object, merge the port into that config.
+	 *
+	 * @param {Object} config Development Webpack configuration object.
+	 * @param {Number} port   HTTP port value.
+	 * @returns {Object} Updated configuration object.
+	 */
+	const setConfigurationPort = ( config, port ) => ( {
 		...config,
 		devServer: {
 			...( config.devServer || {} ),
@@ -55,7 +62,16 @@ const withDynamicPort = ( port, config ) => {
 			...( config.output || {} ),
 			publicPath: getPublicPath( config.output.publicPath, port ),
 		},
-	} ) );
+	} );
+
+	// Return config wrapped in a function that will choose an available port
+	// and modify the provided config to operate on that port.
+	return choosePort( port || DEFAULT_PORT ).then( port => {
+		if ( Array.isArray( config ) ) {
+			return config.map( subConfig => setConfigurationPort( subConfig, port ) );
+		}
+		return setConfigurationPort( config, port );
+	} );
 };
 
 module.exports = withDynamicPort;

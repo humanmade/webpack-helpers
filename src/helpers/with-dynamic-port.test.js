@@ -31,6 +31,21 @@ describe( 'withDynamicPort', () => {
 			expect( withDynamicPort( config ) ).toBe( config );
 			expect( withDynamicPort( 9090, config ) ).toBe( config );
 		} );
+
+		it( 'passes multi-configuration through unchanged', () => {
+			const config = [
+				{
+					entry: {},
+					output: {},
+				},
+				{
+					entry: {},
+					output: {},
+				},
+			];
+			expect( withDynamicPort( config ) ).toBe( config );
+			expect( withDynamicPort( 9091, config ) ).toBe( config );
+		} );
 	} );
 
 	describe( 'when using webpack-dev-server', () => {
@@ -165,6 +180,79 @@ describe( 'withDynamicPort', () => {
 				plugins: [
 					'Plugin goes here',
 				],
+			} );
+		} );
+
+		describe( 'multi-configuration webpack file', () => {
+
+			it( 'uses the provided port, if available', async () => {
+				const config = [
+					{
+						entry: {},
+						output: {},
+					},
+					{
+						entry: {},
+						output: {},
+					},
+				];
+				expect( await withDynamicPort( 8080, config ) ).toEqual( [
+					{
+						devServer: {
+							port: 8080,
+						},
+						entry: {},
+						output: {
+							publicPath: undefined,
+						},
+					},
+					{
+						devServer: {
+							port: 8080,
+						},
+						entry: {},
+						output: {
+							publicPath: undefined,
+						},
+					},
+				] );
+			} );
+
+			it( 'replaces :port or :{provided port number} with the specified port in the publicPath', async () => {
+				const config = [
+					{
+						entry: {},
+						output: {
+							publicPath: 'http://localhost:port',
+						},
+					},
+					{
+						entry: {},
+						output: {
+							publicPath: 'http://localhost:9090',
+						},
+					},
+				];
+				expect( await withDynamicPort( 8081, config ) ).toEqual( [
+					{
+						devServer: {
+							port: 8081,
+						},
+						entry: {},
+						output: {
+							publicPath: 'http://localhost:8081',
+						},
+					},
+					{
+						devServer: {
+							port: 8081,
+						},
+						entry: {},
+						output: {
+							publicPath: 'http://localhost:8081',
+						},
+					},
+				] );
 			} );
 		} );
 	} );
