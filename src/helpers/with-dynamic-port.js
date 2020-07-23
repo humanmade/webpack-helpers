@@ -11,6 +11,7 @@ const DEFAULT_PORT = 9090;
  *
  * @param {Number} [port] (Optional) Port to try first when looking for free port.
  * @param {Object} config Development Webpack configuration object.
+ * @returns {Promise<Object>} Promise resolving to a final configuration object.
  */
 const withDynamicPort = ( port, config ) => {
 	// Handle signature where config is passed without port.
@@ -34,28 +35,43 @@ const withDynamicPort = ( port, config ) => {
 	 * the ":port" token with a valid port value if such a token is present, of
 	 * else return the publicPath string as-is.
 	 *
-	 * @param {String} publicPath User-specified public path string.
-	 * @param {Number} port       An HTTP port value.
+	 * @param {String} publicPath   User-specified public path string.
+	 * @param {Number} selectedPort Final HTTP port value.
+	 * @returns {String} Updated publicPath string.
 	 */
-	const getPublicPath = ( publicPath, port ) => {
+	const getPublicPath = ( publicPath, selectedPort ) => {
 		if ( publicPath && portPlaceholder.test( publicPath ) ) {
-			return publicPath.replace( portPlaceholder, `:${ port }` );
+			return publicPath.replace( portPlaceholder, `:${ selectedPort }` );
 		}
 	};
 
-	// Return config wrapped in a function that will choose an available port
-	// and modify the provided config to operate on that port.
-	return choosePort( port || DEFAULT_PORT ).then( port => ( {
+	/**
+	 * Given a port and a configuration object, merge the port into that config.
+	 *
+	 * @param {Object} config       Development Webpack configuration object.
+	 * @param {Number} selectedPort Final HTTP port value.
+	 * @returns {Object} Updated configuration object.
+	 */
+	const setConfigurationPort = ( config, selectedPort ) => ( {
 		...config,
 		devServer: {
 			...( config.devServer || {} ),
-			port,
+			port: selectedPort,
 		},
 		output: {
 			...( config.output || {} ),
-			publicPath: getPublicPath( config.output.publicPath, port ),
+			publicPath: getPublicPath( config.output.publicPath, selectedPort ),
 		},
-	} ) );
+	} );
+
+	// Return config wrapped in a function that will choose an available port
+	// and modify the provided config to operate on that port.
+	return choosePort( port || DEFAULT_PORT ).then( selectedPort => {
+		if ( Array.isArray( config ) ) {
+			return config.map( subConfig => setConfigurationPort( subConfig, selectedPort ) );
+		}
+		return setConfigurationPort( config, selectedPort );
+	} );
 };
 
 module.exports = withDynamicPort;
