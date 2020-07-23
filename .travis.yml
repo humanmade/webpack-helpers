@@ -5,3 +5,7 @@ node_js:
   - lts/*
   - 12
   - 10
+branches:
+  only:
+    - main
+    - beta
