@@ -6,6 +6,10 @@ nav_order: 10
 
 # Changelog
 
+## v0.8.2
+
+- Fix issue where `plugins.clean()` triggered an error. [#106](https://github.com/humanmade/webpack-helpers/pull/106)
+
 ## v0.8.1
 
 - Permit `withDynamicPort` helper to work with multi-configuration Webpack files. [#103](https://github.com/humanmade/webpack-helpers/pull/103)
