@@ -130,4 +130,6 @@ const config = production.preset(
 );
 ```
 
+The `loaderType` option will be [one of the keys in the `loaders` object](./loaders.html), or else the special key `stylesheet` which will be passed alongside the entire computed stylesheet loader chain. Filter on `stylesheet` to, for example, completely replace the Sass stylesheet support with a different preprocessor like Stylus.
+
 The values of the `loaderType` argument in this callback correspond to the names of the available [loader factory functions](https://humanmade.github.io/webpack-helpers/modules/loaders.html).

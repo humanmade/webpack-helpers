@@ -134,7 +134,7 @@ const development = ( config = {}, options = {} ) => {
 						// Convert small files to data URIs.
 						getFilteredLoader( 'url' ),
 						// Parse styles using SASS, then PostCSS.
-						{
+						filterLoaders( {
 							test: /\.s?css$/,
 							use: [
 								getFilteredLoader( 'style' ),
@@ -154,7 +154,7 @@ const development = ( config = {}, options = {} ) => {
 									},
 								} ),
 							],
-						},
+						}, 'stylesheet' ),
 						// "file" loader makes sure any non-matching assets still get served.
 						// When you `import` an asset you get its filename.
 						getFilteredLoader( 'file' ),
@@ -230,7 +230,7 @@ const development = ( config = {}, options = {} ) => {
  * @returns {webpack.Configuration} A merged Webpack configuration object.
  */
 const production = ( config = {}, options = {} ) => {
-	const { getFilteredLoader } = createFilteringHelpers( options.filterLoaders );
+	const { filterLoaders, getFilteredLoader } = createFilteringHelpers( options.filterLoaders );
 
 	// Determine whether source maps have been requested, and prepare an options
 	// object to be passed to all CSS loaders to honor that request.
@@ -285,7 +285,7 @@ const production = ( config = {}, options = {} ) => {
 						// Convert small files to data URIs.
 						getFilteredLoader( 'url' ),
 						// Parse styles using SASS, then PostCSS.
-						{
+						filterLoaders( {
 							test: /\.s?css$/,
 							use: [
 								// Extract CSS to its own file.
@@ -295,7 +295,7 @@ const production = ( config = {}, options = {} ) => {
 								getFilteredLoader( 'postcss', cssOptions ),
 								getFilteredLoader( 'sass', cssOptions ),
 							],
-						},
+						}, 'stylesheet' ),
 						// "file" loader makes sure any non-matching assets still get served.
 						// When you `import` an asset you get its filename.
 						getFilteredLoader( 'file' ),
