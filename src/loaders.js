@@ -14,18 +14,14 @@ const deepMerge = require( './helpers/deep-merge' );
 const loaders = {};
 
 const createLoaderFactory = loaderKey => {
-	const getFilteredLoader = ( options, filterMethod ) => {
+	const getFilteredLoader = ( options ) => {
 		// Handle missing options object.
 		if ( typeof options === 'function' ) {
 			return getFilteredLoader( {}, options );
 		}
 
-		// Generate and optionally filter the requested loader definition.
-		const mergedOptions = deepMerge( loaders[ loaderKey ].defaults, options );
-		if ( typeof filterMethod === 'function' ) {
-			return filterMethod( mergedOptions, loaderKey );
-		}
-		return mergedOptions;
+		// Generate the requested loader definition.
+		return deepMerge( loaders[ loaderKey ].defaults, options );
 	};
 
 	return getFilteredLoader;
