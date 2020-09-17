@@ -26,6 +26,7 @@ module.exports = {
 		HotModuleReplacementPlugin,
 		ManifestPlugin,
 		MiniCssExtractPlugin,
+		OptimizeCssAssetsPlugin,
 		TerserPlugin,
 	},
 
