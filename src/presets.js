@@ -29,6 +29,40 @@ const ifInstalled = ( packageName, loader ) => {
 };
 
 /**
+ * Given a reference to a (possibly-undefined) filtering method, return a pair
+ * of helper functions to filter a loader definition object, or to get a loader
+ * definition object by its loaders dictionary key and then filter it.
+ *
+ * @param {Function} [filterLoaders] An optional filterLoaders function. Defaults
+ *                                   to the identity function.
+ * @returns {Object} Object with `filterLoaders` and `getFilteredLoader` methods.
+ */
+const createFilteringHelpers = ( filterLoaders = ( input ) => input ) => ( {
+	/**
+	 * Given a loader object and its key string, pass that object through the
+	 * filterLoaders method (if one was provided) and return the filtered output.
+	 *
+	 * @param {Object} loader    Webpack loader configuration object.
+	 * @param {String} loaderKey String identifying which loader is being filtered.
+	 * @returns {Object} Filtered loader object.
+	 */
+	filterLoaders: ( loader, loaderKey ) => {
+		return filterLoaders( loader, loaderKey );
+	},
+
+	/**
+	 * Helper method to reduce duplication when accessing and invoking loader factories.
+	 *
+	 * @param {String} loaderKey String key of a loader factory in the loaders object.
+	 * @param {Object} [options] Options for this loader (optional).
+	 * @returns {Object} Configured and filtered loader definition.
+	 */
+	getFilteredLoader: ( loaderKey, options ) => {
+		return filterLoaders( loaders[ loaderKey ]( options ), loaderKey );
+	},
+} );
+
+/**
  * Promote a partial Webpack config into a full development-oriented configuration.
  *
  * This function accepts an incomplete Webpack configuration object and deeply
@@ -49,18 +83,7 @@ const ifInstalled = ( packageName, loader ) => {
  * @returns {webpack.Configuration} A merged Webpack configuration object.
  */
 const development = ( config = {}, options = {} ) => {
-	const { filterLoaders } = options;
-
-	/**
-	 * Helper method to reduce duplication when accessing and invoking loader factories.
-	 *
-	 * @param {String} loaderKey String key of a loader factory in the loaders object.
-	 * @param {Object} [options] Options for this loader (optional).
-	 * @returns {Object} Configured and filtered loader definition.
-	 */
-	const getFilteredLoader = ( loaderKey, options ) => {
-		return loaders[ loaderKey ]( options, filterLoaders );
-	};
+	const { filterLoaders, getFilteredLoader } = createFilteringHelpers( options.filterLoaders );
 
 	/**
 	 * Default development environment-oriented Webpack options. This object is
@@ -111,7 +134,7 @@ const development = ( config = {}, options = {} ) => {
 						// Convert small files to data URIs.
 						getFilteredLoader( 'url' ),
 						// Parse styles using SASS, then PostCSS.
-						{
+						filterLoaders( {
 							test: /\.s?css$/,
 							use: [
 								getFilteredLoader( 'style' ),
@@ -131,7 +154,7 @@ const development = ( config = {}, options = {} ) => {
 									},
 								} ),
 							],
-						},
+						}, 'stylesheet' ),
 						// "file" loader makes sure any non-matching assets still get served.
 						// When you `import` an asset you get its filename.
 						getFilteredLoader( 'file' ),
@@ -207,18 +230,7 @@ const development = ( config = {}, options = {} ) => {
  * @returns {webpack.Configuration} A merged Webpack configuration object.
  */
 const production = ( config = {}, options = {} ) => {
-	const { filterLoaders } = options;
-
-	/**
-	 * Helper method to reduce duplication when accessing and invoking loader factories.
-	 *
-	 * @param {String} loaderKey String key of a loader factory in the loaders object.
-	 * @param {Object} [options] Options for this loader (optional).
-	 * @returns {Object} Configured and filtered loader definition.
-	 */
-	const getFilteredLoader = ( loaderKey, options ) => {
-		return loaders[ loaderKey ]( options, filterLoaders );
-	};
+	const { filterLoaders, getFilteredLoader } = createFilteringHelpers( options.filterLoaders );
 
 	// Determine whether source maps have been requested, and prepare an options
 	// object to be passed to all CSS loaders to honor that request.
@@ -273,7 +285,7 @@ const production = ( config = {}, options = {} ) => {
 						// Convert small files to data URIs.
 						getFilteredLoader( 'url' ),
 						// Parse styles using SASS, then PostCSS.
-						{
+						filterLoaders( {
 							test: /\.s?css$/,
 							use: [
 								// Extract CSS to its own file.
@@ -283,7 +295,7 @@ const production = ( config = {}, options = {} ) => {
 								getFilteredLoader( 'postcss', cssOptions ),
 								getFilteredLoader( 'sass', cssOptions ),
 							],
-						},
+						}, 'stylesheet' ),
 						// "file" loader makes sure any non-matching assets still get served.
 						// When you `import` an asset you get its filename.
 						getFilteredLoader( 'file' ),
