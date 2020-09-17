@@ -6,6 +6,14 @@ nav_order: 10
 
 # Changelog
 
+## v0.9
+
+- Introduce support for filtering entire stylesheet loader chain by matching against the special `loaderKey` value "stylesheet" [when passing a `filterLoaders` method into a preset](https://humanmade.github.io/webpack-helpers/modules/presets.html#customizing-presets). [#124](https://github.com/humanmade/webpack-helpers/pull/124)
+- The bundled version of `terser-webpack-plugin` has been upgraded from 3.1.0 to 4.2.0. Consult the [breaking changes in `terser-webpack-plugin` 4.0](https://github.com/webpack-contrib/terser-webpack-plugin/blob/master/CHANGELOG.md#400-2020-08-04) if you utilize this plugin with any custom configuration or options. [#123](https://github.com/humanmade/webpack-helpers/pull/123)
+- The bundled version of `css-loader` has been upgraded from 3.6.0 to 4.3.0. Consult the [breaking changes in `css-loader` 4.0](https://github.com/webpack-contrib/css-loader/blob/master/CHANGELOG.md#400-2020-07-25) if you utilize this loader with any custom configuration or options. [#120](https://github.com/humanmade/webpack-helpers/pull/120)
+- The bundled version of `sass-loader` has been upgraded from 9.0.3 to 10.0.2. Consult the [breaking changes in `sass-loader` 10.0](https://github.com/webpack-contrib/sass-loader/blob/master/CHANGELOG.md#1000-rc0-2020-08-24) if you utilize this loader with any custom configuration or options. [#119](https://github.com/humanmade/webpack-helpers/pull/119)
+- The bundled version of `mini-css-extract-plugin` has been upgraded from 0.9.0 to 0.11.2. [#122](https://github.com/humanmade/webpack-helpers/pull/122)
+
 ## v0.8.2
 
 - Fix issue where `plugins.clean()` triggered an error. [#106](https://github.com/humanmade/webpack-helpers/pull/106)
