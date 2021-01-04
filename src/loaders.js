@@ -79,16 +79,18 @@ loaders.css.defaults = {
 loaders.postcss.defaults = {
 	loader: require.resolve( 'postcss-loader' ),
 	options: {
-		ident: 'postcss',
-		plugins: () => [
-			postcssFlexbugsFixes,
-			postcssPresetEnv( {
-				autoprefixer: {
-					flexbox: 'no-2009',
-				},
-				stage: 3,
-			} ),
-		],
+		postcssOptions: {
+			ident: 'postcss',
+			plugins: [
+				postcssFlexbugsFixes,
+				postcssPresetEnv( {
+					autoprefixer: {
+						flexbox: 'no-2009',
+					},
+					stage: 3,
+				} ),
+			],
+		},
 	},
 };
 
