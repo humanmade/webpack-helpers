@@ -8,7 +8,15 @@ nav_order: 10
 
 ## v0.10
 
+- **Potentially Breaking**: Update `mini-css-extract-plugin` to v1.3.4. [Changelog](https://github.com/webpack-contrib/mini-css-extract-plugin/blob/master/CHANGELOG.md). [#148](https://github.com/humanmade/webpack-helpers/pull/148)
+- **Potentially Breaking**: Update `css-loader` to v5.0.1. [Changelog](https://github.com/webpack-contrib/css-loader/blob/master/CHANGELOG.md). [#136](https://github.com/humanmade/webpack-helpers/136)
+- **Potentially Breaking**: Update `style-loader` to v2.0.0. [Changelog](https://github.com/webpack-contrib/style-loader/blob/master/CHANGELOG.md). [#127](https://github.com/humanmade/webpack-helpers/127)
+
+All three of the above dependency upgrades include breaking API changes. None of these changes should impact vanilla usage of the [presets](https://humanmade.github.io/webpack-helpers/modules/presets.html) provided by these helpers, but we recommend reviewing all three libraries' changelogs to identify potential issues if you are [customizing presets or loader behavior](https://humanmade.github.io/webpack-helpers/modules/presets.html#customizing-presets) relating to stylesheets.
+
+- `postcss` is now included as a direct dependency of this package, rather than a subdependency. [#151](https://github.com/humanmade/webpack-helpers/pull/151)
 - Update `webpack-bundle-analyzer` bundled plugin to v4.3.0. [#146](https://github.com/humanmade/webpack-helpers/pull/146)
+
 - Internal: Add the generation of a basic development and production bundle, including scss styles, to the CI job. [#149](https://github.com/humanmade/webpack-helpers/pull/149)
 - Internal: Upgrade local development dependencies to latest versions. [#150](https://github.com/humanmade/webpack-helpers/pull/150)
 
