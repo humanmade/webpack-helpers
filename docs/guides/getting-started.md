@@ -17,8 +17,10 @@ npm install --save-dev @humanmade/webpack-helpers
 While this package depends in turn on a number of loaders and plugins, it deliberately does _not_ include `webpack` itself. To install this library along with all its relevant peer dependencies, therefore, you may run the following command:
 
 ```bash
-npm install --save-dev @humanmade/webpack-helpers webpack webpack-cli webpack-dev-server node-sass
+npm install --save-dev @humanmade/webpack-helpers webpack@4 webpack-cli webpack-dev-server sass
 ```
+
+Note that we specify Webpack version 4. Support for Webpack 5 is anticipated in the v1.0 release of these helpers, but at present using Webpack 4 provides the most predictable and stable experience across our projects.
 
 ## Configuring Webpack
 
