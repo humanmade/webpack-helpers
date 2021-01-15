@@ -14,7 +14,11 @@ nav_order: 10
 
 All three of the above dependency upgrades include breaking API changes. None of these changes should impact vanilla usage of the [presets](https://humanmade.github.io/webpack-helpers/modules/presets.html) provided by these helpers, but we recommend reviewing all three libraries' changelogs to identify potential issues if you are [customizing presets or loader behavior](https://humanmade.github.io/webpack-helpers/modules/presets.html#customizing-presets) relating to stylesheets.
 
-- `postcss` is now included as a direct dependency of this package, rather than a subdependency. [#151](https://github.com/humanmade/webpack-helpers/pull/151)
+- **Potentially Breaking**: Update `postcss-flexbugs-fixes` to v5.0.2 and update `postcss-loader` to v4.1.0. [#152](https://github.com/humanmade/webpack-helpers/pull/152)
+
+The upgrade to `postcss-loader` requires nesting PostCSS configuration options within a `.postcssOptions` key on the object passed to the webpack loader. As with the style loading changes above, if you use the presets without customization this should not impact your project. Otherwise, ensure you have added this level of nesting to any code which customizes the `postcss-loader`'s configuration object. Consult the [`postcss-loader` changelog](https://github.com/webpack-contrib/postcss-loader/blob/master/CHANGELOG.md#-breaking-changes) for more information.
+
+- Include `postcss` as a direct dependency of this package, rather than a subdependency. [#151](https://github.com/humanmade/webpack-helpers/pull/151)
 - Update `webpack-bundle-analyzer` bundled plugin to v4.3.0. [#146](https://github.com/humanmade/webpack-helpers/pull/146)
 
 - Internal: Add the generation of a basic development and production bundle, including scss styles, to the CI job. [#149](https://github.com/humanmade/webpack-helpers/pull/149)
