@@ -10,6 +10,7 @@ nav_order: 10
 
 - Update `webpack-bundle-analyzer` bundled plugin to v4.3.0. [#146](https://github.com/humanmade/webpack-helpers/pull/146)
 - Internal: Add the generation of a basic development and production bundle, including scss styles, to the CI job. [#149](https://github.com/humanmade/webpack-helpers/pull/149)
+- Internal: Upgrade local development dependencies to latest versions. [#150](https://github.com/humanmade/webpack-helpers/pull/150)
 
 ## v0.9
 
