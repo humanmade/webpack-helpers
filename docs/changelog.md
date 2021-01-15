@@ -6,6 +6,11 @@ nav_order: 10
 
 # Changelog
 
+## v0.10
+
+- Update `webpack-bundle-analyzer` bundled plugin to v4.3.0. [#146](https://github.com/humanmade/webpack-helpers/pull/146)
+- Internal: Add the generation of a basic development and production bundle, including scss styles, to the CI job. [#149](https://github.com/humanmade/webpack-helpers/pull/149)
+
 ## v0.9
 
 - Introduce support for filtering entire stylesheet loader chain by matching against the special `loaderKey` value "stylesheet" [when passing a `filterLoaders` method into a preset](https://humanmade.github.io/webpack-helpers/modules/presets.html#customizing-presets). [#124](https://github.com/humanmade/webpack-helpers/pull/124)
