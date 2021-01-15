@@ -18,6 +18,7 @@ All three of the above dependency upgrades include breaking API changes. None of
 
 The upgrade to `postcss-loader` requires nesting PostCSS configuration options within a `.postcssOptions` key on the object passed to the webpack loader. As with the style loading changes above, if you use the presets without customization this should not impact your project. Otherwise, ensure you have added this level of nesting to any code which customizes the `postcss-loader`'s configuration object. Consult the [`postcss-loader` changelog](https://github.com/webpack-contrib/postcss-loader/blob/master/CHANGELOG.md#-breaking-changes) for more information.
 
+- Upgrade `webpack-fix-style-only-entries` plugin to v0.6.0. This may resolve the issue previously documented in [#93](https://github.com/humanmade/webpack-helpers/pull/93) where files would be incorrectly deleted when processing an array of webpack configuration objects. [#129](https://github.com/humanmade/webpack-helpers/pull/129)
 - Include `postcss` as a direct dependency of this package, rather than a subdependency. [#151](https://github.com/humanmade/webpack-helpers/pull/151)
 - Update `webpack-bundle-analyzer` bundled plugin to v4.3.0. [#146](https://github.com/humanmade/webpack-helpers/pull/146)
 
