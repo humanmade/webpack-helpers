@@ -19,6 +19,7 @@ module.exports = [
 		},
 		output: {
 			path: filePath( 'test/build/dev' ),
+			publicPath: '/',
 		},
 	} ),
 ];

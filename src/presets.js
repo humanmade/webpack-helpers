@@ -205,9 +205,7 @@ const development = ( config = {}, options = {} ) => {
 		const hasManifestPlugin = plugins.findExistingInstance( config.plugins, ManifestPlugin );
 		// Add a manifest with the inferred publicPath if none was present.
 		if ( ! hasManifestPlugin ) {
-			devDefaults.plugins.push( plugins.manifest( {
-				publicPath,
-			} ) );
+			devDefaults.plugins.push( plugins.manifest() );
 		}
 	}
 
