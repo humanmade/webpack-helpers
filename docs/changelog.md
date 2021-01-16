@@ -9,10 +9,14 @@ nav_order: 10
 ## v0.10
 
 - **Potentially Breaking**: Update `mini-css-extract-plugin` to v1.3.4. [Changelog](https://github.com/webpack-contrib/mini-css-extract-plugin/blob/master/CHANGELOG.md). [#148](https://github.com/humanmade/webpack-helpers/pull/148)
-- **Potentially Breaking**: Update `css-loader` to v5.0.1. [Changelog](https://github.com/webpack-contrib/css-loader/blob/master/CHANGELOG.md). [#136](https://github.com/humanmade/webpack-helpers/136)
-- **Potentially Breaking**: Update `style-loader` to v2.0.0. [Changelog](https://github.com/webpack-contrib/style-loader/blob/master/CHANGELOG.md). [#127](https://github.com/humanmade/webpack-helpers/127)
+- **Potentially Breaking**: Update `css-loader` to v5.0.1. [Changelog](https://github.com/webpack-contrib/css-loader/blob/master/CHANGELOG.md). [#136](https://github.com/humanmade/webpack-helpers/pull/136)
+- **Potentially Breaking**: Update `style-loader` to v2.0.0. [Changelog](https://github.com/webpack-contrib/style-loader/blob/master/CHANGELOG.md). [#127](https://github.com/humanmade/webpack-helpers/pull/127)
 
 All three of the above dependency upgrades include breaking API changes. None of these changes should impact vanilla usage of the [presets](https://humanmade.github.io/webpack-helpers/modules/presets.html) provided by these helpers, but we recommend reviewing all three libraries' changelogs to identify potential issues if you are [customizing presets or loader behavior](https://humanmade.github.io/webpack-helpers/modules/presets.html#customizing-presets) relating to stylesheets.
+
+- **Potentially Breaking**: Update `webpack-manifest-plugin` to v3.0.0. [Changelog](https://github.com/shellscape/webpack-manifest-plugin/releases). [#143](https://github.com/humanmade/webpack-helpers/pull/143)
+
+The manifest plugin now exports its constructor as a named export, not a default, so any custom builds which pull in the `ManifestPlugin` constructor directly from the plugin dependency (as opposed to using the recommended `plugins.manifest()` factory function) will need to switch to using `plugins.constructors.ManifestPlugin`. This should not impact un-customized presets.
 
 - **Potentially Breaking**: Update `postcss-flexbugs-fixes` to v5.0.2 and update `postcss-loader` to v4.1.0. [#152](https://github.com/humanmade/webpack-helpers/pull/152)
 
