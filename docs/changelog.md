@@ -10,7 +10,7 @@ nav_order: 10
 
 **New Features**
 
-- A `production-asset-manifest.json` is now output on all production preset builds. Builds in a multi-configuration setup which target the same output folder will share a manifest. [#153](https://github.com/humanmade/webpack-helpers/pull/153)
+- Generate a `production-asset-manifest.json` for all production preset builds. [#153](https://github.com/humanmade/webpack-helpers/pull/153) Builds in a multi-configuration setup which target the same output folder will share a manifest. [#154](https://github.com/humanmade/webpack-helpers/pull/154)
 
 **Upgrades & Changes**
 
