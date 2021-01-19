@@ -340,6 +340,15 @@ const production = ( config = {}, options = {} ) => {
 		prodDefaults.plugins.push( plugins.miniCssExtract() );
 	}
 
+	// Add a manifest plugin to generate a production asset manifest if none is already present.
+	const hasManifestPlugin = plugins.findExistingInstance( config.plugins, ManifestPlugin );
+	// Add a manifest with the inferred publicPath if none was present.
+	if ( ! hasManifestPlugin ) {
+		prodDefaults.plugins.push( plugins.manifest( {
+			fileName: 'production-asset-manifest.json',
+		} ) );
+	}
+
 	return deepMerge( prodDefaults, config );
 };
 
