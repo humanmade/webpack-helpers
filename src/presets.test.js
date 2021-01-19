@@ -2,6 +2,7 @@ const {
 	development,
 	production,
 } = require( './presets' );
+const plugins = require( './plugins' );
 
 jest.mock( 'process', () => ( { cwd: () => 'cwd' } ) );
 
@@ -202,7 +203,40 @@ describe( 'presets', () => {
 			} );
 		} );
 
-		it.todo( 'injects a MiniCssExtractPlugin if none is present in options' );
+		it( 'injects a MiniCssExtractPlugin if none is present in options', () => {
+			const { MiniCssExtractPlugin } = plugins.constructors;
+			const config = production( {
+				entry: {
+					main: 'some-file.css',
+				},
+			} );
+			expect( config.plugins ).toEqual( expect.arrayContaining( [
+				expect.any( plugins.constructors.MiniCssExtractPlugin ),
+			] ) );
+			const cssPlugins = config.plugins.filter( ( plugin ) => plugin instanceof MiniCssExtractPlugin );
+			expect( cssPlugins.length ).toBe( 1 );
+			expect( cssPlugins[ 0 ].options.filename ).toEqual( '[name].css' );
+		} );
+
+		it( 'does not override or duplicate existing MiniCssExtractPlugin instances', () => {
+			const { MiniCssExtractPlugin } = plugins.constructors;
+			const config = production( {
+				entry: {
+					main: 'some-file.css',
+				},
+				plugins: [
+					plugins.miniCssExtract( {
+						filename: 'custom-filename.css',
+					} ),
+				],
+			} );
+			expect( config.plugins ).toEqual( expect.arrayContaining( [
+				expect.any( MiniCssExtractPlugin ),
+			] ) );
+			const cssPlugins = config.plugins.filter( ( plugin ) => plugin instanceof MiniCssExtractPlugin );
+			expect( cssPlugins.length ).toBe( 1 );
+			expect( cssPlugins[ 0 ].options.filename ).toEqual( 'custom-filename.css' );
+		} );
 
 		it( 'permits filtering the computed output of individual loaders', () => {
 			const config = production( {
