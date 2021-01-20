@@ -8,6 +8,12 @@ nav_order: 10
 
 ## v0.10
 
+**New Features**
+
+- Generate a `production-asset-manifest.json` for all production preset builds. [#153](https://github.com/humanmade/webpack-helpers/pull/153) Builds in a multi-configuration setup which target the same output folder will share a manifest. [#154](https://github.com/humanmade/webpack-helpers/pull/154)
+
+**Upgrades & Changes**
+
 - **Potentially Breaking**: Update `mini-css-extract-plugin` to v1.3.4. [Changelog](https://github.com/webpack-contrib/mini-css-extract-plugin/blob/master/CHANGELOG.md). [#148](https://github.com/humanmade/webpack-helpers/pull/148)
 - **Potentially Breaking**: Update `css-loader` to v5.0.1. [Changelog](https://github.com/webpack-contrib/css-loader/blob/master/CHANGELOG.md). [#136](https://github.com/humanmade/webpack-helpers/pull/136)
 - **Potentially Breaking**: Update `style-loader` to v2.0.0. [Changelog](https://github.com/webpack-contrib/style-loader/blob/master/CHANGELOG.md). [#127](https://github.com/humanmade/webpack-helpers/pull/127)

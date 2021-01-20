@@ -8,6 +8,26 @@ const plugins = require( './plugins' );
 const { ManifestPlugin, MiniCssExtractPlugin } = plugins.constructors;
 
 /**
+ * Dictionary of shared seed objects by path.
+ *
+ * @type {Object}
+ */
+const seeds = {};
+
+/**
+ * Return a consistent seed object per output directory path.
+ *
+ * @param {String} path Output directory path
+ * @returns {Object} Shared seed object.
+ */
+const getSeedByDirectory = ( path ) => {
+	if ( ! seeds[ path ] ) {
+		seeds[ path ] = {};
+	}
+	return seeds[ path ];
+};
+
+/**
  * Helper to detect whether a given package is installed, and return a spreadable
  * array containing an appropriate loader if so.
  *
@@ -338,6 +358,17 @@ const production = ( config = {}, options = {} ) => {
 	const hasCssPlugin = plugins.findExistingInstance( config.plugins, MiniCssExtractPlugin );
 	if ( ! hasCssPlugin ) {
 		prodDefaults.plugins.push( plugins.miniCssExtract() );
+	}
+
+	// Add a manifest plugin to generate a production asset manifest if none is already present.
+	const hasManifestPlugin = plugins.findExistingInstance( config.plugins, ManifestPlugin );
+	// Add a manifest with the inferred publicPath if none was present.
+	if ( ! hasManifestPlugin ) {
+		const outputPath = ( config.output && config.output.path ) || prodDefaults.output.path;
+		prodDefaults.plugins.push( plugins.manifest( {
+			fileName: 'production-asset-manifest.json',
+			seed: getSeedByDirectory( outputPath ),
+		} ) );
 	}
 
 	return deepMerge( prodDefaults, config );

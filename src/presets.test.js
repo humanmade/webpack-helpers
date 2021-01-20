@@ -2,8 +2,17 @@ const {
 	development,
 	production,
 } = require( './presets' );
+const plugins = require( './plugins' );
 
 jest.mock( 'process', () => ( { cwd: () => 'cwd' } ) );
+
+/**
+ * Filter an array of plugins to only contain plugins of the provided type.
+ *
+ * @param {Function} Constructor Plugin constructor.
+ * @returns {Function} Function of type ( plugin ) => boolean.
+ */
+const filterPlugins = ( Constructor ) => ( plugin ) => plugin instanceof Constructor;
 
 /**
  * Find a loader of a given type within a module.rules configuration.
@@ -202,7 +211,108 @@ describe( 'presets', () => {
 			} );
 		} );
 
-		it.todo( 'injects a MiniCssExtractPlugin if none is present in options' );
+		it( 'injects a MiniCssExtractPlugin if none is present in options', () => {
+			const { MiniCssExtractPlugin } = plugins.constructors;
+			const config = production( {
+				entry: {
+					main: 'some-file.css',
+				},
+			} );
+			expect( config.plugins ).toEqual( expect.arrayContaining( [
+				expect.any( plugins.constructors.MiniCssExtractPlugin ),
+			] ) );
+			const cssPlugins = config.plugins.filter( filterPlugins( MiniCssExtractPlugin ) );
+			expect( cssPlugins.length ).toBe( 1 );
+			expect( cssPlugins[ 0 ].options.filename ).toEqual( '[name].css' );
+		} );
+
+		it( 'does not override or duplicate existing MiniCssExtractPlugin instances', () => {
+			const { MiniCssExtractPlugin } = plugins.constructors;
+			const config = production( {
+				entry: {
+					main: 'some-file.css',
+				},
+				plugins: [
+					plugins.miniCssExtract( {
+						filename: 'custom-filename.css',
+					} ),
+				],
+			} );
+			expect( config.plugins ).toEqual( expect.arrayContaining( [
+				expect.any( MiniCssExtractPlugin ),
+			] ) );
+			const cssPlugins = config.plugins.filter( filterPlugins( MiniCssExtractPlugin ) );
+			expect( cssPlugins.length ).toBe( 1 );
+			expect( cssPlugins[ 0 ].options.filename ).toEqual( 'custom-filename.css' );
+		} );
+
+		it( 'injects a production ManifestPlugin if none is present in options', () => {
+			const { ManifestPlugin } = plugins.constructors;
+			const config = production( {
+				entry: {
+					main: 'some-file.css',
+				},
+			} );
+			expect( config.plugins ).toEqual( expect.arrayContaining( [
+				expect.any( plugins.constructors.ManifestPlugin ),
+			] ) );
+			const manifestPlugins = config.plugins.filter( filterPlugins( ManifestPlugin ) );
+			expect( manifestPlugins.length ).toBe( 1 );
+			expect( manifestPlugins[ 0 ].options.fileName ).toEqual( 'production-asset-manifest.json' );
+		} );
+
+		it( 'does not override or duplicate existing ManifestPlugin instances', () => {
+			const { ManifestPlugin } = plugins.constructors;
+			const config = production( {
+				entry: {
+					main: 'some-file.css',
+				},
+				plugins: [
+					plugins.manifest( {
+						fileName: 'custom-manifest.json',
+					} ),
+				],
+			} );
+			expect( config.plugins ).toEqual( expect.arrayContaining( [
+				expect.any( plugins.constructors.ManifestPlugin ),
+			] ) );
+			const manifestPlugins = config.plugins.filter( filterPlugins( ManifestPlugin ) );
+			expect( manifestPlugins.length ).toBe( 1 );
+			expect( manifestPlugins[ 0 ].options.fileName ).toEqual( 'custom-manifest.json' );
+		} );
+
+		it( 'uses a consistent seed for manifests generated in the same directory', () => {
+			const { ManifestPlugin } = plugins.constructors;
+			const [ manifest1 ] = production( {
+				entry: { main: 'some-file' },
+				output: { path: '/some/path' },
+			} )
+				.plugins
+				.filter( filterPlugins( ManifestPlugin ) );
+			const [ manifest2 ] = production( {
+				entry: { main: 'some-file' },
+				output: { path: '/some/path' },
+			} )
+				.plugins
+				.filter( filterPlugins( ManifestPlugin ) );
+			const [ manifest3 ] = production( {
+				entry: { main: 'some-file' },
+				output: { path: '/some/DIFFERENT/path' },
+			} )
+				.plugins
+				.filter( filterPlugins( ManifestPlugin ) );
+			// Ensure the two builds in the same folder use the same seed.
+			expect( manifest1.options.seed ).toEqual( {} );
+			expect( manifest2.options.seed ).toEqual( {} );
+			expect( manifest1 ).not.toBe( manifest2 );
+			expect( manifest1.options.seed ).toBe( manifest2.options.seed );
+			// Ensure the build to the other output.path uses a different seed.
+			expect( manifest3 ).not.toBe( manifest1 );
+			expect( manifest3 ).not.toBe( manifest2 );
+			expect( manifest3.options.seed ).toEqual( {} );
+			expect( manifest3.options.seed ).not.toBe( manifest2.options.seed );
+			expect( manifest3.options.seed ).not.toBe( manifest1.options.seed );
+		} );
 
 		it( 'permits filtering the computed output of individual loaders', () => {
 			const config = production( {

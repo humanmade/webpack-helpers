@@ -20,7 +20,7 @@
   "scripts": {
     "lint": "eslint .",
     "test": "jest",
-    "test-build": "webpack --config=test/test-config.js"
+    "test-build": "rm -rf test/build && webpack --config=test/test-config.js"
   },
   "jest": {
     "setupFilesAfterEnv": [
