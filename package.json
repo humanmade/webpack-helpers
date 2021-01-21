@@ -39,7 +39,7 @@
   "dependencies": {
     "@babel/core": "^7.10.3",
     "@babel/plugin-proposal-class-properties": "^7.10.1",
-    "@wordpress/babel-preset-default": "^4.16.0",
+    "@wordpress/babel-preset-default": "^5.0.0",
     "babel-loader": "^8.0.6",
     "babel-plugin-transform-react-jsx": "^6.24.1",
     "bell-on-bundler-error-plugin": "^2.0.0",
