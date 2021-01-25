@@ -121,7 +121,6 @@ const development = ( config = {}, options = {} ) => {
 
 		// Inject a default entry point later on if none was specified.
 
-		// `publicPath` should be specified by the consumer.
 		output: {
 			// Provide a default output path.
 			path: filePath( 'build' ),
@@ -131,6 +130,8 @@ const development = ( config = {}, options = {} ) => {
 			filename: '[name].js',
 			// Provide chunk filename. Requires content hash for cache busting.
 			chunkFilename: '[name].[contenthash].chunk.js',
+			// `publicPath` will be inferred as a localhost URL based on output.path
+			// when a devServer.port value is available.
 		},
 
 		module: {
