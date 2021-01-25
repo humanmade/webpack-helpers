@@ -209,9 +209,15 @@ const development = ( config = {}, options = {} ) => {
 	const port = findInObject( config, 'devServer.port' );
 	let publicPath = findInObject( config, 'output.publicPath' );
 	if ( ! publicPath && port ) {
+		// Get the relative path to output.path, without a preceding
+		// slash but including a trailing slash.
+		const relPath = ( findInObject( config, 'output.path' ) || findInObject( devDefaults, 'output.path' ) )
+			.replace( filePath(), '' )
+			.replace( /^\/*/, '' )
+			.replace( /\/*$/, '/' );
 		publicPath = `${
 			findInObject( config, 'devServer.https' ) ? 'https' : 'http'
-		}://localhost:${ port }/`;
+		}://localhost:${ port }/${ relPath }`;
 	}
 
 	// If we had enough value to guess a publicPath, set that path as a default
