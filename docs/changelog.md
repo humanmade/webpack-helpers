@@ -10,6 +10,7 @@ nav_order: 10
 
 **New Features**
 
+- Adapt the value of `output.path` when inferring `output.publicPath` in DevServer so that all assets are correctly served in multi-config situations. [#156](https://github.com/humanmade/webpack-helpers/pull/156)
 - Generate a `production-asset-manifest.json` for all production preset builds. [#153](https://github.com/humanmade/webpack-helpers/pull/153) Builds in a multi-configuration setup which target the same output folder will share a manifest. [#154](https://github.com/humanmade/webpack-helpers/pull/154)
 
 **Upgrades & Changes**

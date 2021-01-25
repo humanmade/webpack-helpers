@@ -99,8 +99,57 @@ describe( 'presets', () => {
 			} );
 		} );
 
-		it.todo( 'assumes a default output.publicPath if a port is specified' );
-		it.todo( 'accounts for the value of devServer.https when inferring publicPath URI' );
+		it( 'assumes a default output.publicPath if a port is specified', () => {
+			const config = development( {
+				devServer: {
+					port: 9090,
+				},
+				entry: 'some-file.js',
+			} );
+			expect( config.output.publicPath ).toBe( 'http://localhost:9090/build/' );
+		} );
+
+		it( 'accounts for the value of devServer.https when inferring publicPath URI', () => {
+			const config = development( {
+				devServer: {
+					https: true,
+					port: 9090,
+				},
+				entry: 'some-file.js',
+			} );
+			expect( config.output.publicPath ).toBe( 'https://localhost:9090/build/' );
+		} );
+
+		it( 'adapts output.path when inferring publicPath URI', () => {
+			const config = development( {
+				devServer: {
+					port: 9090,
+				},
+				entry: 'some-file.js',
+				output: {
+					path: 'some/target',
+				},
+			} );
+			expect( config.output.publicPath ).toBe( 'http://localhost:9090/some/target/' );
+		} );
+
+		it( 'does not assume output.publicPath if a port is not specified', () => {
+			const config = development( {
+				entry: 'some-file.js',
+			} );
+			expect( config.output.publicPath ).toBeUndefined();
+		} );
+
+		it( 'does not overwrite an existing output.publicPath when present', () => {
+			const config = development( {
+				entry: 'some-file.js',
+				output: {
+					publicPath: 'https://my-custom-domain.local/',
+				},
+			} );
+			expect( config.output.publicPath ).toBe( 'https://my-custom-domain.local/' );
+		} );
+
 		it.todo( 'injects a ManifestPlugin if publicPath can be inferred and no manifest plugin is already present' );
 		it.todo( 'does not inject a ManifestPlugin if publicPath cannot be inferred' );
 		it.todo( 'does not inject a ManifestPlugin if a manifest plugin is already present' );

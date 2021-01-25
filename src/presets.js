@@ -121,7 +121,6 @@ const development = ( config = {}, options = {} ) => {
 
 		// Inject a default entry point later on if none was specified.
 
-		// `publicPath` should be specified by the consumer.
 		output: {
 			// Provide a default output path.
 			path: filePath( 'build' ),
@@ -131,6 +130,8 @@ const development = ( config = {}, options = {} ) => {
 			filename: '[name].js',
 			// Provide chunk filename. Requires content hash for cache busting.
 			chunkFilename: '[name].[contenthash].chunk.js',
+			// `publicPath` will be inferred as a localhost URL based on output.path
+			// when a devServer.port value is available.
 		},
 
 		module: {
@@ -209,9 +210,15 @@ const development = ( config = {}, options = {} ) => {
 	const port = findInObject( config, 'devServer.port' );
 	let publicPath = findInObject( config, 'output.publicPath' );
 	if ( ! publicPath && port ) {
+		// Get the relative path to output.path, without a preceding
+		// slash but including a trailing slash.
+		const relPath = ( findInObject( config, 'output.path' ) || findInObject( devDefaults, 'output.path' ) )
+			.replace( filePath(), '' )
+			.replace( /^\/*/, '' )
+			.replace( /\/*$/, '/' );
 		publicPath = `${
 			findInObject( config, 'devServer.https' ) ? 'https' : 'http'
-		}://localhost:${ port }/`;
+		}://localhost:${ port }/${ relPath }`;
 	}
 
 	// If we had enough value to guess a publicPath, set that path as a default
