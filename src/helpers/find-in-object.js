@@ -6,6 +6,9 @@
  * @returns {*} The value of the specified path, or null.
  */
 module.exports = ( obj, objectPath ) => {
+	if ( ! obj ) {
+		return null;
+	}
 	const pathParts = objectPath.split( '.' );
 	let currentLevel = obj;
 	for ( let prop of pathParts ) {

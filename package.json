@@ -19,7 +19,8 @@
   ],
   "scripts": {
     "lint": "eslint .",
-    "test": "jest"
+    "test": "jest",
+    "test-build": "rm -rf test/build && webpack --config=test/test-config.js"
   },
   "jest": {
     "setupFilesAfterEnv": [
@@ -29,10 +30,11 @@
   "devDependencies": {
     "eslint": "^7.17.0",
     "jest": "^26.6.3",
-    "sass": "^1.26.10",
+    "sass": "^1.32.4",
     "typescript": "^4.0.2",
-    "webpack": "^4.35.0",
-    "webpack-dev-server": "^3.7.2"
+    "webpack": "^4.46.0",
+    "webpack-cli": "^4.3.1",
+    "webpack-dev-server": "^3.11.2"
   },
   "dependencies": {
     "@babel/core": "^7.12.10",
@@ -51,9 +53,9 @@
     "file-loader": "^6.2.0",
     "inquirer": "^7.3.3",
     "is-root": "^2.1.0",
-    "mini-css-extract-plugin": "^1.3.3",
+    "mini-css-extract-plugin": "^1.3.4",
     "optimize-css-assets-webpack-plugin": "^5.0.4",
-    "postcss": "^8.2.2",
+    "postcss": "^8.2.4",
     "postcss-flexbugs-fixes": "^5.0.2",
     "postcss-loader": "^4.1.0",
     "postcss-preset-env": "^6.7.0",

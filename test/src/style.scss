@@ -1,0 +1,11 @@
+div {
+	p {
+		font-family: 'Papyrus';
+
+		&:first-child {
+			color: 'red';
+			font-weight: bold;
+			font-family: 'Comic Sans MS', sans-serif;
+		}
+	}
+}

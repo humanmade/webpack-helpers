@@ -6,6 +6,36 @@ nav_order: 10
 
 # Changelog
 
+## v0.10
+
+**New Features**
+
+- Adapt the value of `output.path` when inferring `output.publicPath` in DevServer so that all assets are correctly served in multi-config situations. [#156](https://github.com/humanmade/webpack-helpers/pull/156)
+- Generate a `production-asset-manifest.json` for all production preset builds. [#153](https://github.com/humanmade/webpack-helpers/pull/153) Builds in a multi-configuration setup which target the same output folder will share a manifest. [#154](https://github.com/humanmade/webpack-helpers/pull/154)
+
+**Upgrades & Changes**
+
+- **Potentially Breaking**: Update `mini-css-extract-plugin` to v1.3.4. [Changelog](https://github.com/webpack-contrib/mini-css-extract-plugin/blob/master/CHANGELOG.md). [#148](https://github.com/humanmade/webpack-helpers/pull/148)
+- **Potentially Breaking**: Update `css-loader` to v5.0.1. [Changelog](https://github.com/webpack-contrib/css-loader/blob/master/CHANGELOG.md). [#136](https://github.com/humanmade/webpack-helpers/pull/136)
+- **Potentially Breaking**: Update `style-loader` to v2.0.0. [Changelog](https://github.com/webpack-contrib/style-loader/blob/master/CHANGELOG.md). [#127](https://github.com/humanmade/webpack-helpers/pull/127)
+
+All three of the above dependency upgrades include breaking API changes. None of these changes should impact vanilla usage of the [presets](https://humanmade.github.io/webpack-helpers/modules/presets.html) provided by these helpers, but we recommend reviewing all three libraries' changelogs to identify potential issues if you are [customizing presets or loader behavior](https://humanmade.github.io/webpack-helpers/modules/presets.html#customizing-presets) relating to stylesheets.
+
+- **Potentially Breaking**: Update `webpack-manifest-plugin` to v3.0.0. [Changelog](https://github.com/shellscape/webpack-manifest-plugin/releases). [#143](https://github.com/humanmade/webpack-helpers/pull/143)
+
+The manifest plugin now exports its constructor as a named export, not a default, so any custom builds which pull in the `ManifestPlugin` constructor directly from the plugin dependency (as opposed to using the recommended `plugins.manifest()` factory function) will need to switch to using `plugins.constructors.ManifestPlugin`. This should not impact un-customized presets.
+
+- **Potentially Breaking**: Update `postcss-flexbugs-fixes` to v5.0.2 and update `postcss-loader` to v4.1.0. [#152](https://github.com/humanmade/webpack-helpers/pull/152)
+
+The upgrade to `postcss-loader` requires nesting PostCSS configuration options within a `.postcssOptions` key on the object passed to the webpack loader. As with the style loading changes above, if you use the presets without customization this should not impact your project. Otherwise, ensure you have added this level of nesting to any code which customizes the `postcss-loader`'s configuration object. Consult the [`postcss-loader` changelog](https://github.com/webpack-contrib/postcss-loader/blob/master/CHANGELOG.md#-breaking-changes) for more information.
+
+- Upgrade `webpack-fix-style-only-entries` plugin to v0.6.0. This may resolve the issue previously documented in [#93](https://github.com/humanmade/webpack-helpers/pull/93) where files would be incorrectly deleted when processing an array of webpack configuration objects. [#129](https://github.com/humanmade/webpack-helpers/pull/129)
+- Include `postcss` as a direct dependency of this package, rather than a subdependency. [#151](https://github.com/humanmade/webpack-helpers/pull/151)
+- Update `webpack-bundle-analyzer` bundled plugin to v4.3.0. [#146](https://github.com/humanmade/webpack-helpers/pull/146)
+
+- Internal: Add the generation of a basic development and production bundle, including scss styles, to the CI job. [#149](https://github.com/humanmade/webpack-helpers/pull/149)
+- Internal: Upgrade local development dependencies to latest versions. [#150](https://github.com/humanmade/webpack-helpers/pull/150)
+
 ## v0.9
 
 - Introduce support for filtering entire stylesheet loader chain by matching against the special `loaderKey` value "stylesheet" [when passing a `filterLoaders` method into a preset](https://humanmade.github.io/webpack-helpers/modules/presets.html#customizing-presets). [#124](https://github.com/humanmade/webpack-helpers/pull/124)

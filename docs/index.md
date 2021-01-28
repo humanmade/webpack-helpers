@@ -116,7 +116,7 @@ Instead of copying and pasting your webpack plugin dependencies between projects
 
 ```js
 // Before
-const ManifestPlugin = require( 'webpack-manifest-plugin' );
+const { WebpackManifestPlugin } = require( 'webpack-manifest-plugin' );
 const MiniCssExtractPlugin = require( 'mini-css-extract-plugin' );
 const TerserPlugin = require( 'terser-webpack-plugin' );
 module.exports = {
@@ -129,7 +129,7 @@ module.exports = {
 		],
 	},
 	plugins: [
-		new ManifestPlugin( {
+		new WebpackManifestPlugin( {
 			/* Several required options */
 		} ),
 		new MiniCssExtractPlugin( { filename: '[name].css' } ),

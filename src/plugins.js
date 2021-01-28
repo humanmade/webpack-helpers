@@ -4,7 +4,7 @@ const { HotModuleReplacementPlugin } = require( 'webpack' );
 const BellOnBundleErrorPlugin = require( 'bell-on-bundler-error-plugin' );
 const CopyPlugin = require( 'copy-webpack-plugin' );
 const FixStyleOnlyEntriesPlugin = require( 'webpack-fix-style-only-entries' );
-const { WebpackManifestPlugin } = require( 'webpack-manifest-plugin' );
+const { WebpackManifestPlugin: ManifestPlugin } = require( 'webpack-manifest-plugin' );
 const MiniCssExtractPlugin = require( 'mini-css-extract-plugin' );
 const TerserPlugin = require( 'terser-webpack-plugin' );
 const OptimizeCssAssetsPlugin = require( 'optimize-css-assets-webpack-plugin' );
@@ -24,7 +24,7 @@ module.exports = {
 		CopyPlugin,
 		FixStyleOnlyEntriesPlugin,
 		HotModuleReplacementPlugin,
-		WebpackManifestPlugin,
+		ManifestPlugin,
 		MiniCssExtractPlugin,
 		OptimizeCssAssetsPlugin,
 		TerserPlugin,
@@ -126,7 +126,7 @@ module.exports = {
 	 * @param {String} options.publicPath The base URI to prepend to build asset URIs.
 	 * @returns {ManifestPlugin} A configured ManifestPlugin instance.
 	 */
-	manifest: ( options = {} ) => new WebpackManifestPlugin( {
+	manifest: ( options = {} ) => new ManifestPlugin( {
 		fileName: 'asset-manifest.json',
 		writeToFileEmit: true,
 		...options,

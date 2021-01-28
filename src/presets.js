@@ -8,6 +8,26 @@ const plugins = require( './plugins' );
 const { ManifestPlugin, MiniCssExtractPlugin } = plugins.constructors;
 
 /**
+ * Dictionary of shared seed objects by path.
+ *
+ * @type {Object}
+ */
+const seeds = {};
+
+/**
+ * Return a consistent seed object per output directory path.
+ *
+ * @param {String} path Output directory path
+ * @returns {Object} Shared seed object.
+ */
+const getSeedByDirectory = ( path ) => {
+	if ( ! seeds[ path ] ) {
+		seeds[ path ] = {};
+	}
+	return seeds[ path ];
+};
+
+/**
  * Helper to detect whether a given package is installed, and return a spreadable
  * array containing an appropriate loader if so.
  *
@@ -101,7 +121,6 @@ const development = ( config = {}, options = {} ) => {
 
 		// Inject a default entry point later on if none was specified.
 
-		// `publicPath` should be specified by the consumer.
 		output: {
 			// Provide a default output path.
 			path: filePath( 'build' ),
@@ -111,6 +130,8 @@ const development = ( config = {}, options = {} ) => {
 			filename: '[name].js',
 			// Provide chunk filename. Requires content hash for cache busting.
 			chunkFilename: '[name].[contenthash].chunk.js',
+			// `publicPath` will be inferred as a localhost URL based on output.path
+			// when a devServer.port value is available.
 		},
 
 		module: {
@@ -189,9 +210,15 @@ const development = ( config = {}, options = {} ) => {
 	const port = findInObject( config, 'devServer.port' );
 	let publicPath = findInObject( config, 'output.publicPath' );
 	if ( ! publicPath && port ) {
+		// Get the relative path to output.path, without a preceding
+		// slash but including a trailing slash.
+		const relPath = ( findInObject( config, 'output.path' ) || findInObject( devDefaults, 'output.path' ) )
+			.replace( filePath(), '' )
+			.replace( /^\/*/, '' )
+			.replace( /\/*$/, '/' );
 		publicPath = `${
 			findInObject( config, 'devServer.https' ) ? 'https' : 'http'
-		}://localhost:${ port }/`;
+		}://localhost:${ port }/${ relPath }`;
 	}
 
 	// If we had enough value to guess a publicPath, set that path as a default
@@ -205,9 +232,7 @@ const development = ( config = {}, options = {} ) => {
 		const hasManifestPlugin = plugins.findExistingInstance( config.plugins, ManifestPlugin );
 		// Add a manifest with the inferred publicPath if none was present.
 		if ( ! hasManifestPlugin ) {
-			devDefaults.plugins.push( plugins.manifest( {
-				publicPath,
-			} ) );
+			devDefaults.plugins.push( plugins.manifest() );
 		}
 	}
 
@@ -340,6 +365,17 @@ const production = ( config = {}, options = {} ) => {
 	const hasCssPlugin = plugins.findExistingInstance( config.plugins, MiniCssExtractPlugin );
 	if ( ! hasCssPlugin ) {
 		prodDefaults.plugins.push( plugins.miniCssExtract() );
+	}
+
+	// Add a manifest plugin to generate a production asset manifest if none is already present.
+	const hasManifestPlugin = plugins.findExistingInstance( config.plugins, ManifestPlugin );
+	// Add a manifest with the inferred publicPath if none was present.
+	if ( ! hasManifestPlugin ) {
+		const outputPath = ( config.output && config.output.path ) || prodDefaults.output.path;
+		prodDefaults.plugins.push( plugins.manifest( {
+			fileName: 'production-asset-manifest.json',
+			seed: getSeedByDirectory( outputPath ),
+		} ) );
 	}
 
 	return deepMerge( prodDefaults, config );
