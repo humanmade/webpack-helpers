@@ -346,7 +346,7 @@ const production = ( config = {}, options = {} ) => {
 				) ),
 			],
 			nodeEnv: 'production',
-			noEmitOnErrors: true,
+			emitOnErrors: false,
 		},
 
 		stats,

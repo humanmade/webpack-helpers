@@ -80,6 +80,7 @@ loaders.postcss.defaults = {
 	loader: require.resolve( 'postcss-loader' ),
 	options: {
 		postcssOptions: {
+			ident: 'postcss',
 			plugins: [
 				postcssFlexbugsFixes,
 				postcssPresetEnv( {
