@@ -6,6 +6,10 @@ nav_order: 10
 
 # Changelog
 
+## v0.10.1
+
+- Update WordPress `externals` object to match latest bundled scripts. [#160](https://github.com/humanmade/webpack-helpers/pull/160)
+
 ## v0.10
 
 **New Features**
