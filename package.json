@@ -72,8 +72,8 @@
   "peerDependencies": {
     "sass": "*",
     "typescript": "*",
-    "webpack-cli": "*",
     "webpack": "^4.0.0",
+    "webpack-cli": "*",
     "webpack-dev-server": "^3.0.0"
   }
 }
