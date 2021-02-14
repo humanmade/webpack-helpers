@@ -4,8 +4,21 @@
  * and use an available port on your host system when using webpack-dev-server.
  */
 const choosePort = require( './choose-port' );
+const filePath = require( './file-path' );
+const findInObject = require( './find-in-object' );
+const inferPublicPath = require( './infer-public-path' );
 
 const DEFAULT_PORT = 9090;
+
+/**
+ * Default development environment-oriented Webpack options.
+ */
+const devDefaults = {
+	output: {
+		// Provide a default output path.
+		path: filePath( 'build' ),
+	},
+};
 
 /**
  *
@@ -35,11 +48,16 @@ const withDynamicPort = ( port, config ) => {
 	 * the ":port" token with a valid port value if such a token is present, of
 	 * else return the publicPath string as-is.
 	 *
-	 * @param {String} publicPath   User-specified public path string.
+	 * @param {Object} config       Development Webpack configuration object.
 	 * @param {Number} selectedPort Final HTTP port value.
 	 * @returns {String} Updated publicPath string.
 	 */
-	const getPublicPath = ( publicPath, selectedPort ) => {
+	const getPublicPath = ( config, selectedPort ) => {
+		let publicPath = findInObject( config, 'output.publicPath' );
+		if ( ! publicPath && port ) {
+			publicPath = inferPublicPath( config, port, devDefaults );
+		}
+
 		if ( publicPath && portPlaceholder.test( publicPath ) ) {
 			return publicPath.replace( portPlaceholder, `:${ selectedPort }` );
 		}
@@ -60,7 +78,7 @@ const withDynamicPort = ( port, config ) => {
 		},
 		output: {
 			...( config.output || {} ),
-			publicPath: getPublicPath( config.output.publicPath, selectedPort ),
+			publicPath: getPublicPath( config, selectedPort ),
 		},
 	} );
 

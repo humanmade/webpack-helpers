@@ -2,6 +2,7 @@ const { devServer, stats } = require( './config' );
 const deepMerge = require( './helpers/deep-merge' );
 const filePath = require( './helpers/file-path' );
 const findInObject = require( './helpers/find-in-object' );
+const inferPublicPath = require( './helpers/infer-public-path' );
 const isInstalled = require( './helpers/is-installed' );
 const loaders = require( './loaders' );
 const plugins = require( './plugins' );
@@ -210,15 +211,7 @@ const development = ( config = {}, options = {} ) => {
 	const port = findInObject( config, 'devServer.port' );
 	let publicPath = findInObject( config, 'output.publicPath' );
 	if ( ! publicPath && port ) {
-		// Get the relative path to output.path, without a preceding
-		// slash but including a trailing slash.
-		const relPath = ( findInObject( config, 'output.path' ) || findInObject( devDefaults, 'output.path' ) )
-			.replace( filePath(), '' )
-			.replace( /^\/*/, '' )
-			.replace( /\/*$/, '/' );
-		publicPath = `${
-			findInObject( config, 'devServer.https' ) ? 'https' : 'http'
-		}://localhost:${ port }/${ relPath }`;
+		publicPath = inferPublicPath( config, port, devDefaults );
 	}
 
 	// If we had enough value to guess a publicPath, set that path as a default
