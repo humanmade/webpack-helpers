@@ -6,6 +6,10 @@ nav_order: 10
 
 # Changelog
 
+## v0.10.2
+
+- Correctly infer a default publicPath when using `withDynamicPort` helper. [#161](https://github.com/humanmade/webpack-helpers/pull/161)
+
 ## v0.10.1
 
 - Update WordPress `externals` object to match latest bundled scripts. [#160](https://github.com/humanmade/webpack-helpers/pull/160)
