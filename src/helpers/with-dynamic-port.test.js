@@ -72,7 +72,7 @@ describe( 'withDynamicPort', () => {
 				},
 				entry: {},
 				output: {
-					publicPath: undefined,
+					publicPath: 'http://localhost:8080/build/',
 				},
 			} );
 		} );
@@ -88,7 +88,7 @@ describe( 'withDynamicPort', () => {
 				},
 				entry: {},
 				output: {
-					publicPath: undefined,
+					publicPath: 'http://localhost:9090/build/',
 				},
 			} );
 		} );
@@ -202,7 +202,7 @@ describe( 'withDynamicPort', () => {
 						},
 						entry: {},
 						output: {
-							publicPath: undefined,
+							publicPath: 'http://localhost:8080/build/',
 						},
 					},
 					{
@@ -211,7 +211,7 @@ describe( 'withDynamicPort', () => {
 						},
 						entry: {},
 						output: {
-							publicPath: undefined,
+							publicPath: 'http://localhost:8080/build/',
 						},
 					},
 				] );
