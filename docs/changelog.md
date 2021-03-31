@@ -6,6 +6,10 @@ nav_order: 10
 
 # Changelog
 
+## v0.10.3
+
+- **Potentially Breaking:** Extend auto-shared seeds for manifest generation to `development` preset. The upshot of this is that multi-config setups in development don't need custom manifest configurations to use the same manifest--they'll do so automatically. [#166](https://github.com/humanmade/webpack-helpers/pull/166)
+
 ## v0.10.2
 
 - Correctly infer a default publicPath when using `withDynamicPort` helper. [#161](https://github.com/humanmade/webpack-helpers/pull/161)
