@@ -225,7 +225,11 @@ const development = ( config = {}, options = {} ) => {
 		const hasManifestPlugin = plugins.findExistingInstance( config.plugins, ManifestPlugin );
 		// Add a manifest with the inferred publicPath if none was present.
 		if ( ! hasManifestPlugin ) {
-			devDefaults.plugins.push( plugins.manifest() );
+			const outputPath = ( config.output && config.output.path ) || devDefaults.output.path;
+			devDefaults.plugins.push( plugins.manifest( {
+				fileName: 'asset-manifest.json',
+				seed: getSeedByDirectory( outputPath ),
+			} ) );
 		}
 	}
 
