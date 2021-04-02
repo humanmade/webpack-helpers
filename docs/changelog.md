@@ -8,7 +8,7 @@ nav_order: 10
 
 ## v0.10.3
 
-- Require Webpack CLI version 3—v4 is not yet supported. [#168](https://github.com/humanmade/webpack-helpers/pull/168)
+- **Potentially Breaking**: Require Webpack CLI version 3 to avoid DevServer issues. If your project uses v4, run `npm install webpack-cli@3` to downgrade. [#168](https://github.com/humanmade/webpack-helpers/pull/168)
 - **Potentially Breaking:** Extend auto-shared seeds for manifest generation to `development` preset. The upshot of this is that multi-config setups in development don't need custom manifest configurations to use the same manifest--they'll do so automatically. [#166](https://github.com/humanmade/webpack-helpers/pull/166)
 
 ## v0.10.2
