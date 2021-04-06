@@ -129,6 +129,14 @@ module.exports = {
 	manifest: ( options = {} ) => new ManifestPlugin( {
 		fileName: 'asset-manifest.json',
 		writeToFileEmit: true,
+		map: ( file ) => {
+			// Make sure an RTL file has a separate entry in the manifest.
+			if ( /\.rtl\.css$/.test( file.path ) ) {
+				file.name = file.name.replace( '.css', '.rtl.css' );
+			}
+
+			return file;
+		},
 		...options,
 	} ),
 
