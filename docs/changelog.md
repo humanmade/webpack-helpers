@@ -6,8 +6,9 @@ nav_order: 10
 
 # Changelog
 
-## v0.10.3
+## Next
 
+- Correctly output `.rtl.css` manifest entries when using the `WebpackRTLPlugin`. [#171](https://github.com/humanmade/webpack-helpers/pull/171)
 - **Potentially Breaking**: Require Webpack CLI version 3 to avoid DevServer issues. If your project uses v4, run `npm install webpack-cli@3` to downgrade. [#168](https://github.com/humanmade/webpack-helpers/pull/168)
 - **Potentially Breaking:** Extend auto-shared seeds for manifest generation to `development` preset. The upshot of this is that multi-config setups in development don't need custom manifest configurations to use the same manifest--they'll do so automatically. [#166](https://github.com/humanmade/webpack-helpers/pull/166)
 - Internal: Pin `run-parallel` subdependency (required by `copy-webpack-plugin`) to 1.1.9 to guarantee Node v10 compatibility. [#167](https://github.com/humanmade/webpack-helpers/pull/167)
