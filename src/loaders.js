@@ -96,7 +96,9 @@ loaders.postcss.defaults = {
 loaders.sass.defaults = {
 	loader: require.resolve( 'sass-loader' ),
 	options: {
-		sassOptions: {},
+		sassOptions: {
+			outputStyle: 'expanded'
+		},
 	},
 };
 
