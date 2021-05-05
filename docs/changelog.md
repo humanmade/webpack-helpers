@@ -6,6 +6,10 @@ nav_order: 10
 
 # Changelog
 
+## v0.11.1
+
+- Do not compress output or strip comments in the SASS loader. This fixes an issue where autoprefixer directive comments would be removed by `sass-loader`, potentially causing compilation errors. [#180](https://github.com/humanmade/webpack-helpers/pull/180)
+
 ## v0.11.0
 
 - Correctly output `.rtl.css` manifest entries when using the `WebpackRTLPlugin`. [#171](https://github.com/humanmade/webpack-helpers/pull/171)
