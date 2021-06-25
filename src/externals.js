@@ -37,6 +37,7 @@ module.exports = [
 	'hooks',
 	'html-entities',
 	'i18n',
+	'icons',
 	'is-shallow-equal',
 	'keyboard-shortcuts',
 	'keycodes',
