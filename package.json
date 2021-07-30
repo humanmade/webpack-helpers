@@ -69,7 +69,7 @@
     "url-loader": "^4.1.0",
     "webpack-bundle-analyzer": "^4.3.0",
     "webpack-fix-style-only-entries": "^0.6.0",
-    "webpack-manifest-plugin": "^3.0.0"
+    "webpack-manifest-plugin": "^4.0.2"
   },
   "peerDependencies": {
     "sass": "*",
