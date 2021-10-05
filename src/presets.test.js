@@ -369,7 +369,7 @@ describe( 'presets', () => {
 			] ) );
 			const cssPlugins = config.plugins.filter( filterPlugins( MiniCssExtractPlugin ) );
 			expect( cssPlugins.length ).toBe( 1 );
-			expect( cssPlugins[ 0 ].options.filename ).toEqual( '[name].css' );
+			expect( cssPlugins[ 0 ].options.filename ).toEqual( '[name].[contenthash].css' );
 		} );
 
 		it( 'does not override or duplicate existing MiniCssExtractPlugin instances', () => {

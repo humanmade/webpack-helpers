@@ -132,7 +132,7 @@ module.exports = {
 		new WebpackManifestPlugin( {
 			/* Several required options */
 		} ),
-		new MiniCssExtractPlugin( { filename: '[name].css' } ),
+		new MiniCssExtractPlugin( { filename: '[name].[contenthash].css' } ),
 	]
 };
 ```

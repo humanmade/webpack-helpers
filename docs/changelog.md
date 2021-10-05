@@ -6,6 +6,10 @@ nav_order: 10
 
 # Changelog
 
+## Next
+
+- Include the `contenthash` in generated CSS filenames. [#204](https://github.com/humanmade/webpack-helpers/pull/204)
+
 ## v0.11.1
 
 - Do not compress output or strip comments in the SASS loader. This fixes an issue where autoprefixer directive comments would be removed by `sass-loader`, potentially causing compilation errors. [#180](https://github.com/humanmade/webpack-helpers/pull/180)
