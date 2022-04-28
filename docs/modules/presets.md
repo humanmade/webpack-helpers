@@ -91,7 +91,6 @@ module.exports = {
 
 [Read up on the `...` "spread operator"](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax#Spread_in_object_literals) if this syntax is unfamiliar to you; it's quite useful!
 
-
 Customize a generated production configuration by object mutation:
 
 ```js
@@ -109,27 +108,37 @@ module.exports.optimization.minimizer = [
 ];
 ```
 
-Note that array values are _merged_, not overwritten. This allows you to easily add plugins, but it can make it hard to _remove_ values from array properties like the module loader rules. To change loader configuration options without completely removing a loader, we recommend the approach described below in "Customizing Loaders". However, if you do need to completely change or remove the loaders from a default, you may overwrite the `.module.rules` array using one of the above methods.
+### Filtering values
 
-### Modify loaders within a generated configuration
-
-Adjusting loaders within a generated configuration tree is difficult because loader arrays are not keyed and module rules may be nested. Instead, each `preset` generator accepts a second argument in which you can pass a callback function that will be run on the output of each computed loader definition.
+Array values are _merged_ when processing a preset, not overwritten. This allows you to easily add plugins, but it can make it hard to _remove_ values from array properties like the module loader rules or plugins list. To change loader configuration options without completely removing a loader, or adjust loaders deep within a generated configuration tree, this library provides a `addFilter` helper function. `addFilter()` lets you register a callback which can transform the value of each computed loader, as well as some other useful configuration values.
 
 ```js
-// Alter the publicPath value of the files-loader and url-loader.
+const { addFilter } = require( 'helpers' );
+
+// Intercept the "sass" loader and replace it with a Stylus loader.
+addFilter( 'loader/sass', () => {
+	return {
+		loader: require.resolve( 'stylus-loader' ),
+	};
+} );
+// Alter presets to use a different targeting regular expression.
+addFilter( 'preset/stylesheet-loaders', ( loader ) => {
+	loader.test = /.\styl$/;
+	return loader;
+} );
+
+// Now, use the preset as normal and it will pick up Stylus files instead!
 const config = production.preset(
-	{ /* ...configuration options described above ... */ },
-	{
-		filterLoaders: ( loader, loaderType ) => {
-			if ( loaderType === 'file' || loaderType === 'url' ) {
-				loader.options.publicPath = '../../';
-			}
-			return loader;
-		}
-	}
+	{ /* ...normal configuration options as described above ... */ }
 );
 ```
 
-The `loaderType` option will be [one of the keys in the `loaders` object](./loaders.html), or else the special key `stylesheet` which will be passed alongside the entire computed stylesheet loader chain. Filter on `stylesheet` to, for example, completely replace the Sass stylesheet support with a different preprocessor like Stylus.
+Available hooks:
 
-The values of the `loaderType` argument in this callback correspond to the names of the available [loader factory functions](https://humanmade.github.io/webpack-helpers/modules/loaders.html).
+- `loader/{loader name}`: Adjust the final output of [any of the methods on the `loaders` object](./loaders.html), for example `loader/sass` or `loader/js`.
+- `loader/{loader name}/default`: Alter the default values before passing it to the loader configuration merge function.
+- `loader/postcss/plugins`: Filter the list of PostCSS plugins used by that specific loader.
+- `loader/postcss/preset-env`: Filter the configuration object passed to the PostCSS Preset Env plugin.
+- `preset/stylesheet-loaders`: Filter the computed chain of stylesheet loaders for both dev and production presets.
+- `preset/dev/stylesheet-loaders`: Filter the stylesheet loader chain for only the dev configuration.
+- `preset/prod/stylesheet-loaders`: Filter the stylesheet loader chain for only the production configuration.

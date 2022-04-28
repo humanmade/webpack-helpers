@@ -4,6 +4,7 @@ const filePath = require( './helpers/file-path' );
 const findInObject = require( './helpers/find-in-object' );
 const inferPublicPath = require( './helpers/infer-public-path' );
 const isInstalled = require( './helpers/is-installed' );
+const { applyFilters } = require( './helpers/filters' );
 const loaders = require( './loaders' );
 const plugins = require( './plugins' );
 const { ManifestPlugin, MiniCssExtractPlugin } = plugins.constructors;
@@ -50,40 +51,6 @@ const ifInstalled = ( packageName, loader ) => {
 };
 
 /**
- * Given a reference to a (possibly-undefined) filtering method, return a pair
- * of helper functions to filter a loader definition object, or to get a loader
- * definition object by its loaders dictionary key and then filter it.
- *
- * @param {Function} [filterLoaders] An optional filterLoaders function. Defaults
- *                                   to the identity function.
- * @returns {Object} Object with `filterLoaders` and `getFilteredLoader` methods.
- */
-const createFilteringHelpers = ( filterLoaders = ( input ) => input ) => ( {
-	/**
-	 * Given a loader object and its key string, pass that object through the
-	 * filterLoaders method (if one was provided) and return the filtered output.
-	 *
-	 * @param {Object} loader    Webpack loader configuration object.
-	 * @param {String} loaderKey String identifying which loader is being filtered.
-	 * @returns {Object} Filtered loader object.
-	 */
-	filterLoaders: ( loader, loaderKey ) => {
-		return filterLoaders( loader, loaderKey );
-	},
-
-	/**
-	 * Helper method to reduce duplication when accessing and invoking loader factories.
-	 *
-	 * @param {String} loaderKey String key of a loader factory in the loaders object.
-	 * @param {Object} [options] Options for this loader (optional).
-	 * @returns {Object} Configured and filtered loader definition.
-	 */
-	getFilteredLoader: ( loaderKey, options ) => {
-		return filterLoaders( loaders[ loaderKey ]( options ), loaderKey );
-	},
-} );
-
-/**
  * Promote a partial Webpack config into a full development-oriented configuration.
  *
  * This function accepts an incomplete Webpack configuration object and deeply
@@ -95,17 +62,10 @@ const createFilteringHelpers = ( filterLoaders = ( input ) => input ) => ( {
  * - an `.output.publicPath` string (unless a devServer.port is specified,
  *   in which case publicPath defaults to `http://localhost:${ port }`)
  *
- * @param {webpack.Configuration} config                  Configuration options to deeply merge into the defaults.
- * @param {Object}                [options]               Optional options to modify configuration generation.
- * @param {Function}              [options.filterLoaders] An optional filter function that receives each
- *                                                        computed loader definition and the name of that
- *                                                        loader as it is generated, to permit per-config
- *                                                        customization of loader options.
+ * @param {webpack.Configuration} config Configuration options to deeply merge into the defaults.
  * @returns {webpack.Configuration} A merged Webpack configuration object.
  */
-const development = ( config = {}, options = {} ) => {
-	const { filterLoaders, getFilteredLoader } = createFilteringHelpers( options.filterLoaders );
-
+const development = ( config = {} ) => {
 	/**
 	 * Default development environment-oriented Webpack options. This object is
 	 * defined at the time of function execution so that any changes to the
@@ -139,9 +99,9 @@ const development = ( config = {}, options = {} ) => {
 			strictExportPresence: true,
 			rules: [
 				// Handle node_modules packages that contain sourcemaps.
-				getFilteredLoader( 'sourcemaps' ),
+				loaders.sourcemaps(),
 				// Run all JS files through ESLint, if installed.
-				...ifInstalled( 'eslint', getFilteredLoader( 'eslint', {
+				...ifInstalled( 'eslint', loaders.eslint( {
 					options: {
 						emitWarning: true,
 					},
@@ -152,36 +112,37 @@ const development = ( config = {}, options = {} ) => {
 					// back to the resource loader at the end of the loader list.
 					oneOf: [
 						// Enable processing TypeScript, if installed.
-						...ifInstalled( 'typescript', getFilteredLoader( 'ts' ) ),
+						...ifInstalled( 'typescript', loaders.ts() ),
 						// Process JS with Babel.
-						getFilteredLoader( 'js' ),
+						loaders.js(),
 						// Handle static asset files.
-						getFilteredLoader( 'assets' ),
+						loaders.assets(),
 						// Parse styles using SASS, then PostCSS.
-						filterLoaders( {
+						// Permit filtering either on an env-specific or global basis.
+						applyFilters( 'preset/stylesheet-loaders', applyFilters( 'preset/dev/stylesheet-loaders', {
 							test: /\.s?css$/,
 							use: [
-								getFilteredLoader( 'style' ),
-								getFilteredLoader( 'css', {
+								loaders.style(),
+								loaders.css( {
 									options: {
 										sourceMap: true,
 									},
 								} ),
-								getFilteredLoader( 'postcss', {
+								loaders.postcss( {
 									options: {
 										sourceMap: true,
 									},
 								} ),
-								getFilteredLoader( 'sass', {
+								loaders.sass( {
 									options: {
 										sourceMap: true,
 									},
 								} ),
 							],
-						}, 'stylesheet' ),
+						} ) ),
 						// Resource loader makes sure any non-matching assets still get served.
 						// When you `import` an asset, you get its (virtual) filename.
-						getFilteredLoader( 'resource' ),
+						loaders.resource(),
 					],
 				},
 			],
@@ -240,17 +201,10 @@ const development = ( config = {}, options = {} ) => {
  * merges specified options into an opinionated default production configuration
  * template.
  *
- * @param {webpack.Configuration} config                  Configuration options to deeply merge into the defaults.
- * @param {Object}                [options]               Optional options to modify configuration generation.
- * @param {Function}              [options.filterLoaders] An optional filter function that receives each
- *                                                        computed loader definition and the name of that
- *                                                        loader as it is generated, to permit per-config
- *                                                        customization of loader options.
+ * @param {webpack.Configuration} config Configuration options to deeply merge into the defaults.
  * @returns {webpack.Configuration} A merged Webpack configuration object.
  */
-const production = ( config = {}, options = {} ) => {
-	const { filterLoaders, getFilteredLoader } = createFilteringHelpers( options.filterLoaders );
-
+const production = ( config = {} ) => {
 	// Determine whether source maps have been requested, and prepare an options
 	// object to be passed to all CSS loaders to honor that request.
 	const cssOptions = config.devtool ?
@@ -291,33 +245,33 @@ const production = ( config = {}, options = {} ) => {
 			strictExportPresence: true,
 			rules: [
 				// Run all JS files through ESLint, if installed.
-				...ifInstalled( 'eslint', getFilteredLoader( 'eslint' ) ),
+				...ifInstalled( 'eslint', loaders.eslint() ),
 				{
 					// "oneOf" will traverse all following loaders until one will
 					// match the requirements. If no loader matches, it will fall
 					// back to the resource loader at the end of the loader list.
 					oneOf: [
 						// Enable processing TypeScript, if installed.
-						...ifInstalled( 'typescript', getFilteredLoader( 'ts' ) ),
+						...ifInstalled( 'typescript', loaders.ts() ),
 						// Process JS with Babel.
-						getFilteredLoader( 'js' ),
+						loaders.js(),
 						// Handle static asset files.
-						getFilteredLoader( 'assets' ),
+						loaders.assets(),
 						// Parse styles using SASS, then PostCSS.
-						filterLoaders( {
+						applyFilters( 'preset/stylesheet-loaders',applyFilters( 'preset/prod/stylesheet-loaders', {
 							test: /\.s?css$/,
 							use: [
 								// Extract CSS to its own file.
 								MiniCssExtractPlugin.loader,
 								// Process SASS into CSS.
-								getFilteredLoader( 'css', cssOptions ),
-								getFilteredLoader( 'postcss', cssOptions ),
-								getFilteredLoader( 'sass', cssOptions ),
+								loaders.css( cssOptions ),
+								loaders.postcss( cssOptions ),
+								loaders.sass( cssOptions ),
 							],
-						}, 'stylesheet' ),
+						} ) ),
 						// Resource loader makes sure any non-matching assets still get served.
 						// When you `import` an asset, you get its (virtual) filename.
-						getFilteredLoader( 'resource' ),
+						loaders.resource(),
 					],
 				},
 			],

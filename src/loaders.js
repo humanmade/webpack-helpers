@@ -5,26 +5,28 @@ const postcssFlexbugsFixes = require( 'postcss-flexbugs-fixes' );
 const postcssPresetEnv = require( 'postcss-preset-env' );
 
 const deepMerge = require( './helpers/deep-merge' );
+const { applyFilters } = require( './helpers/filters' );
 
 /**
  * Export an object of named methods that generate corresponding loader config
- * objects. To customize the default values of the loader, mutate the .defaults
- * property exposed on each method (or pass a filterLoaders option to a preset).
+ * objects. To customize the default values of the loader, use addFilter() on
+ * either the hook `loader/loadername/defaults` (to adjust the default loader
+ * configuration) or `loader/loadername` (to alter the final, computed loader).
  */
 const loaders = {};
 
 const createLoaderFactory = loaderKey => {
-	const getFilteredLoader = ( options ) => {
-		// Handle missing options object.
-		if ( typeof options === 'function' ) {
-			return getFilteredLoader( {}, options );
-		}
-
-		// Generate the requested loader definition.
-		return deepMerge( loaders[ loaderKey ].defaults, options );
+	return ( options ) => {
+		// Generate the requested loader definition. Expose filter seams both
+		// to customize the defaults, and to alter the final rendered output.
+		return applyFilters(
+			`loader/${ loaderKey }`,
+			deepMerge(
+				applyFilters( `loader/${ loaderKey }/defaults`, loaders[ loaderKey ].defaults ),
+				options
+			)
+		);
 	};
-
-	return getFilteredLoader;
 };
 
 // Define all supported loader factories within the loaders object.
@@ -84,15 +86,15 @@ loaders.postcss.defaults = {
 	options: {
 		postcssOptions: {
 			ident: 'postcss',
-			plugins: [
+			plugins: applyFilters( 'loader/postcss/plugins', [
 				postcssFlexbugsFixes,
-				postcssPresetEnv( {
+				postcssPresetEnv( applyFilters( 'loader/postcss/preset-env', {
 					autoprefixer: {
 						flexbox: 'no-2009',
 					},
 					stage: 3,
-				} ),
-			],
+				} ) ),
+			] ),
 		},
 	},
 };

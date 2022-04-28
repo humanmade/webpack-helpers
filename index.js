@@ -6,6 +6,7 @@ module.exports = {
 	config: require( './src/config' ),
 	externals: require( './src/externals' ),
 	helpers: {
+		addFilter: require( './src/helpers/filters' ).addFilter,
 		choosePort: require( './src/helpers/choose-port' ),
 		cleanOnExit: require( './src/helpers/clean-on-exit' ),
 		filePath: require( './src/helpers/file-path' ),

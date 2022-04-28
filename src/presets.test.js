@@ -3,6 +3,7 @@ const {
 	production,
 } = require( './presets' );
 const plugins = require( './plugins' );
+const { addFilter } = require( './helpers/filters' );
 
 jest.mock( 'process', () => ( {
 	cwd: () => 'cwd',
@@ -259,19 +260,19 @@ describe( 'presets', () => {
 		} );
 
 		it( 'permits filtering the computed output of individual loaders', () => {
+			addFilter( 'loader/assets', ( loader ) => {
+				loader.test = /\.(png|jpg|jpeg|gif|svg)$/;
+				return loader;
+			} );
+			addFilter( 'loader/resource', ( loader ) => {
+				loader.options = {
+					publicPath: '../../',
+				};
+				return loader;
+			} );
 			const config = development( {
 				entry: {
 					main: 'some-file.js',
-				},
-			}, {
-				filterLoaders: ( loader, loaderType ) => {
-					if ( loaderType === 'file' ) {
-						loader.options.publicPath = '../../';
-					}
-					if ( loaderType === 'url' ) {
-						loader.test = /\.(png|jpg|jpeg|gif|svg)$/;
-					}
-					return loader;
 				},
 			} );
 			const resourceLoader = getLoaderByName( config.module.rules, 'asset/resource' );
@@ -280,9 +281,12 @@ describe( 'presets', () => {
 			expect( resourceLoader ).toEqual( expect.objectContaining( {
 				exclude: [ /^$/, /\.(js|mjs|jsx|ts|tsx)$/, /\.html$/, /\.json$/ ],
 				type: 'asset/resource',
+				options: {
+					publicPath: '../../',
+				},
 			} ) );
 			expect( assetsLoader ).toEqual( expect.objectContaining( {
-				test: /\.(png|jpg|jpeg|gif|svg|woff|woff2|eot|ttf)$/,
+				test: /\.(png|jpg|jpeg|gif|svg)$/,
 				type: 'asset',
 				parser: {
 					dataUrlCondition: {
@@ -294,22 +298,17 @@ describe( 'presets', () => {
 		} );
 
 		it( 'permits filtering the entire stylesheet loader chain', () => {
+			addFilter( 'preset/dev/stylesheet-loaders', ( loader ) => {
+				loader.test = /\.styl$/;
+				return loader;
+			} );
+			addFilter( 'loader/sass', () => ( {
+				loader: 'stylus',
+				mode: 'development',
+			} ) );
 			const config = development( {
 				entry: {
 					main: 'some-file.js',
-				},
-			}, {
-				filterLoaders: ( loader, loaderType ) => {
-					if ( loaderType === 'stylesheet' ) {
-						loader.test = /\.styl$/;
-					}
-					if ( loaderType === 'sass' ) {
-						return {
-							loader: 'stylus',
-							mode: 'development',
-						};
-					}
-					return loader;
 				},
 			} );
 			const styleChain = getLoaderByTest( config.module.rules, /\.styl$/ );
@@ -469,19 +468,19 @@ describe( 'presets', () => {
 		} );
 
 		it( 'permits filtering the computed output of individual loaders', () => {
+			addFilter( 'loader/assets', ( loader ) => {
+				loader.test = /\.(png|jpg|jpeg|gif|svg)$/;
+				return loader;
+			} );
+			addFilter( 'loader/resource', ( loader ) => {
+				loader.options = {
+					publicPath: '../../',
+				};
+				return loader;
+			} );
 			const config = production( {
 				entry: {
 					main: 'some-file.js',
-				},
-			}, {
-				filterLoaders: ( loader, loaderType ) => {
-					if ( loaderType === 'file' ) {
-						loader.options.publicPath = '../../';
-					}
-					if ( loaderType === 'url' ) {
-						loader.test = /\.(png|jpg|jpeg|gif|svg)$/;
-					}
-					return loader;
 				},
 			} );
 			const resourceLoader = getLoaderByName( config.module.rules, 'asset/resource' );
@@ -490,9 +489,12 @@ describe( 'presets', () => {
 			expect( resourceLoader ).toEqual( expect.objectContaining( {
 				exclude: [ /^$/, /\.(js|mjs|jsx|ts|tsx)$/, /\.html$/, /\.json$/ ],
 				type: 'asset/resource',
+				options: {
+					publicPath: '../../',
+				},
 			} ) );
 			expect( assetsLoader ).toEqual( expect.objectContaining( {
-				test: /\.(png|jpg|jpeg|gif|svg|woff|woff2|eot|ttf)$/,
+				test: /\.(png|jpg|jpeg|gif|svg)$/,
 				type: 'asset',
 				parser: {
 					dataUrlCondition: {
@@ -504,21 +506,16 @@ describe( 'presets', () => {
 		} );
 
 		it( 'permits filtering the entire stylesheet loader chain', () => {
+			addFilter( 'preset/prod/stylesheet-loaders', ( loader ) => {
+				loader.test = /\.styl$/;
+				return loader;
+			} );
+			addFilter( 'loader/sass', () => ( {
+				loader: 'stylus',
+			} ) );
 			const config = production( {
 				entry: {
 					main: 'some-file.js',
-				},
-			}, {
-				filterLoaders: ( loader, loaderType ) => {
-					if ( loaderType === 'stylesheet' ) {
-						loader.test = /\.styl$/;
-					}
-					if ( loaderType === 'sass' ) {
-						return {
-							loader: 'stylus',
-						};
-					}
-					return loader;
 				},
 			} );
 			const styleChain = getLoaderByTest( config.module.rules, /\.styl$/ );
