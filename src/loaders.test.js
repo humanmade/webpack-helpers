@@ -38,7 +38,7 @@ describe( 'loaders', () => {
 		} );
 	} );
 
-	describe( '.url()', () => {
+	describe( '.assets()', () => {
 		it( 'tests for static assets', () => {
 			[
 				'file.png',
@@ -51,14 +51,14 @@ describe( 'loaders', () => {
 				'file.eot',
 				'file.ttf',
 			].forEach( acceptedFileType => {
-				expect( acceptedFileType.match( loaders.url().test ) ).not.toBeNull();
+				expect( acceptedFileType.match( loaders.assets().test ) ).not.toBeNull();
 			} );
 			[
 				'file.js',
 				'file.css',
 				'file.html',
 			].forEach( unacceptedFileType => {
-				expect( unacceptedFileType.match( loaders.url().test ) ).toBeNull();
+				expect( unacceptedFileType.match( loaders.assets().test ) ).toBeNull();
 			} );
 		} );
 	} );

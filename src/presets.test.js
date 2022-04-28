@@ -4,7 +4,10 @@ const {
 } = require( './presets' );
 const plugins = require( './plugins' );
 
-jest.mock( 'process', () => ( { cwd: () => 'cwd' } ) );
+jest.mock( 'process', () => ( {
+	cwd: () => 'cwd',
+	versions: {},
+} ) );
 
 /**
  * Filter an array of plugins to only contain plugins of the provided type.
@@ -24,6 +27,10 @@ const filterPlugins = ( Constructor ) => ( plugin ) => plugin instanceof Constru
 const getLoaderByName = ( rules, loaderType ) => {
 	for ( let rule of rules ) {
 		if ( rule.loader && rule.loader.indexOf( loaderType ) > -1 ) {
+			return rule;
+		}
+		// Permit selection of asset module loaders with no .loader property.
+		if ( rule.type && rule.type === loaderType ) {
 			return rule;
 		}
 		if ( rule.oneOf ) {
@@ -267,19 +274,20 @@ describe( 'presets', () => {
 					return loader;
 				},
 			} );
-			const fileLoader = getLoaderByName( config.module.rules, 'file-loader' );
-			const urlLoader = getLoaderByName( config.module.rules, 'url-loader' );
+			const resourceLoader = getLoaderByName( config.module.rules, 'asset/resource' );
+			const assetsLoader = getLoaderByName( config.module.rules, 'asset' );
 			const jsLoader = getLoaderByName( config.module.rules, 'babel-loader' );
-			expect( fileLoader ).toEqual( expect.objectContaining( {
-				exclude: /\.(js|html|json)$/,
-				options: {
-					publicPath: '../../',
-				},
+			expect( resourceLoader ).toEqual( expect.objectContaining( {
+				exclude: [ /^$/, /\.(js|mjs|jsx|ts|tsx)$/, /\.html$/, /\.json$/ ],
+				type: 'asset/resource',
 			} ) );
-			expect( urlLoader ).toEqual( expect.objectContaining( {
-				test: /\.(png|jpg|jpeg|gif|svg)$/,
-				options: {
-					limit: 10000,
+			expect( assetsLoader ).toEqual( expect.objectContaining( {
+				test: /\.(png|jpg|jpeg|gif|svg|woff|woff2|eot|ttf)$/,
+				type: 'asset',
+				parser: {
+					dataUrlCondition: {
+						maxSize: 10 * 1024,
+					},
 				},
 			} ) );
 			expect( jsLoader ).not.toBeNull();
@@ -476,19 +484,20 @@ describe( 'presets', () => {
 					return loader;
 				},
 			} );
-			const fileLoader = getLoaderByName( config.module.rules, 'file-loader' );
-			const urlLoader = getLoaderByName( config.module.rules, 'url-loader' );
+			const resourceLoader = getLoaderByName( config.module.rules, 'asset/resource' );
+			const assetsLoader = getLoaderByName( config.module.rules, 'asset' );
 			const jsLoader = getLoaderByName( config.module.rules, 'babel-loader' );
-			expect( fileLoader ).toEqual( expect.objectContaining( {
-				exclude: /\.(js|html|json)$/,
-				options: {
-					publicPath: '../../',
-				},
+			expect( resourceLoader ).toEqual( expect.objectContaining( {
+				exclude: [ /^$/, /\.(js|mjs|jsx|ts|tsx)$/, /\.html$/, /\.json$/ ],
+				type: 'asset/resource',
 			} ) );
-			expect( urlLoader ).toEqual( expect.objectContaining( {
-				test: /\.(png|jpg|jpeg|gif|svg)$/,
-				options: {
-					limit: 10000,
+			expect( assetsLoader ).toEqual( expect.objectContaining( {
+				test: /\.(png|jpg|jpeg|gif|svg|woff|woff2|eot|ttf)$/,
+				type: 'asset',
+				parser: {
+					dataUrlCondition: {
+						maxSize: 10 * 1024,
+					},
 				},
 			} ) );
 			expect( jsLoader ).not.toBeNull();
