@@ -44,7 +44,7 @@
     "babel-loader": "^8.2.5",
     "bell-on-bundler-error-plugin": "^2.0.0",
     "block-editor-hmr": "^0.6.3",
-    "chalk": "^5.0.1",
+    "chalk": "^4.1.2",
     "clean-webpack-plugin": "^4.0.0",
     "copy-webpack-plugin": "^10.2.4",
     "css-loader": "^6.7.1",
