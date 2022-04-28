@@ -334,7 +334,7 @@ const production = ( config = {}, options = {} ) => {
 				plugins.terser(),
 				plugins.cssMinimizer(),
 			],
-			noEmitOnErrors: true,
+			emitOnErrors: false,
 		},
 
 		stats,
