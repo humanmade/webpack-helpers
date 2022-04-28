@@ -21,6 +21,7 @@ This module provides methods which create new instances of commonly-needed Webpa
 &nbsp; | `plugins.manifest()` | : Create and return a new [`webpack-manifest-plugin`](https://github.com/danethurber/webpack-manifest-plugin) instance, preconfigured to write the manifest file while running from a dev server.
 **P**  | `plugins.miniCssExtract()` | Create and return a new [`mini-css-extract-plugin`](https://github.com/webpack-contrib/mini-css-extract-plugin) instance.
 **P**  | `plugins.terser()` | Create and return a new [`terser-webpack-plugin`](https://github.com/webpack-contrib/terser-webpack-plugin) instance, preconfigured with defaults based on `create-react-app`.
+**P**  | `plugins.cssMinimizer()` | Create and return a new [`css-minimizer-webpack-plugin`](https://webpack.js.org/plugins/css-minimizer-webpack-plugin/) instance.
 
 **P**: Included in `presets.production()`
 

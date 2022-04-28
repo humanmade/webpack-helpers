@@ -28,9 +28,20 @@ const createLoaderFactory = loaderKey => {
 };
 
 // Define all supported loader factories within the loaders object.
-[ 'eslint', 'js', 'ts', 'url', 'style', 'css', 'postcss', 'sass', 'file' ].forEach( loaderKey => {
+[ 'assets', 'eslint', 'js', 'ts', 'style', 'css', 'postcss', 'sass', 'resource' ].forEach( loaderKey => {
 	loaders[ loaderKey ] = createLoaderFactory( loaderKey );
 } );
+
+loaders.assets.defaults = {
+	test: /\.(png|jpg|jpeg|gif|svg|woff|woff2|eot|ttf)$/,
+	type: 'asset',
+	parser: {
+		dataUrlCondition: {
+			// Inline if less than 10kb.
+			maxSize: 10 * 1024,
+		},
+	},
+};
 
 loaders.eslint.defaults = {
 	test: /\.jsx?$/,
@@ -54,14 +65,6 @@ loaders.ts.defaults = {
 	test: /\.tsx?$/,
 	exclude: /(node_modules|bower_components)/,
 	loader: require.resolve( 'ts-loader' ),
-};
-
-loaders.url.defaults = {
-	test: /\.(png|jpg|jpeg|gif|svg|woff|woff2|eot|ttf)$/,
-	loader: require.resolve( 'url-loader' ),
-	options: {
-		limit: 10000,
-	},
 };
 
 loaders.style.defaults = {
@@ -102,11 +105,13 @@ loaders.sass.defaults = {
 	},
 };
 
-loaders.file.defaults = {
-	// Exclude `js`, `html` and `json`, but match anything else.
-	exclude: /\.(js|html|json)$/,
-	loader: require.resolve( 'file-loader' ),
-	options: {},
+loaders.resource.defaults = {
+	// Exclude `js` files to keep "css" loader working as it injects
+	// its runtime that would otherwise be processed through "file" loader.
+	// Also exclude `html` and `json` extensions so they get processed
+	// by webpacks internal loaders.
+	exclude: [ /^$/, /\.(js|mjs|jsx|ts|tsx)$/, /\.html$/, /\.json$/ ],
+	type: 'asset/resource',
 };
 
 module.exports = loaders;

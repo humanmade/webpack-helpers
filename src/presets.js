@@ -147,14 +147,14 @@ const development = ( config = {}, options = {} ) => {
 				{
 					// "oneOf" will traverse all following loaders until one will
 					// match the requirements. If no loader matches, it will fall
-					// back to the "file" loader at the end of the loader list.
+					// back to the resource loader at the end of the loader list.
 					oneOf: [
 						// Enable processing TypeScript, if installed.
 						...ifInstalled( 'typescript', getFilteredLoader( 'ts' ) ),
 						// Process JS with Babel.
 						getFilteredLoader( 'js' ),
-						// Convert small files to data URIs.
-						getFilteredLoader( 'url' ),
+						// Handle static asset files.
+						getFilteredLoader( 'assets' ),
 						// Parse styles using SASS, then PostCSS.
 						filterLoaders( {
 							test: /\.s?css$/,
@@ -177,9 +177,9 @@ const development = ( config = {}, options = {} ) => {
 								} ),
 							],
 						}, 'stylesheet' ),
-						// "file" loader makes sure any non-matching assets still get served.
-						// When you `import` an asset you get its filename.
-						getFilteredLoader( 'file' ),
+						// Resource loader makes sure any non-matching assets still get served.
+						// When you `import` an asset, you get its (virtual) filename.
+						getFilteredLoader( 'resource' ),
 					],
 				},
 			],
@@ -298,14 +298,14 @@ const production = ( config = {}, options = {} ) => {
 				{
 					// "oneOf" will traverse all following loaders until one will
 					// match the requirements. If no loader matches, it will fall
-					// back to the "file" loader at the end of the loader list.
+					// back to the resource loader at the end of the loader list.
 					oneOf: [
 						// Enable processing TypeScript, if installed.
 						...ifInstalled( 'typescript', getFilteredLoader( 'ts' ) ),
 						// Process JS with Babel.
 						getFilteredLoader( 'js' ),
-						// Convert small files to data URIs.
-						getFilteredLoader( 'url' ),
+						// Handle static asset files.
+						getFilteredLoader( 'assets' ),
 						// Parse styles using SASS, then PostCSS.
 						filterLoaders( {
 							test: /\.s?css$/,
@@ -318,9 +318,9 @@ const production = ( config = {}, options = {} ) => {
 								getFilteredLoader( 'sass', cssOptions ),
 							],
 						}, 'stylesheet' ),
-						// "file" loader makes sure any non-matching assets still get served.
-						// When you `import` an asset you get its filename.
-						getFilteredLoader( 'file' ),
+						// Resource loader makes sure any non-matching assets still get served.
+						// When you `import` an asset, you get its (virtual) filename.
+						getFilteredLoader( 'resource' ),
 					],
 				},
 			],

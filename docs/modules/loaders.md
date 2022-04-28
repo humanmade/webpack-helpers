@@ -10,15 +10,15 @@ nav_order: 3
 
 This module provides functions that generate configurations for commonly-needed Webpack loaders. Use them within the `.module.rules` array, or use `presets.development()`/`presets.production()` to opt-in to some opinionated defaults.
 
+- `loaders.assets()`: Return a configured Webpack module loader rule for [`asset` modules](https://webpack.js.org/guides/asset-modules/#inlining-assets) which will be inlined if small enough.
 - `loaders.eslint()`: Return a configured Webpack module loader rule for `eslint-loader`.
 - `loaders.js()`: Return a configured Webpack module loader rule for `js-loader`.
 - `loaders.ts()`: Return a configured Webpack module loader rule for `ts-loader`.
-- `loaders.url()`: Return a configured Webpack module loader rule for `url-loader`.
 - `loaders.style()`: Return a configured Webpack module loader rule for `style-loader`.
 - `loaders.css()`: Return a configured Webpack module loader rule for `css-loader`.
 - `loaders.postcss()`: Return a configured Webpack module loader rule for `postcss-loader`.
 - `loaders.sass()`: Return a configured Webpack module loader rule for `sass-loader`.
-- `loaders.file()`: Return a configured Webpack module loader rule for `file-loader`.
+- `loaders.resource()`: Return a configured Webpack module loader rule for [`asset/resource` modules](https://webpack.js.org/guides/asset-modules/#resource-assets).
 
 ## Customizing Loaders
 
