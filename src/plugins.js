@@ -7,7 +7,7 @@ const FixStyleOnlyEntriesPlugin = require( 'webpack-fix-style-only-entries' );
 const { WebpackManifestPlugin: ManifestPlugin } = require( 'webpack-manifest-plugin' );
 const MiniCssExtractPlugin = require( 'mini-css-extract-plugin' );
 const TerserPlugin = require( 'terser-webpack-plugin' );
-const OptimizeCssAssetsPlugin = require( 'optimize-css-assets-webpack-plugin' );
+const CssMinimizerPlugin = require( 'css-minimizer-webpack-plugin' );
 
 const deepMerge = require( './helpers/deep-merge' );
 
@@ -26,7 +26,7 @@ module.exports = {
 		HotModuleReplacementPlugin,
 		ManifestPlugin,
 		MiniCssExtractPlugin,
-		OptimizeCssAssetsPlugin,
+		CssMinimizerPlugin,
 		TerserPlugin,
 	},
 
@@ -154,12 +154,12 @@ module.exports = {
 	} ),
 
 	/**
-	 * Create a new OptimizeCssAssetsPlugin instance.
+	 * Create a new CssMinimizerPlugin instance.
 	 *
 	 * @param {Object} [options] Optional plugin configuration options.
-	 * @returns {OptimizeCssAssetsPlugin} A configured OptimizeCssAssetsPlugin instance.
+	 * @returns {CssMinimizerPlugin} A configured CssMinimizerPlugin instance.
 	 */
-	optimizeCssAssets: ( options = {} ) => new OptimizeCssAssetsPlugin( options ),
+	cssMinimizer: ( options = {} ) => new CssMinimizerPlugin( options ),
 
 	/**
 	 * Create a new TerserPlugin instance, defaulting to a set of options

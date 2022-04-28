@@ -327,22 +327,11 @@ const production = ( config = {}, options = {} ) => {
 		},
 
 		optimization: {
+			minimize: true,
 			minimizer: [
 				plugins.terser(),
-				plugins.optimizeCssAssets( (
-					// Set option to output source maps if devtool is set.
-					config.devtool && ! ( /inline-/ ).test( config.devtool ) ?
-						{
-							cssProcessorOptions: {
-								map: {
-									inline: false,
-								},
-							},
-						} :
-						undefined
-				) ),
+				plugins.cssMinimizer(),
 			],
-			nodeEnv: 'production',
 			noEmitOnErrors: true,
 		},
 
