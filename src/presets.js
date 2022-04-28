@@ -191,14 +191,9 @@ const development = ( config = {}, options = {} ) => {
 			nodeEnv: 'development',
 		},
 
-		devServer: {
-			...devServer,
-			stats,
-		},
+		devServer,
 
-		plugins: [
-			plugins.hotModuleReplacement(),
-		],
+		plugins: [],
 	};
 
 	// If no entry was provided, inject a default entry value.

@@ -17,12 +17,9 @@ This module provides methods which create new instances of commonly-needed Webpa
 &nbsp; | `plugins.copy()` | Create and return a new [`copy-webpack-plugin`](https://github.com/webpack-contrib/copy-webpack-plugin) instance.
 &nbsp; | `plugins.errorBell()` | Create and return a new [`bell-on-bundle-error-plugin`](https://www.npmjs.com/package/bell-on-bundler-error-plugin) instance.
 &nbsp; | `plugins.fixStyleOnlyEntries()` | Create and return a [`webpack-fix-style-only-entries`](https://github.com/fqborges/webpack-fix-style-only-entries) instance to remove empty JS bundles for style-only entrypoints.
-**D**  | `plugins.hotModuleReplacement()` | Create and return a new [`webpack.HotModuleReplacementPlugin`](https://webpack.js.org/plugins/hot-module-replacement-plugin/) instance.
 &nbsp; | `plugins.manifest()` | : Create and return a new [`webpack-manifest-plugin`](https://github.com/danethurber/webpack-manifest-plugin) instance, preconfigured to write the manifest file while running from a dev server.
 **P**  | `plugins.miniCssExtract()` | Create and return a new [`mini-css-extract-plugin`](https://github.com/webpack-contrib/mini-css-extract-plugin) instance.
 **P**  | `plugins.terser()` | Create and return a new [`terser-webpack-plugin`](https://github.com/webpack-contrib/terser-webpack-plugin) instance, preconfigured with defaults based on `create-react-app`.
 **P**  | `plugins.cssMinimizer()` | Create and return a new [`css-minimizer-webpack-plugin`](https://webpack.js.org/plugins/css-minimizer-webpack-plugin/) instance.
 
 **P**: Included in `presets.production()`
-
-**D**: Included in `presets.development()`

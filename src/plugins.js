@@ -1,6 +1,5 @@
 const { BundleAnalyzerPlugin } = require( 'webpack-bundle-analyzer' );
 const { CleanWebpackPlugin } = require( 'clean-webpack-plugin' );
-const { HotModuleReplacementPlugin } = require( 'webpack' );
 const BellOnBundleErrorPlugin = require( 'bell-on-bundler-error-plugin' );
 const CopyPlugin = require( 'copy-webpack-plugin' );
 const FixStyleOnlyEntriesPlugin = require( 'webpack-fix-style-only-entries' );
@@ -25,7 +24,6 @@ module.exports = {
 		CleanWebpackPlugin,
 		CopyPlugin,
 		FixStyleOnlyEntriesPlugin,
-		HotModuleReplacementPlugin,
 		ManifestPlugin,
 		MiniCssExtractPlugin,
 		CssMinimizerPlugin,
@@ -109,14 +107,6 @@ module.exports = {
 	 * @returns {FixStyleOnlyEntriesPlugin} A configured FixStyleOnlyEntriesPlugin instance.
 	 */
 	fixStyleOnlyEntries: ( options ) => new FixStyleOnlyEntriesPlugin( options ),
-
-	/**
-	 * Create a webpack.HotModuleReplacementPlugin instance.
-	 *
-	 * @param {Object} [options] Optional plugin options object.
-	 * @returns {HotModuleReplacementPlugin} A configured HMR Plugin instance.
-	 */
-	hotModuleReplacement: ( options = {} ) => new HotModuleReplacementPlugin( options ),
 
 	/**
 	 * Create a new ManifestPlugin instance to output an asset-manifest.json
