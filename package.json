@@ -65,9 +65,7 @@
     "style-loader": "^3.3.1",
     "terser-webpack-plugin": "^5.3.1",
     "ts-loader": "^9.2.9",
-    "webpack": "^5.0.0",
     "webpack-bundle-analyzer": "^4.5.0",
-    "webpack-dev-server": "^4.0.0",
     "webpack-fix-style-only-entries": "^0.6.1",
     "webpack-manifest-plugin": "^5.0.0"
   },
