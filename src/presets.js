@@ -138,6 +138,8 @@ const development = ( config = {}, options = {} ) => {
 		module: {
 			strictExportPresence: true,
 			rules: [
+				// Handle node_modules packages that contain sourcemaps.
+				getFilteredLoader( 'sourcemaps' ),
 				// Run all JS files through ESLint, if installed.
 				...ifInstalled( 'eslint', getFilteredLoader( 'eslint', {
 					options: {

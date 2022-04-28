@@ -28,7 +28,7 @@ const createLoaderFactory = loaderKey => {
 };
 
 // Define all supported loader factories within the loaders object.
-[ 'assets', 'eslint', 'js', 'ts', 'style', 'css', 'postcss', 'sass', 'resource' ].forEach( loaderKey => {
+[ 'assets', 'eslint', 'js', 'ts', 'style', 'css', 'postcss', 'sass', 'sourcemaps', 'resource' ].forEach( loaderKey => {
 	loaders[ loaderKey ] = createLoaderFactory( loaderKey );
 } );
 
@@ -103,6 +103,14 @@ loaders.sass.defaults = {
 			outputStyle: 'expanded'
 		},
 	},
+};
+
+loaders.sourcemaps.defaults = {
+	test: /\.(js|mjs|jsx|ts|tsx|css)$/,
+	exclude: /@babel(?:\/|\\{1,2})runtime/,
+	enforce: 'pre',
+	loader: require.resolve( 'source-map-loader' ),
+	options: {},
 };
 
 loaders.resource.defaults = {
