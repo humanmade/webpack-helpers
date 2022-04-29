@@ -84,8 +84,8 @@ describe( 'presets', () => {
 			expect( config.entry ).toEqual( 'some-file.js' );
 			expect( config.output ).toEqual( {
 				pathinfo: true,
-				filename: '[name].js',
-				chunkFilename: '[name].[contenthash].chunk.js',
+				filename: '[name].[contenthash:8].js',
+				chunkFilename: '[name].[contenthash:8].chunk.js',
 				path: 'build/',
 			} );
 		} );
@@ -341,8 +341,8 @@ describe( 'presets', () => {
 			expect( config.entry ).toEqual( 'some-file.js' );
 			expect( config.output ).toEqual( {
 				pathinfo: false,
-				filename: '[name].js',
-				chunkFilename: '[name].[contenthash].chunk.js',
+				filename: '[name].[contenthash:8].js',
+				chunkFilename: '[name].[contenthash:8].chunk.js',
 				path: 'build/',
 				publicPath: '',
 			} );
