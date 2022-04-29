@@ -118,28 +118,32 @@ const development = ( config = {} ) => {
 						// Handle static asset files.
 						loaders.assets(),
 						// Parse styles using SASS, then PostCSS.
-						// Permit filtering either on an env-specific or global basis.
-						applyFilters( 'preset/stylesheet-loaders', applyFilters( 'preset/dev/stylesheet-loaders', {
-							test: /\.s?css$/,
-							use: [
-								loaders.style(),
-								loaders.css( {
-									options: {
-										sourceMap: true,
-									},
-								} ),
-								loaders.postcss( {
-									options: {
-										sourceMap: true,
-									},
-								} ),
-								loaders.sass( {
-									options: {
-										sourceMap: true,
-									},
-								} ),
-							],
-						} ) ),
+						// Pass environment name as second parameter to give flexibility when filtering.
+						applyFilters(
+							'preset/stylesheet-loaders',
+							{
+								test: /\.s?css$/,
+								use: [
+									loaders.style(),
+									loaders.css( {
+										options: {
+											sourceMap: true,
+										},
+									} ),
+									loaders.postcss( {
+										options: {
+											sourceMap: true,
+										},
+									} ),
+									loaders.sass( {
+										options: {
+											sourceMap: true,
+										},
+									} ),
+								],
+							},
+							'development'
+						),
 						// Resource loader makes sure any non-matching assets still get served.
 						// When you `import` an asset, you get its (virtual) filename.
 						loaders.resource(),
@@ -260,17 +264,22 @@ const production = ( config = {} ) => {
 						// Handle static asset files.
 						loaders.assets(),
 						// Parse styles using SASS, then PostCSS.
-						applyFilters( 'preset/stylesheet-loaders',applyFilters( 'preset/prod/stylesheet-loaders', {
-							test: /\.s?css$/,
-							use: [
-								// Extract CSS to its own file.
-								MiniCssExtractPlugin.loader,
-								// Process SASS into CSS.
-								loaders.css( cssOptions ),
-								loaders.postcss( cssOptions ),
-								loaders.sass( cssOptions ),
-							],
-						} ) ),
+						// Pass environment name as second parameter to give flexibility when filtering.
+						applyFilters(
+							'preset/stylesheet-loaders',
+							{
+								test: /\.s?css$/,
+								use: [
+									// Extract CSS to its own file.
+									MiniCssExtractPlugin.loader,
+									// Process SASS into CSS.
+									loaders.css( cssOptions ),
+									loaders.postcss( cssOptions ),
+									loaders.sass( cssOptions ),
+								],
+							},
+							'production'
+						),
 						// Resource loader makes sure any non-matching assets still get served.
 						// When you `import` an asset, you get its (virtual) filename.
 						loaders.resource(),

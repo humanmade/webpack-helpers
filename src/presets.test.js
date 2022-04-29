@@ -298,7 +298,7 @@ describe( 'presets', () => {
 		} );
 
 		it( 'permits filtering the entire stylesheet loader chain', () => {
-			addFilter( 'preset/dev/stylesheet-loaders', ( loader ) => {
+			addFilter( 'preset/stylesheet-loaders', ( loader ) => {
 				loader.test = /\.styl$/;
 				return loader;
 			} );
@@ -507,7 +507,7 @@ describe( 'presets', () => {
 		} );
 
 		it( 'permits filtering the entire stylesheet loader chain', () => {
-			addFilter( 'preset/prod/stylesheet-loaders', ( loader ) => {
+			addFilter( 'preset/stylesheet-loaders', ( loader ) => {
 				loader.test = /\.styl$/;
 				return loader;
 			} );
