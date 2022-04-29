@@ -279,7 +279,7 @@ describe( 'presets', () => {
 			const assetsLoader = getLoaderByName( config.module.rules, 'asset' );
 			const jsLoader = getLoaderByName( config.module.rules, 'babel-loader' );
 			expect( resourceLoader ).toEqual( expect.objectContaining( {
-				exclude: [ /^$/, /\.(js|mjs|jsx|ts|tsx)$/, /\.html$/, /\.json$/ ],
+				exclude: [ /^$/, /\.(js|mjs|jsx|ts|tsx)$/, /\.html?$/, /\.json$/ ],
 				type: 'asset/resource',
 				options: {
 					publicPath: '../../',
@@ -488,7 +488,7 @@ describe( 'presets', () => {
 			const assetsLoader = getLoaderByName( config.module.rules, 'asset' );
 			const jsLoader = getLoaderByName( config.module.rules, 'babel-loader' );
 			expect( resourceLoader ).toEqual( expect.objectContaining( {
-				exclude: [ /^$/, /\.(js|mjs|jsx|ts|tsx)$/, /\.html$/, /\.json$/ ],
+				exclude: [ /^$/, /\.(js|mjs|jsx|ts|tsx)$/, /\.html?$/, /\.json$/ ],
 				type: 'asset/resource',
 				options: {
 					publicPath: '../../',
