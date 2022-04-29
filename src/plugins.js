@@ -141,7 +141,7 @@ module.exports = {
 	 * @returns {MiniCssExtractPlugin} A configured MiniCssExtractPlugin instance.
 	 */
 	miniCssExtract: ( options = {} ) => new MiniCssExtractPlugin( {
-		filename: '[name].[contenthash].css',
+		filename: '[name].[contenthash:8].css',
 		...options,
 	} ),
 
