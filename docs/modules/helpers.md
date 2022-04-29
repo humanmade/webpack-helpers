@@ -33,15 +33,15 @@ module.exports = presets.production( {
 ## `cleanOnExit`
 
 
-When using the `presets.development()` generator, an `asset-manifest.json` will automatically be generated so long as a `publicPath` URI can be determined. When working with an `asset-manifest.json` file, the `manifest` module provides a `cleanOnExit` method to easily remove manifests once the `webpack-dev-server` shuts down.
+When using the `presets.development()` generator, a `development-asset-manifest.json` will automatically be generated so long as a `publicPath` URI can be determined. When working with a `development-asset-manifest.json` file, the `manifest` module provides a `cleanOnExit` method to easily remove manifests once the `webpack-dev-server` shuts down.
 
 ```js
 const { join } = require( 'path' );
 const { helpers } = require( '@humanmade/webpack-helpers' );
 
 helpers.cleanOnExit( [
-	join( process.cwd(), 'content/mu-plugins/custom-blocks/build/asset-manifest.json' ),
-	join( process.cwd(), 'content/themes/my-theme/build/asset-manifest.json' ),
+	join( process.cwd(), 'content/mu-plugins/custom-blocks/build/development-asset-manifest.json' ),
+	join( process.cwd(), 'content/themes/my-theme/build/development-asset-manifest.json' ),
 ] );
 ```
 

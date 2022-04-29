@@ -264,7 +264,7 @@ To make use of this utility, we wrap our development config in a `choosePort` pr
 +] );
 ```
 
-While these bundles are served from memory, now that we've specified a `publicPath`, a new file `asset-manifest.json` will be output into each project's `build/` folder. `themes/myproject/build/asset-manifest.json` will look like this:
+While these bundles are served from memory, now that we've specified a `publicPath`, a new file `development-asset-manifest.json` will be output into each project's `build/` folder. `themes/myproject/build/development-asset-manifest.json` will look like this:
 ```json
 {
   "frontend.js": "http://localhost:8080/myproject-theme/frontend.js",
@@ -286,8 +286,8 @@ We use the `cleanOnExit` helper to delete these files when the server shuts down
 +
 +// Clean up manifests on exit.
 +cleanOnExit( [
-+	filePath( 'mu-plugins/myproject-blocks/build/asset-manifest.json' ),
-+	filePath( 'themes/myproject/build/asset-manifest.json' ),
++	filePath( 'mu-plugins/myproject-blocks/build/development-asset-manifest.json' ),
++	filePath( 'themes/myproject/build/development-asset-manifest.json' ),
 +] );
 ```
 

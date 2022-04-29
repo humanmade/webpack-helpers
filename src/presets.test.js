@@ -173,7 +173,7 @@ describe( 'presets', () => {
 			] ) );
 			const manifestPlugins = config.plugins.filter( filterPlugins( ManifestPlugin ) );
 			expect( manifestPlugins.length ).toBe( 1 );
-			expect( manifestPlugins[ 0 ].options.fileName ).toEqual( 'asset-manifest.json' );
+			expect( manifestPlugins[ 0 ].options.fileName ).toEqual( 'development-asset-manifest.json' );
 		} );
 
 		it( 'does not inject a ManifestPlugin if publicPath cannot be inferred', () => {
