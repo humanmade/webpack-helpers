@@ -11,6 +11,7 @@ nav_order: 10
 - **Breaking**: End support for Node v10. Node v12.13 or later is now required.
 - **Breaking**: Switch to Webpack 5 and Webpack DevServer 4
 - **Breaking**: Include a contenthash string in default bundle file names. Set `filename: '[name].js'` in your output configuration to restore the old behavior.
+- **Breaking**: Default DevServer manifest name is now `development-asset-manifest.json`, not `asset-manifest.json`.
 - **Breaking**: Replace `filterLoaders` system with [individual hooks accesible via the new `addFilter` helper](https://humanmade.github.io/webpack-helpers/modules/presets.html#customizing-presets).
 - **Potentially Breaking**: Remove `loaders.url()` and `loaders.file()` in favor of Webpack 5 [`asset` modules](https://webpack.js.org/guides/asset-modules/), now usable by including `loaders.asset()` (for assets which can be inlined) and `loaders.resource()` (as a catch-all for other types) in your module rules list. Asset modules are handled automatically in both presets, so this is only breaking if `loaders.url()` or `loaders.file()` was used directly.
 - Remove `OptimizeCssAssetsPlugin` (`plugins.optimizeCssAssets()`) in favor of Webpack 5-compatible [CssMinimizerPlugin](https://github.com/webpack-contrib/css-minimizer-webpack-plugin) (`plugins.cssMinimizer()`)
