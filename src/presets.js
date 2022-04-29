@@ -189,7 +189,7 @@ const development = ( config = {} ) => {
 		if ( ! hasManifestPlugin ) {
 			const outputPath = ( config.output && config.output.path ) || devDefaults.output.path;
 			devDefaults.plugins.push( plugins.manifest( {
-				fileName: 'asset-manifest.json',
+				fileName: 'development-asset-manifest.json',
 				seed: getSeedByDirectory( outputPath ),
 			} ) );
 		}
