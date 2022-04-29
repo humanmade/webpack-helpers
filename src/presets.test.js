@@ -344,6 +344,7 @@ describe( 'presets', () => {
 				filename: '[name].js',
 				chunkFilename: '[name].[contenthash].chunk.js',
 				path: 'build/',
+				publicPath: '',
 			} );
 		} );
 

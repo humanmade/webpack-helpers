@@ -232,6 +232,8 @@ const production = ( config = {} ) => {
 		// Inject a default entry point later on if none was specified.
 
 		output: {
+			// Webpack 5 defaults "publicPath" to "auto," which we are not set up to handle.
+			publicPath: '',
 			// Provide a default output path.
 			path: filePath( 'build' ),
 			pathinfo: false,
