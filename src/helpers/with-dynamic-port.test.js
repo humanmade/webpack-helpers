@@ -151,7 +151,7 @@ describe( 'withDynamicPort', () => {
 		it( 'does not overwrite existing config properties', async () => {
 			const config = {
 				devServer: {
-					https: true,
+					server: 'https',
 				},
 				entry: {
 					'name': './bundle.js',
@@ -167,7 +167,7 @@ describe( 'withDynamicPort', () => {
 			choosePort.mockImplementationOnce( () => Promise.resolve( 8082 ) );
 			expect( await withDynamicPort( 9090, config ) ).toEqual( {
 				devServer: {
-					https: true,
+					server: 'https',
 					port: 8082,
 				},
 				entry: {

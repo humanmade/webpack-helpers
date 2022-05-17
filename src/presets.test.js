@@ -128,7 +128,18 @@ describe( 'presets', () => {
 			expect( config.output.publicPath ).toBe( 'http://localhost:9090/build/' );
 		} );
 
-		it( 'accounts for the value of devServer.https when inferring publicPath URI', () => {
+		it( 'accounts for the value of devServer.server when inferring publicPath URI', () => {
+			const config = development( {
+				devServer: {
+					server: 'https',
+					port: 9090,
+				},
+				entry: 'some-file.js',
+			} );
+			expect( config.output.publicPath ).toBe( 'https://localhost:9090/build/' );
+		} );
+
+		it( 'accounts for the value of devServer.https (deprecated in favor of .server) when inferring publicPath URI', () => {
 			const config = development( {
 				devServer: {
 					https: true,
