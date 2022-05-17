@@ -60,25 +60,23 @@ const ifInstalled = ( packageName, loader ) => {
  *
  * @returns {Object[]} Filtered array with null items removed.
  */
-const removeNullLoaders = ( moduleRules ) => {
-	return moduleRules
-		.map( ( rule ) => {
-			if ( rule && Array.isArray( rule.oneOf ) ) {
-				return {
-					...rule,
-					oneOf: removeNullLoaders( rule.oneOf ),
-				};
-			}
-			if ( rule && Array.isArray( rule.use ) ) {
-				return {
-					...rule,
-					use: removeNullLoaders( rule.use ),
-				};
-			}
-			return rule;
-		} )
-		.filter( Boolean );
-};
+const removeNullLoaders = ( moduleRules ) => moduleRules
+	.map( ( rule ) => {
+		if ( rule && Array.isArray( rule.oneOf ) ) {
+			return {
+				...rule,
+				oneOf: removeNullLoaders( rule.oneOf ),
+			};
+		}
+		if ( rule && Array.isArray( rule.use ) ) {
+			return {
+				...rule,
+				use: removeNullLoaders( rule.use ),
+			};
+		}
+		return rule;
+	} )
+	.filter( Boolean );
 
 /**
  * Promote a partial Webpack config into a full development-oriented configuration.
