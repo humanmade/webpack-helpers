@@ -3,12 +3,19 @@ const {
 	production,
 } = require( './presets' );
 const plugins = require( './plugins' );
-const { addFilter } = require( './helpers/filters' );
+const { addFilter, setupRegistry } = require( './helpers/filters' );
 
 jest.mock( 'process', () => ( {
 	cwd: () => 'cwd',
 	versions: {},
 } ) );
+
+/**
+ * Helper function to return null, used when testing filters.
+ *
+ * @returns {null} Null.
+ */
+const returnNull = () => null;
 
 /**
  * Filter an array of plugins to only contain plugins of the provided type.
@@ -69,6 +76,10 @@ const getLoaderByTest = ( rules, loaderTest ) => {
 };
 
 describe( 'presets', () => {
+	beforeEach( () => {
+		setupRegistry();
+	} );
+
 	describe( 'development()', () => {
 		it( 'is a function', () => {
 			expect( development ).toBeInstanceOf( Function );
@@ -324,6 +335,52 @@ describe( 'presets', () => {
 			const sassLoader = getLoaderByTest( config.module.rules, /\.s?css$/ );
 			expect( sassLoader ).toBeNull();
 		} );
+
+		it( 'permits skipping a specific stylesheet loader by filtering it to null', () => {
+			addFilter( 'loader/postcss', returnNull );
+			addFilter( 'loader/sass', returnNull );
+			const config = development( {
+				entry: {
+					main: 'some-file.js',
+				},
+			} );
+			const styleChain = getLoaderByTest( config.module.rules, /\.s?css$/ );
+			expect( styleChain ).toEqual( {
+				test: /\.s?css$/,
+				use: [
+					{
+						loader: require.resolve( 'style-loader' ),
+						options: {},
+					},
+					{
+						loader: require.resolve( 'css-loader' ),
+						options: {
+							importLoaders: 1,
+							sourceMap: true,
+						},
+					},
+				],
+			} );
+		} );
+
+		it( 'does not include null loader entries if a loader was disabled with a filter', () => {
+			addFilter( 'preset/stylesheet-loaders', returnNull );
+			addFilter( 'loader/ts', returnNull );
+			addFilter( 'loader/eslint', returnNull );
+			const config = development( {
+				entry: {
+					main: 'some-file.js',
+				},
+			} );
+			// Should have stripped out the null entries.
+			expect( config.module.rules[ 1 ].oneOf.length ).toBe( 3 );
+			expect( config.module.rules[ 1 ].oneOf[ 0 ] )
+				.toEqual( expect.objectContaining( { test: /\.jsx?$/ } ) );
+			expect( config.module.rules[ 1 ].oneOf[ 1 ] )
+				.toEqual( expect.objectContaining( { type: 'asset' } ) );
+			expect( config.module.rules[ 1 ].oneOf[ 2 ] )
+				.toEqual( expect.objectContaining( { type: 'asset/resource' } ) );
+		} );
 	} );
 
 	describe( 'production()', () => {
@@ -530,6 +587,48 @@ describe( 'presets', () => {
 			} );
 			const sassLoader = getLoaderByTest( config.module.rules, /\.s?css$/ );
 			expect( sassLoader ).toBeNull();
+		} );
+
+		it( 'permits skipping a specific stylesheet loader by filtering it to null', () => {
+			addFilter( 'loader/postcss', returnNull );
+			addFilter( 'loader/sass', returnNull );
+			const config = production( {
+				entry: {
+					main: 'some-file.js',
+				},
+			} );
+			const styleChain = getLoaderByTest( config.module.rules, /\.s?css$/ );
+			expect( styleChain ).toEqual( {
+				test: /\.s?css$/,
+				use: [
+					plugins.constructors.MiniCssExtractPlugin.loader,
+					{
+						loader: require.resolve( 'css-loader' ),
+						options: {
+							importLoaders: 1,
+						},
+					},
+				],
+			} );
+		} );
+
+		it( 'does not include null loader entries if a loader was disabled with a filter', () => {
+			addFilter( 'preset/stylesheet-loaders', returnNull );
+			addFilter( 'loader/ts', returnNull );
+			addFilter( 'loader/eslint', returnNull );
+			const config = production( {
+				entry: {
+					main: 'some-file.js',
+				},
+			} );
+			// Should have stripped out the null entries.
+			expect( config.module.rules[ 0 ].oneOf.length ).toBe( 3 );
+			expect( config.module.rules[ 0 ].oneOf[ 0 ] )
+				.toEqual( expect.objectContaining( { test: /\.jsx?$/ } ) );
+			expect( config.module.rules[ 0 ].oneOf[ 1 ] )
+				.toEqual( expect.objectContaining( { type: 'asset' } ) );
+			expect( config.module.rules[ 0 ].oneOf[ 2 ] )
+				.toEqual( expect.objectContaining( { type: 'asset/resource' } ) );
 		} );
 	} );
 } );

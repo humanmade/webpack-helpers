@@ -51,6 +51,36 @@ const ifInstalled = ( packageName, loader ) => {
 };
 
 /**
+ * Remove null entries from Webpack loaders array, in case a user returned null
+ * from a filter to opt out of a given loader in the preset.
+ *
+ * Detects and removes null entries from nested .oneOf or .use arrays.
+ *
+ * @param {Object[]} moduleRules Array of Webpack loader rules.
+ *
+ * @returns {Object[]} Filtered array with null items removed.
+ */
+const removeNullLoaders = ( moduleRules ) => {
+	return moduleRules
+		.map( ( rule ) => {
+			if ( rule && Array.isArray( rule.oneOf ) ) {
+				return {
+					...rule,
+					oneOf: removeNullLoaders( rule.oneOf ),
+				};
+			}
+			if ( rule && Array.isArray( rule.use ) ) {
+				return {
+					...rule,
+					use: removeNullLoaders( rule.use ),
+				};
+			}
+			return rule;
+		} )
+		.filter( Boolean );
+};
+
+/**
  * Promote a partial Webpack config into a full development-oriented configuration.
  *
  * This function accepts an incomplete Webpack configuration object and deeply
@@ -97,7 +127,7 @@ const development = ( config = {} ) => {
 
 		module: {
 			strictExportPresence: true,
-			rules: [
+			rules: removeNullLoaders( [
 				// Handle node_modules packages that contain sourcemaps.
 				loaders.sourcemaps(),
 				// Run all JS files through ESLint, if installed.
@@ -149,7 +179,7 @@ const development = ( config = {} ) => {
 						loaders.resource(),
 					],
 				},
-			],
+			] ),
 		},
 
 		optimization: {
@@ -249,7 +279,7 @@ const production = ( config = {} ) => {
 
 		module: {
 			strictExportPresence: true,
-			rules: [
+			rules: removeNullLoaders( [
 				// Run all JS files through ESLint, if installed.
 				...ifInstalled( 'eslint', loaders.eslint() ),
 				{
@@ -285,7 +315,7 @@ const production = ( config = {} ) => {
 						loaders.resource(),
 					],
 				},
-			],
+			] ),
 		},
 
 		optimization: {
