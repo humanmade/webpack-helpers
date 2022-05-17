@@ -10,7 +10,7 @@ const findInObject = require( './find-in-object' );
  * @return {String} Public path.
  */
 const inferPublicPath = ( config, port, defaults = {} ) => {
-	const protocol = findInObject( config, 'devServer.https' ) ? 'https' : 'http';
+	const protocol = ( findInObject( config, 'devServer.https' ) || findInObject( config, 'devServer.server' ) === 'https' ) ? 'https' : 'http';
 
 	const outputPath = findInObject( config, 'output.path' ) || findInObject( defaults, 'output.path' );
 
