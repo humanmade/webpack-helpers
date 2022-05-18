@@ -1,3 +1,5 @@
+const filters = require( './src/helpers/filters' );
+
 /**
  * Expose public package API.
  */
@@ -6,7 +8,8 @@ module.exports = {
 	config: require( './src/config' ),
 	externals: require( './src/externals' ),
 	helpers: {
-		addFilter: require( './src/helpers/filters' ).addFilter,
+		addFilter: filters.addFilter,
+		removeFilter: filters.removeFilter,
 		choosePort: require( './src/helpers/choose-port' ),
 		cleanOnExit: require( './src/helpers/clean-on-exit' ),
 		filePath: require( './src/helpers/file-path' ),
