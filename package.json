@@ -18,7 +18,7 @@
     "webpack"
   ],
   "scripts": {
-    "lint": "eslint .",
+    "lint": "eslint . --ignore-pattern linting-test.js",
     "test": "jest",
     "test-build": "rm -rf test/build && webpack --config=test/test-config.js",
     "test-dev-server": "webpack-dev-server --config=test/test-config.js"

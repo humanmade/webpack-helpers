@@ -7,6 +7,8 @@ module.exports = [
 		name: 'production-test',
 		entry: {
 			prod: filePath( 'test/src/index.js' ),
+			// Expect this not to build.
+			'linting-test': filePath( 'test/src/linting-test.js' ),
 		},
 		output: {
 			path: filePath( 'test/build/prod' ),
@@ -42,6 +44,8 @@ module.exports = [
 		name: 'dev-test',
 		entry: {
 			prod: filePath( 'test/src/index.js' ),
+			// Expect this to warn.
+			'linting-test': filePath( 'test/src/linting-test.js' ),
 		},
 		output: {
 			path: filePath( 'test/build/dev' ),

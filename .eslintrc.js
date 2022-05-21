@@ -251,7 +251,10 @@ module.exports = {
 			'error',
 			'last'
 		],
-		'sort-imports': 'error',
+		'sort-imports': [
+			'error',
+			{ memberSyntaxSortOrder: [ 'all', 'multiple', 'single', 'none' ] },
+		],
 		'sort-keys': 'off',
 		'sort-vars': 'error',
 		'space-before-blocks': 'error',
