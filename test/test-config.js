@@ -7,8 +7,9 @@ module.exports = [
 		name: 'production-test',
 		entry: {
 			prod: filePath( 'test/src/index.js' ),
-			// Expect this not to build.
-			'linting-test': filePath( 'test/src/linting-test.js' ),
+			// Expect this not to build. Currently cannot do this because our CI script
+			// anticipates that all commands will return a 0 status.
+			// 'linting-test': filePath( 'test/src/linting-test.js' ),
 		},
 		output: {
 			path: filePath( 'test/build/prod' ),
