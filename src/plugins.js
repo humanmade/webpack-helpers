@@ -3,9 +3,9 @@ const { CleanWebpackPlugin } = require( 'clean-webpack-plugin' );
 const BellOnBundleErrorPlugin = require( 'bell-on-bundler-error-plugin' );
 const CopyPlugin = require( 'copy-webpack-plugin' );
 const ESLintPlugin = require( 'eslint-webpack-plugin' );
-const FixStyleOnlyEntriesPlugin = require( 'webpack-fix-style-only-entries' );
 const { WebpackManifestPlugin: ManifestPlugin } = require( 'webpack-manifest-plugin' );
 const MiniCssExtractPlugin = require( 'mini-css-extract-plugin' );
+const RemoveEmptyScriptsPlugin = require( 'webpack-remove-empty-scripts' );
 const TerserPlugin = require( 'terser-webpack-plugin' );
 const CssMinimizerPlugin = require( 'css-minimizer-webpack-plugin' );
 
@@ -25,10 +25,10 @@ module.exports = {
 		CleanWebpackPlugin,
 		CopyPlugin,
 		ESLintPlugin,
-		FixStyleOnlyEntriesPlugin,
 		ManifestPlugin,
 		MiniCssExtractPlugin,
 		CssMinimizerPlugin,
+		RemoveEmptyScriptsPlugin,
 		TerserPlugin,
 	},
 
@@ -113,14 +113,14 @@ module.exports = {
 	} ),
 
 	/**
-	 * Create a new FixStyleOnlyEntriesPlugin instance to remove unnecessary JS
+	 * Create a new RemoveEmptyScriptsPlugin instance to remove unnecessary JS
 	 * files generated for style-only bundle entries.
 	 *
 	 * @param {Object} [options]         Optional plugin options object.
 	 * @param {RegExp} [options.exclude] Regular expression to filter what gets cleaned.
-	 * @returns {FixStyleOnlyEntriesPlugin} A configured FixStyleOnlyEntriesPlugin instance.
+	 * @returns {RemoveEmptyScriptsPlugin} A configured RemoveEmptyScriptsPlugin instance.
 	 */
-	fixStyleOnlyEntries: ( options ) => new FixStyleOnlyEntriesPlugin( options ),
+	fixStyleOnlyEntries: ( options ) => new RemoveEmptyScriptsPlugin( options ),
 
 	/**
 	 * Create a new ManifestPlugin instance to output an asset-manifest.json

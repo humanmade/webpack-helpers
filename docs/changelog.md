@@ -15,6 +15,7 @@ nav_order: 10
 - **Breaking**: Replace `filterLoaders` system with [individual hooks accesible via the new `addFilter` and `removeFilter` helpers](https://humanmade.github.io/webpack-helpers/modules/presets.html#customizing-presets).
 - **Breaking**: Remove deprecated `eslint-loader` and add `eslint-webpack-plugin` to presets as `plugins.eslint()`.
 - **Potentially Breaking**: Remove `loaders.url()` and `loaders.file()` in favor of Webpack 5 [`asset` modules](https://webpack.js.org/guides/asset-modules/), now usable by including `loaders.asset()` (for assets which can be inlined) and `loaders.resource()` (as a catch-all for other types) in your module rules list. Asset modules are handled automatically in both presets, so this is only breaking if `loaders.url()` or `loaders.file()` was used directly.
+- `plugins.fixStyleOnlyEntries()` now uses [`webpack-remove-empty-scripts`](https://github.com/webdiscus/webpack-remove-empty-scripts#webpack-remove-empty-scripts) instead of `webpack-fix-style-only-entries` due to Webpack 5 compatiblity issues with the original plugin.
 - Allow `null` to be returned from an `addFilter` callback to skip a filter when using a configuration preset.
 - Remove `OptimizeCssAssetsPlugin` (`plugins.optimizeCssAssets()`) in favor of Webpack 5-compatible [CssMinimizerPlugin](https://github.com/webpack-contrib/css-minimizer-webpack-plugin) (`plugins.cssMinimizer()`)
 - Remove `plugins.hotModuleReplacement()`, which is now handled automatically by the DevServer in `hot` mode.
