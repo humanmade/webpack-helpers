@@ -2,6 +2,7 @@ const { BundleAnalyzerPlugin } = require( 'webpack-bundle-analyzer' );
 const { CleanWebpackPlugin } = require( 'clean-webpack-plugin' );
 const BellOnBundleErrorPlugin = require( 'bell-on-bundler-error-plugin' );
 const CopyPlugin = require( 'copy-webpack-plugin' );
+const ESLintPlugin = require( 'eslint-webpack-plugin' );
 const FixStyleOnlyEntriesPlugin = require( 'webpack-fix-style-only-entries' );
 const { WebpackManifestPlugin: ManifestPlugin } = require( 'webpack-manifest-plugin' );
 const MiniCssExtractPlugin = require( 'mini-css-extract-plugin' );
@@ -23,6 +24,7 @@ module.exports = {
 		BundleAnalyzerPlugin,
 		CleanWebpackPlugin,
 		CopyPlugin,
+		ESLintPlugin,
 		FixStyleOnlyEntriesPlugin,
 		ManifestPlugin,
 		MiniCssExtractPlugin,
@@ -97,6 +99,18 @@ module.exports = {
 	 * @returns {BellOnBundleErrorPlugin} A BellOnBundleErrorPlugin instance.
 	 */
 	errorBell: () => new BellOnBundleErrorPlugin(),
+
+	/**
+	 * Create a new ESLintPlugin instance to check your build for syntax or style issues.
+	 *
+	 * @param {Object} options Optional plugin options object.
+	 * @returns {ESLintPlugin} A configured ESLintPlugin instance.
+	 */
+	eslint: ( options ) => new ESLintPlugin( {
+		extensions: [ 'js', 'jsx', 'ts', 'tsx' ],
+		exclude: [ 'node_modules', 'vendor', '*.min.js', '*.min.jsx' ],
+		...options,
+	} ),
 
 	/**
 	 * Create a new FixStyleOnlyEntriesPlugin instance to remove unnecessary JS

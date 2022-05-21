@@ -22,19 +22,11 @@ describe( 'loaders', () => {
 		expect( result.value ).toBe( 42 );
 	} );
 
-	describe( '.eslint()', () => {
-		it( 'tests for .js or .jsx files', () => {
-			expect( 'file.js'.match( loaders.eslint().test ) ).not.toBeNull();
-			expect( 'file.jsx'.match( loaders.eslint().test ) ).not.toBeNull();
-			expect( 'file.scss'.match( loaders.eslint().test ) ).toBeNull();
-		} );
-	} );
-
 	describe( '.js()', () => {
 		it( 'tests for .js or .jsx files', () => {
-			expect( 'file.js'.match( loaders.eslint().test ) ).not.toBeNull();
-			expect( 'file.jsx'.match( loaders.eslint().test ) ).not.toBeNull();
-			expect( 'file.scss'.match( loaders.eslint().test ) ).toBeNull();
+			expect( 'file.js'.match( loaders.js().test ) ).not.toBeNull();
+			expect( 'file.jsx'.match( loaders.js().test ) ).not.toBeNull();
+			expect( 'file.scss'.match( loaders.js().test ) ).toBeNull();
 		} );
 	} );
 

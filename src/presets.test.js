@@ -377,7 +377,6 @@ describe( 'presets', () => {
 		it( 'does not include null loader entries if a loader was disabled with a filter', () => {
 			addFilter( 'preset/stylesheet-loaders', returnNull );
 			addFilter( 'loader/ts', returnNull );
-			addFilter( 'loader/eslint', returnNull );
 			const config = development( {
 				entry: {
 					main: 'some-file.js',
@@ -626,7 +625,6 @@ describe( 'presets', () => {
 		it( 'does not include null loader entries if a loader was disabled with a filter', () => {
 			addFilter( 'preset/stylesheet-loaders', returnNull );
 			addFilter( 'loader/ts', returnNull );
-			addFilter( 'loader/eslint', returnNull );
 			const config = production( {
 				entry: {
 					main: 'some-file.js',

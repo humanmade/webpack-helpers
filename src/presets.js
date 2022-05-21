@@ -31,11 +31,11 @@ const getSeedByDirectory = ( path ) => {
 
 /**
  * Helper to detect whether a given package is installed, and return a spreadable
- * array containing an appropriate loader if so.
+ * array containing an appropriate loader or plugin if so.
  *
  * @example
- *     rules: [
- *         ...ifInstalled( 'eslint', loaders.eslint() ),
+ *     plugins: [
+ *         ...ifInstalled( 'eslint', plugins.eslint() ),
  *     ],
  *
  * @param {String} packageName The string name of the dependency for which to test.
@@ -128,12 +128,6 @@ const development = ( config = {} ) => {
 			rules: removeNullLoaders( [
 				// Handle node_modules packages that contain sourcemaps.
 				loaders.sourcemaps(),
-				// Run all JS files through ESLint, if installed.
-				...ifInstalled( 'eslint', loaders.eslint( {
-					options: {
-						emitWarning: true,
-					},
-				} ) ),
 				{
 					// "oneOf" will traverse all following loaders until one will
 					// match the requirements. If no loader matches, it will fall
@@ -186,7 +180,13 @@ const development = ( config = {} ) => {
 
 		devServer,
 
-		plugins: [],
+		plugins: [
+			// Run all JS files through ESLint, if installed.
+			...ifInstalled( 'eslint', plugins.eslint( {
+				// But don't let errors block the build.
+				failOnError: false,
+			} ) ),
+		],
 	};
 
 	// If no entry was provided, inject a default entry value.
@@ -278,8 +278,6 @@ const production = ( config = {} ) => {
 		module: {
 			strictExportPresence: true,
 			rules: removeNullLoaders( [
-				// Run all JS files through ESLint, if installed.
-				...ifInstalled( 'eslint', loaders.eslint() ),
 				{
 					// "oneOf" will traverse all following loaders until one will
 					// match the requirements. If no loader matches, it will fall
@@ -327,7 +325,10 @@ const production = ( config = {} ) => {
 
 		stats,
 
-		plugins: [],
+		plugins: [
+			// Run all JS files through ESLint, if installed.
+			...ifInstalled( 'eslint', plugins.eslint() ),
+		],
 	};
 
 	// If no entry was provided, inject a default entry value.

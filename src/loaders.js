@@ -30,7 +30,7 @@ const createLoaderFactory = loaderKey => {
 };
 
 // Define all supported loader factories within the loaders object.
-[ 'assets', 'eslint', 'js', 'ts', 'style', 'css', 'postcss', 'sass', 'sourcemaps', 'resource' ].forEach( loaderKey => {
+[ 'assets', 'js', 'ts', 'style', 'css', 'postcss', 'sass', 'sourcemaps', 'resource' ].forEach( loaderKey => {
 	loaders[ loaderKey ] = createLoaderFactory( loaderKey );
 } );
 
@@ -43,14 +43,6 @@ loaders.assets.defaults = {
 			maxSize: 10 * 1024,
 		},
 	},
-};
-
-loaders.eslint.defaults = {
-	test: /\.jsx?$/,
-	exclude: /(node_modules|bower_components)/,
-	enforce: 'pre',
-	loader: require.resolve( 'eslint-loader' ),
-	options: {},
 };
 
 loaders.js.defaults = {

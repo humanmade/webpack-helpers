@@ -16,6 +16,7 @@ This module provides methods which create new instances of commonly-needed Webpa
 &nbsp; | `plugins.clean()` | Create and return a new [`clean-webpack-plugin`](https://github.com/johnagan/clean-webpack-plugin) instance.
 &nbsp; | `plugins.copy()` | Create and return a new [`copy-webpack-plugin`](https://github.com/webpack-contrib/copy-webpack-plugin) instance.
 &nbsp; | `plugins.errorBell()` | Create and return a new [`bell-on-bundle-error-plugin`](https://www.npmjs.com/package/bell-on-bundler-error-plugin) instance.
+&nbsp; | `plugins.eslint()` | Create and return a [`eslint-webpack-plugin`](https://webpack.js.org/plugins/eslint-webpack-plugin/) instance.
 &nbsp; | `plugins.fixStyleOnlyEntries()` | Create and return a [`webpack-fix-style-only-entries`](https://github.com/fqborges/webpack-fix-style-only-entries) instance to remove empty JS bundles for style-only entrypoints.
 &nbsp; | `plugins.manifest()` | : Create and return a new [`webpack-manifest-plugin`](https://github.com/danethurber/webpack-manifest-plugin) instance, preconfigured to write the manifest file while running from a dev server.
 **P**  | `plugins.miniCssExtract()` | Create and return a new [`mini-css-extract-plugin`](https://github.com/webpack-contrib/mini-css-extract-plugin) instance.
