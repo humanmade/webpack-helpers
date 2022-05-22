@@ -180,6 +180,8 @@ const development = ( config = {} ) => {
 
 		devServer,
 
+		stats,
+
 		plugins: [
 			// Run all JS files through ESLint, if installed.
 			...ifInstalled( 'eslint', plugins.eslint( {

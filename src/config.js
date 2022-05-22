@@ -23,12 +23,10 @@ module.exports = {
 	 * @type {Object}
 	 */
 	stats: {
-		all: false,
+		preset: 'summary',
 		assets: true,
 		colors: true,
 		errors: true,
-		performance: true,
-		timings: true,
 		warnings: true,
 	},
 };
