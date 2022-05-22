@@ -6,6 +6,7 @@ const ESLintPlugin = require( 'eslint-webpack-plugin' );
 const { WebpackManifestPlugin: ManifestPlugin } = require( 'webpack-manifest-plugin' );
 const MiniCssExtractPlugin = require( 'mini-css-extract-plugin' );
 const RemoveEmptyScriptsPlugin = require( 'webpack-remove-empty-scripts' );
+const SimpleBuildReportPlugin = require( 'simple-build-report-webpack-plugin' );
 const TerserPlugin = require( 'terser-webpack-plugin' );
 const CssMinimizerPlugin = require( 'css-minimizer-webpack-plugin' );
 
@@ -29,6 +30,7 @@ module.exports = {
 		MiniCssExtractPlugin,
 		CssMinimizerPlugin,
 		RemoveEmptyScriptsPlugin,
+		SimpleBuildReportPlugin,
 		TerserPlugin,
 	},
 
@@ -121,6 +123,14 @@ module.exports = {
 	 * @returns {RemoveEmptyScriptsPlugin} A configured RemoveEmptyScriptsPlugin instance.
 	 */
 	fixStyleOnlyEntries: ( options ) => new RemoveEmptyScriptsPlugin( options ),
+
+	/**
+	 * Instantiate a SimpleBuildReportPlugin to render build output using the
+	 * webpack-format-messages package.
+	 *
+	 * @returns {SimpleBuildReportPlugin} Output formatter plugin instance.
+	 */
+	formatConsoleOutput: () => new SimpleBuildReportPlugin(),
 
 	/**
 	 * Create a new ManifestPlugin instance to output an asset-manifest.json
