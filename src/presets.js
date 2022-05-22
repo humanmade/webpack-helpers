@@ -188,7 +188,7 @@ const development = ( config = {} ) => {
 				// But don't let errors block the build.
 				failOnError: false,
 			} ) ),
-		],
+		].filter( Boolean ),
 	};
 
 	// If no entry was provided, inject a default entry value.
@@ -330,7 +330,7 @@ const production = ( config = {} ) => {
 		plugins: [
 			// Run all JS files through ESLint, if installed.
 			...ifInstalled( 'eslint', plugins.eslint() ),
-		],
+		].filter( Boolean ),
 	};
 
 	// If no entry was provided, inject a default entry value.
