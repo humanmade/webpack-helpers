@@ -95,8 +95,8 @@ describe( 'presets', () => {
 			expect( config.entry ).toEqual( 'some-file.js' );
 			expect( config.output ).toEqual( {
 				pathinfo: true,
-				filename: '[name].[contenthash:8].js',
-				chunkFilename: '[name].[contenthash:8].chunk.js',
+				filename: '[name].[contenthash].js',
+				chunkFilename: '[name].[contenthash].chunk.js',
 				path: 'build/',
 			} );
 		} );
@@ -408,8 +408,8 @@ describe( 'presets', () => {
 			expect( config.entry ).toEqual( 'some-file.js' );
 			expect( config.output ).toEqual( {
 				pathinfo: false,
-				filename: '[name].[contenthash:8].js',
-				chunkFilename: '[name].[contenthash:8].chunk.js',
+				filename: '[name].[contenthash].js',
+				chunkFilename: '[name].[contenthash].chunk.js',
 				path: 'build/',
 				publicPath: '',
 			} );
@@ -444,7 +444,7 @@ describe( 'presets', () => {
 			] ) );
 			const cssPlugins = config.plugins.filter( filterPlugins( MiniCssExtractPlugin ) );
 			expect( cssPlugins.length ).toBe( 1 );
-			expect( cssPlugins[ 0 ].options.filename ).toEqual( '[name].[contenthash:8].css' );
+			expect( cssPlugins[ 0 ].options.filename ).toEqual( '[name].[contenthash].css' );
 		} );
 
 		it( 'does not override or duplicate existing MiniCssExtractPlugin instances', () => {
