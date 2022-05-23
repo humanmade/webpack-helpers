@@ -9,6 +9,8 @@ const loaders = require( './loaders' );
 const plugins = require( './plugins' );
 const { ManifestPlugin, MiniCssExtractPlugin } = plugins.constructors;
 
+const isAnalyzeMode = process.argv.includes( '--analyze' );
+
 /**
  * Dictionary of shared seed objects by path.
  *
@@ -330,6 +332,15 @@ const production = ( config = {} ) => {
 		plugins: [
 			// Run all JS files through ESLint, if installed.
 			...ifInstalled( 'eslint', plugins.eslint() ),
+			// If webpack was invoked with the --analyze flag, include a bundleAnalyzer
+			// in production builds. Use the configuration name when present to separate
+			// output files for each webpack build in multi-configuration setups.
+			isAnalyzeMode ?
+				plugins.bundleAnalyzer( {
+					reportFilename: config.name ? `${ config.name }-analyzer-report.html` : 'bundle-analyzer-report.html',
+					statsFilename: config.name ? `${ config.name }-stats.json` : 'stats.json',
+				} ) :
+				null,
 		].filter( Boolean ),
 	};
 

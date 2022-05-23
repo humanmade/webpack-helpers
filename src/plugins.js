@@ -51,14 +51,14 @@ module.exports = {
 	},
 
 	/**
-	 * Create a new BundleAnalyzerPlugin instance. The analyzer is enabled by default
-	 * only if `--analyze` is passed on the command line.
+	 * Create a new BundleAnalyzerPlugin instance.
 	 *
 	 * @param {Object} [options] Optional plugin options object.
 	 * @returns {BundleAnalyzerPlugin} A configured BundleAnalyzerPlugin instance.
 	 */
 	bundleAnalyzer: ( options = {} ) => new BundleAnalyzerPlugin( {
-		analyzerMode: process.argv.indexOf( '--analyze' ) >= 0 ? 'static' : 'disabled',
+		analyzerMode: 'static',
+		generateStatsFile: true,
 		openAnalyzer: false,
 		reportFilename: 'bundle-analyzer-report.html',
 		...options,

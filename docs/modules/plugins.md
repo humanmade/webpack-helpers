@@ -12,7 +12,7 @@ This module provides methods which create new instances of commonly-needed Webpa
 
 &nbsp; | Plugin | Description
 ------ | ------ | ------------
-&nbsp; | `plugins.bundleAnalyzer()` | Create and return a new [`webpack-bundle-analyzer`](https://github.com/webpack-contrib/webpack-bundle-analyzer) instance. When included this plugin is disabled by default unless the `--analyze` flag is passed on the command line.
+&nbsp; | `plugins.bundleAnalyzer()` | Create and return a new [`webpack-bundle-analyzer`](https://github.com/webpack-contrib/webpack-bundle-analyzer) instance. This plugin is included in production preset builds automatically when the `--analyze` flag is passed on the command line.
 &nbsp; | `plugins.clean()` | Create and return a new [`clean-webpack-plugin`](https://github.com/johnagan/clean-webpack-plugin) instance.
 &nbsp; | `plugins.copy()` | Create and return a new [`copy-webpack-plugin`](https://github.com/webpack-contrib/copy-webpack-plugin) instance.
 &nbsp; | `plugins.errorBell()` | Create and return a new [`bell-on-bundle-error-plugin`](https://www.npmjs.com/package/bell-on-bundler-error-plugin) instance.
