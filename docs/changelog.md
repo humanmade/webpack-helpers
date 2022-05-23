@@ -16,6 +16,8 @@ nav_order: 10
 - **Breaking**: Remove deprecated `eslint-loader` and add `eslint-webpack-plugin` to presets as `plugins.eslint()`.
 - **Potentially Breaking**: Remove `loaders.url()` and `loaders.file()` in favor of Webpack 5 [`asset` modules](https://webpack.js.org/guides/asset-modules/), now usable by including `loaders.asset()` (for assets which can be inlined) and `loaders.resource()` (as a catch-all for other types) in your module rules list. Asset modules are handled automatically in both presets, so this is only breaking if `loaders.url()` or `loaders.file()` was used directly.
 - A `webpack-bundle-analyzer` plugin is now automatically added to production builds when Webpack is invoked with the `--analyze` flag.
+- Add the [`simple-build-report-webpack-plugin`](https://github.com/kadamwhite/simple-build-report-webpack-plugin) as `plugins.simpleBuildReport()`
+- Include a `plugins.simpleBuildReport()` instance in production preset builds to improve legibility of Webpack console output.
 - `plugins.fixStyleOnlyEntries()` now uses [`webpack-remove-empty-scripts`](https://github.com/webdiscus/webpack-remove-empty-scripts#webpack-remove-empty-scripts) instead of `webpack-fix-style-only-entries` due to Webpack 5 compatiblity issues with the original plugin.
 - Allow `null` to be returned from an `addFilter` callback to skip a filter when using a configuration preset.
 - Remove `OptimizeCssAssetsPlugin` (`plugins.optimizeCssAssets()`) in favor of Webpack 5-compatible [CssMinimizerPlugin](https://github.com/webpack-contrib/css-minimizer-webpack-plugin) (`plugins.cssMinimizer()`)

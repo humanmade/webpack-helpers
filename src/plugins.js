@@ -125,14 +125,6 @@ module.exports = {
 	fixStyleOnlyEntries: ( options ) => new RemoveEmptyScriptsPlugin( options ),
 
 	/**
-	 * Instantiate a SimpleBuildReportPlugin to render build output using the
-	 * webpack-format-messages package.
-	 *
-	 * @returns {SimpleBuildReportPlugin} Output formatter plugin instance.
-	 */
-	formatConsoleOutput: () => new SimpleBuildReportPlugin(),
-
-	/**
 	 * Create a new ManifestPlugin instance to output an asset-manifest.json
 	 * file, which can be consumed by the PHP server to auto-load generated
 	 * assets from the development server. A publicPath matching the URL
@@ -176,6 +168,14 @@ module.exports = {
 	 * @returns {CssMinimizerPlugin} A configured CssMinimizerPlugin instance.
 	 */
 	cssMinimizer: ( options = {} ) => new CssMinimizerPlugin( options ),
+
+	/**
+	 * Instantiate a SimpleBuildReportPlugin to render build output in a human-
+	 * oriented fashion.
+	 *
+	 * @returns {SimpleBuildReportPlugin} Output formatter plugin instance.
+	 */
+	simpleBuildReport: () => new SimpleBuildReportPlugin(),
 
 	/**
 	 * Create a new TerserPlugin instance, defaulting to a set of options

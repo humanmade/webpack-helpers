@@ -332,6 +332,8 @@ const production = ( config = {} ) => {
 		plugins: [
 			// Run all JS files through ESLint, if installed.
 			...ifInstalled( 'eslint', plugins.eslint() ),
+			// Use the simple build report plugin to clean up Webpack's terminal output.
+			plugins.simpleBuildReport(),
 			// If webpack was invoked with the --analyze flag, include a bundleAnalyzer
 			// in production builds. Use the configuration name when present to separate
 			// output files for each webpack build in multi-configuration setups.
