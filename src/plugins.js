@@ -186,7 +186,7 @@ module.exports = {
 	 * @param {Object} [options.terserOptions] Terser compressor options object.
 	 * @returns {TerserPlugin} A configured TerserPlugin instance.
 	 */
-	terser: ( options = {} ) => new TerserPlugin( deepMerge( {
+	terser: ( options = {} ) => new TerserPlugin( {
 		terserOptions: {
 			parse: {
 				// We want terser to parse ecma 8 code. However, we don't want it
@@ -224,5 +224,6 @@ module.exports = {
 				ascii_only: true,
 			},
 		},
-	}, options ) ),
+		...options,
+	} ),
 };

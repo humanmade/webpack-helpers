@@ -20,6 +20,7 @@ nav_order: 10
 - Include a `plugins.simpleBuildReport()` instance in production preset builds to improve legibility of Webpack console output.
 - `plugins.fixStyleOnlyEntries()` now uses [`webpack-remove-empty-scripts`](https://github.com/webdiscus/webpack-remove-empty-scripts#webpack-remove-empty-scripts) instead of `webpack-fix-style-only-entries` due to Webpack 5 compatiblity issues with the original plugin.
 - Allow `null` to be returned from an `addFilter` callback to skip a loader when using a configuration preset.
+- Do not deep merge options passed to `plugins.terserPlugin()`: options object can now fully overwrite `terserOptions` property if needed.
 - Remove `OptimizeCssAssetsPlugin` (`plugins.optimizeCssAssets()`) in favor of Webpack 5-compatible [CssMinimizerPlugin](https://github.com/webpack-contrib/css-minimizer-webpack-plugin) (`plugins.cssMinimizer()`)
 - Remove `plugins.hotModuleReplacement()`, which is now handled automatically by the DevServer in `hot` mode.
 - Include the `contenthash` in generated CSS filenames. [#204](https://github.com/humanmade/webpack-helpers/pull/204)
