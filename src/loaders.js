@@ -78,9 +78,9 @@ loaders.postcss.defaults = {
 	options: {
 		postcssOptions: {
 			ident: 'postcss',
-			plugins: applyFilters( 'loader/postcss/plugins', [
+			plugins: applyFilters( 'loaders/postcss/plugins', [
 				postcssFlexbugsFixes,
-				postcssPresetEnv( applyFilters( 'loader/postcss/preset-env', {
+				postcssPresetEnv( applyFilters( 'loaders/postcss/preset-env', {
 					autoprefixer: {
 						flexbox: 'no-2009',
 					},

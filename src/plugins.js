@@ -187,7 +187,7 @@ module.exports = {
 	 * @returns {TerserPlugin} A configured TerserPlugin instance.
 	 */
 	terser: ( options = {} ) => new TerserPlugin( {
-		...applyFilters( 'plugin/terser/defaults', {
+		...applyFilters( 'plugins/terser/defaults', {
 			terserOptions: {
 				parse: {
 					// We want terser to parse ecma 8 code. However, we don't want it

@@ -282,11 +282,11 @@ describe( 'presets', () => {
 		} );
 
 		it( 'permits filtering the computed output of individual loaders', () => {
-			addFilter( 'loader/assets', ( loader ) => {
+			addFilter( 'loaders/assets', ( loader ) => {
 				loader.test = /\.(png|jpg|jpeg|gif|svg)$/;
 				return loader;
 			} );
-			addFilter( 'loader/resource', ( loader ) => {
+			addFilter( 'loaders/resource', ( loader ) => {
 				loader.options = {
 					publicPath: '../../',
 				};
@@ -320,11 +320,11 @@ describe( 'presets', () => {
 		} );
 
 		it( 'permits filtering the entire stylesheet loader chain', () => {
-			addFilter( 'preset/stylesheet-loaders', ( loader ) => {
+			addFilter( 'presets/stylesheet-loaders', ( loader ) => {
 				loader.test = /\.styl$/;
 				return loader;
 			} );
-			addFilter( 'loader/sass', () => ( {
+			addFilter( 'loaders/sass', () => ( {
 				loader: 'stylus',
 				mode: 'development',
 			} ) );
@@ -348,8 +348,8 @@ describe( 'presets', () => {
 		} );
 
 		it( 'permits skipping a specific stylesheet loader by filtering it to null', () => {
-			addFilter( 'loader/postcss', returnNull );
-			addFilter( 'loader/sass', returnNull );
+			addFilter( 'loaders/postcss', returnNull );
+			addFilter( 'loaders/sass', returnNull );
 			const config = development( {
 				entry: {
 					main: 'some-file.js',
@@ -375,8 +375,8 @@ describe( 'presets', () => {
 		} );
 
 		it( 'does not include null loader entries if a loader was disabled with a filter', () => {
-			addFilter( 'preset/stylesheet-loaders', returnNull );
-			addFilter( 'loader/ts', returnNull );
+			addFilter( 'presets/stylesheet-loaders', returnNull );
+			addFilter( 'loaders/ts', returnNull );
 			const config = development( {
 				entry: {
 					main: 'some-file.js',
@@ -536,11 +536,11 @@ describe( 'presets', () => {
 		} );
 
 		it( 'permits filtering the computed output of individual loaders', () => {
-			addFilter( 'loader/assets', ( loader ) => {
+			addFilter( 'loaders/assets', ( loader ) => {
 				loader.test = /\.(png|jpg|jpeg|gif|svg)$/;
 				return loader;
 			} );
-			addFilter( 'loader/resource', ( loader ) => {
+			addFilter( 'loaders/resource', ( loader ) => {
 				loader.options = {
 					publicPath: '../../',
 				};
@@ -574,11 +574,11 @@ describe( 'presets', () => {
 		} );
 
 		it( 'permits filtering the entire stylesheet loader chain', () => {
-			addFilter( 'preset/stylesheet-loaders', ( loader ) => {
+			addFilter( 'presets/stylesheet-loaders', ( loader ) => {
 				loader.test = /\.styl$/;
 				return loader;
 			} );
-			addFilter( 'loader/sass', () => ( {
+			addFilter( 'loaders/sass', () => ( {
 				loader: 'stylus',
 			} ) );
 			const config = production( {
@@ -600,8 +600,8 @@ describe( 'presets', () => {
 		} );
 
 		it( 'permits skipping a specific stylesheet loader by filtering it to null', () => {
-			addFilter( 'loader/postcss', returnNull );
-			addFilter( 'loader/sass', returnNull );
+			addFilter( 'loaders/postcss', returnNull );
+			addFilter( 'loaders/sass', returnNull );
 			const config = production( {
 				entry: {
 					main: 'some-file.js',
@@ -623,8 +623,8 @@ describe( 'presets', () => {
 		} );
 
 		it( 'does not include null loader entries if a loader was disabled with a filter', () => {
-			addFilter( 'preset/stylesheet-loaders', returnNull );
-			addFilter( 'loader/ts', returnNull );
+			addFilter( 'presets/stylesheet-loaders', returnNull );
+			addFilter( 'loaders/ts', returnNull );
 			const config = production( {
 				entry: {
 					main: 'some-file.js',

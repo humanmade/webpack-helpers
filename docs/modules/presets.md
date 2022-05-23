@@ -116,13 +116,13 @@ Array values are _merged_ when processing a preset, not overwritten. This allows
 const { addFilter } = require( 'helpers' );
 
 // Intercept the "sass" loader and replace it with a Stylus loader.
-addFilter( 'loader/sass', () => {
+addFilter( 'loaders/sass', () => {
 	return {
 		loader: require.resolve( 'stylus-loader' ),
 	};
 } );
 // Alter presets to use a different targeting regular expression.
-addFilter( 'preset/stylesheet-loaders', ( loader ) => {
+addFilter( 'presets/stylesheet-loaders', ( loader ) => {
 	loader.test = /.\styl$/;
 	return loader;
 } );

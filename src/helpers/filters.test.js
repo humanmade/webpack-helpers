@@ -70,18 +70,18 @@ describe( 'filters', () => {
 
 		it( 'adds a callback for the specified filter', () => {
 			const hook = () => 'Woo';
-			addFilter( 'loader/js', hook );
-			expect( getCallbacks( 'loader/js' ) ).toEqual( [ hook ] );
+			addFilter( 'loaders/js', hook );
+			expect( getCallbacks( 'loaders/js' ) ).toEqual( [ hook ] );
 		} );
 
 		it( 'adds callbacks with the specified priority', () => {
 			const hook = () => 'Woo';
 			const hook2 = () => 'Woo-er';
 			const hook3 = () => 'Woo-est';
-			addFilter( 'loader/js', hook2, 9 );
-			addFilter( 'loader/js', hook3, 11 );
-			addFilter( 'loader/js', hook );
-			expect( getCallbacks( 'loader/js' ) ).toEqual( [ hook2, hook, hook3 ] );
+			addFilter( 'loaders/js', hook2, 9 );
+			addFilter( 'loaders/js', hook3, 11 );
+			addFilter( 'loaders/js', hook );
+			expect( getCallbacks( 'loaders/js' ) ).toEqual( [ hook2, hook, hook3 ] );
 		} );
 	} );
 
@@ -92,25 +92,25 @@ describe( 'filters', () => {
 
 		it( 'removes a previously-added callback for the specified filter', () => {
 			const hook = () => 'Woo';
-			addFilter( 'loader/js', hook );
-			removeFilter( 'loader/js', hook );
-			expect( getCallbacks( 'loader/js' ) ).toEqual( [] );
+			addFilter( 'loaders/js', hook );
+			removeFilter( 'loaders/js', hook );
+			expect( getCallbacks( 'loaders/js' ) ).toEqual( [] );
 		} );
 
 		it( 'only removes the requested callback', () => {
 			const hook = () => 'Woo';
 			const hook2 = () => 'Woo-er';
-			addFilter( 'loader/js', hook );
-			addFilter( 'loader/js', hook2 );
-			removeFilter( 'loader/js', hook );
-			expect( getCallbacks( 'loader/js' ) ).toEqual( [ hook2 ] );
+			addFilter( 'loaders/js', hook );
+			addFilter( 'loaders/js', hook2 );
+			removeFilter( 'loaders/js', hook );
+			expect( getCallbacks( 'loaders/js' ) ).toEqual( [ hook2 ] );
 		} );
 
 		it( 'does not remove a callback if the priority does not match', () => {
 			const hook = () => 'Woo';
-			addFilter( 'loader/js', hook, 9 );
-			removeFilter( 'loader/js', hook, 10 );
-			expect( getCallbacks( 'loader/js' ) ).toEqual( [ hook ] );
+			addFilter( 'loaders/js', hook, 9 );
+			removeFilter( 'loaders/js', hook, 10 );
+			expect( getCallbacks( 'loaders/js' ) ).toEqual( [ hook ] );
 		} );
 	} );
 

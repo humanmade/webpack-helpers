@@ -144,7 +144,7 @@ const development = ( config = {} ) => {
 						// Parse styles using SASS, then PostCSS.
 						// Pass environment name as second parameter to give flexibility when filtering.
 						applyFilters(
-							'preset/stylesheet-loaders',
+							'presets/stylesheet-loaders',
 							{
 								test: /\.s?css$/,
 								use: [
@@ -296,7 +296,7 @@ const production = ( config = {} ) => {
 						// Parse styles using SASS, then PostCSS.
 						// Pass environment name as second parameter to give flexibility when filtering.
 						applyFilters(
-							'preset/stylesheet-loaders',
+							'presets/stylesheet-loaders',
 							{
 								test: /\.s?css$/,
 								use: [
