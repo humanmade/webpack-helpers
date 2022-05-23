@@ -20,9 +20,9 @@ const createLoaderFactory = loaderKey => {
 		// Generate the requested loader definition. Expose filter seams both
 		// to customize the defaults, and to alter the final rendered output.
 		return applyFilters(
-			`loader/${ loaderKey }`,
+			`loaders/${ loaderKey }`,
 			deepMerge(
-				applyFilters( `loader/${ loaderKey }/defaults`, loaders[ loaderKey ].defaults ),
+				applyFilters( `loaders/${ loaderKey }/defaults`, loaders[ loaderKey ].defaults ),
 				options
 			)
 		);

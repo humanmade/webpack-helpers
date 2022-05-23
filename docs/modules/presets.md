@@ -139,4 +139,4 @@ Available hooks:
 - `loader/{loader name}/default`: Alter the default values before passing it to the loader configuration merge function.
 - `loader/postcss/plugins`: Filter the list of PostCSS plugins used by that specific loader.
 - `loader/postcss/preset-env`: Filter the configuration object passed to the PostCSS Preset Env plugin.
-- `preset/stylesheet-loaders`: Filter the computed chain of stylesheet loaders output by the preset factories. This hook receives a second argument `environment` which will show either "production" or "development," to permit per-environment filtering.
+- `presets/stylesheet-loaders`: Filter the computed chain of stylesheet loaders output by the preset factories. This hook receives a second argument `environment` which will show either "production" or "development," to permit per-environment filtering.
