@@ -145,6 +145,8 @@ addFilter( 'loaders/ts', ( loaderObject ) => {
 } );
 ```
 
+If you return `null` from the `loaders/{name}` filter, it will remove that loader from the preset entirely.
+
 Additional filters provided by Webpack Helpers:
 
 **`presets/stylesheet-loaders`**
