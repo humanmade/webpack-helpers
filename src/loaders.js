@@ -35,7 +35,7 @@ const createLoaderFactory = loaderKey => {
 } );
 
 loaders.assets.defaults = {
-	test: /\.(png|jpg|jpeg|gif|svg|woff|woff2|eot|ttf)$/,
+	test: /\.(png|jpg|jpeg|gif|avif|webp|svg|woff|woff2|eot|ttf)$/,
 	type: 'asset',
 	parser: {
 		dataUrlCondition: {
