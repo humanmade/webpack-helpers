@@ -12,7 +12,7 @@ const isArr = val => Array.isArray( val );
  * @param {*} val A value to test for object-ness.
  * @returns {Boolean} Whether the provided argument is an object.
  */
-const isObj = val => ( typeof val === 'object' );
+const isObj = val => ( typeof val === 'object' && val !== null );
 
 /**
  * Given two objects, merge array and object properties, then allow scalar
