@@ -36,6 +36,7 @@ module.exports = [
 	'format-library',
 	'hooks',
 	'html-entities',
+	'icons',
 	'i18n',
 	'is-shallow-equal',
 	'keyboard-shortcuts',
