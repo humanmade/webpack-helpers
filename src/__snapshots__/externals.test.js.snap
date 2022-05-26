@@ -29,6 +29,7 @@ Object {
   "@wordpress/hooks": "wp.hooks",
   "@wordpress/html-entities": "wp.htmlEntities",
   "@wordpress/i18n": "wp.i18n",
+  "@wordpress/icons": "wp.icons",
   "@wordpress/is-shallow-equal": "wp.isShallowEqual",
   "@wordpress/keyboard-shortcuts": "wp.keyboardShortcuts",
   "@wordpress/keycodes": "wp.keycodes",
