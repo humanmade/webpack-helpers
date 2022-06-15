@@ -347,6 +347,20 @@ describe( 'presets', () => {
 			expect( sassLoader ).toBeNull();
 		} );
 
+		it( 'passes the preset configuration object to the stylesheet chain filter', () => {
+			const config = {
+				entry: {
+					main: 'some-file.js',
+				},
+			};
+			addFilter( 'presets/stylesheet-loaders', ( loader, preset, presetConfig ) => {
+				expect( presetConfig ).toBe( config );
+				expect( preset ).toBe( 'development' );
+				return loader;
+			} );
+			development( config );
+		} );
+
 		it( 'permits skipping a specific stylesheet loader by filtering it to null', () => {
 			addFilter( 'loaders/postcss', returnNull );
 			addFilter( 'loaders/sass', returnNull );
@@ -390,6 +404,51 @@ describe( 'presets', () => {
 				.toEqual( expect.objectContaining( { type: 'asset' } ) );
 			expect( config.module.rules[ 1 ].oneOf[ 2 ] )
 				.toEqual( expect.objectContaining( { type: 'asset/resource' } ) );
+		} );
+
+		it( 'passes the preset config as argument 2 to loader filters', () => {
+			addFilter( 'loaders/js', ( options, config ) => {
+				expect( config ).not.toBeNull();
+				expect( config.name ).toBe( 'dev-build' );
+				return options;
+			} );
+			development( {
+				name: 'dev-build',
+			} );
+		} );
+
+		it( 'permits filtering only a specific invocation of a preset', () => {
+			addFilter( 'presets/stylesheet-loaders', returnNull );
+			addFilter( 'loaders/ts', returnNull );
+
+			const filterToNullInBuild1 = ( options, config ) => {
+				if ( config.name === 'build1' ) {
+					return null;
+				}
+				// Simplified version to make test easier.
+				return options.test ?
+					{ test: options.test } :
+					{ type: options.type };
+			};
+			addFilter( 'loaders/js', filterToNullInBuild1 );
+			addFilter( 'loaders/assets', filterToNullInBuild1 );
+			addFilter( 'loaders/resource', filterToNullInBuild1 );
+			addFilter( 'loaders/sourcemaps', filterToNullInBuild1 );
+
+			const config1 = development( { name: 'build1' } );
+			const config2 = development( { name: 'build2' } );
+
+			expect( config1.module.rules ).toEqual( [] );
+			expect( config2.module.rules ).toEqual( [
+				{ test: /\.(js|mjs|jsx|ts|tsx|css)$/ },
+				{
+					oneOf: [
+						{ test: /\.jsx?$/ },
+						{ test: /\.(png|jpg|jpeg|gif|avif|webp|svg|woff|woff2|eot|ttf)$/ },
+						{ type: 'asset/resource' },
+					],
+				},
+			] );
 		} );
 	} );
 
@@ -599,6 +658,20 @@ describe( 'presets', () => {
 			expect( sassLoader ).toBeNull();
 		} );
 
+		it( 'passes the preset configuration object to the stylesheet chain filter', () => {
+			const config = {
+				entry: {
+					main: 'some-file.js',
+				},
+			};
+			addFilter( 'presets/stylesheet-loaders', ( loader, preset, presetConfig ) => {
+				expect( presetConfig ).toBe( config );
+				expect( preset ).toBe( 'production' );
+				return loader;
+			} );
+			production( config );
+		} );
+
 		it( 'permits skipping a specific stylesheet loader by filtering it to null', () => {
 			addFilter( 'loaders/postcss', returnNull );
 			addFilter( 'loaders/sass', returnNull );
@@ -639,5 +712,48 @@ describe( 'presets', () => {
 			expect( config.module.rules[ 0 ].oneOf[ 2 ] )
 				.toEqual( expect.objectContaining( { type: 'asset/resource' } ) );
 		} );
+	} );
+
+	it( 'passes the preset config as argument 2 to loader filters', () => {
+		addFilter( 'loaders/js', ( options, config ) => {
+			expect( config ).not.toBeNull();
+			expect( config.name ).toBe( 'dev-build' );
+			return options;
+		} );
+		production( {
+			name: 'dev-build',
+		} );
+	} );
+
+	it( 'permits filtering only a specific invocation of a preset', () => {
+		addFilter( 'presets/stylesheet-loaders', returnNull );
+		addFilter( 'loaders/ts', returnNull );
+
+		const filterToNullInBuild1 = ( options, config ) => {
+			if ( config.name === 'build1' ) {
+				return null;
+			}
+			// Simplified version to make test easier.
+			return options.test ?
+				{ test: options.test } :
+				{ type: options.type };
+		};
+		addFilter( 'loaders/js', filterToNullInBuild1 );
+		addFilter( 'loaders/assets', filterToNullInBuild1 );
+		addFilter( 'loaders/resource', filterToNullInBuild1 );
+
+		const config1 = production( { name: 'build1' } );
+		const config2 = production( { name: 'build2' } );
+
+		expect( config1.module.rules ).toEqual( [] );
+		expect( config2.module.rules ).toEqual( [
+			{
+				oneOf: [
+					{ test: /\.jsx?$/ },
+					{ test: /\.(png|jpg|jpeg|gif|avif|webp|svg|woff|woff2|eot|ttf)$/ },
+					{ type: 'asset/resource' },
+				],
+			},
+		] );
 	} );
 } );

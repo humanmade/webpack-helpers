@@ -15,16 +15,24 @@ const { applyFilters } = require( './helpers/filters' );
  */
 const loaders = {};
 
+/**
+ * Create a loader factory function for a given loader slug.
+ *
+ * @private
+ * @param {string} loaderKey Loader slug
+ * @returns {Function} Factory function to generate and filter a loader with the specified slug.
+ */
 const createLoaderFactory = loaderKey => {
-	return ( options ) => {
+	return ( options = {}, config = null ) => {
 		// Generate the requested loader definition. Expose filter seams both
 		// to customize the defaults, and to alter the final rendered output.
 		return applyFilters(
 			`loaders/${ loaderKey }`,
 			deepMerge(
-				applyFilters( `loaders/${ loaderKey }/defaults`, loaders[ loaderKey ].defaults ),
+				applyFilters( `loaders/${ loaderKey }/defaults`, loaders[ loaderKey ].defaults, config ),
 				options
-			)
+			),
+			config
 		);
 	};
 };

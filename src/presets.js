@@ -133,18 +133,18 @@ const development = ( config = {} ) => {
 			strictExportPresence: true,
 			rules: removeNullLoaders( [
 				// Handle node_modules packages that contain sourcemaps.
-				loaders.sourcemaps(),
+				loaders.sourcemaps( {}, config ),
 				{
 					// "oneOf" will traverse all following loaders until one will
 					// match the requirements. If no loader matches, it will fall
 					// back to the resource loader at the end of the loader list.
 					oneOf: [
 						// Enable processing TypeScript, if installed.
-						...ifInstalled( 'typescript', loaders.ts() ),
+						...ifInstalled( 'typescript', loaders.ts( {}, config ) ),
 						// Process JS with Babel.
-						loaders.js(),
+						loaders.js( {}, config ),
 						// Handle static asset files.
-						loaders.assets(),
+						loaders.assets( {}, config ),
 						// Parse styles using SASS, then PostCSS.
 						// Pass environment name as second parameter to give flexibility when filtering.
 						applyFilters(
@@ -152,29 +152,30 @@ const development = ( config = {} ) => {
 							{
 								test: /\.s?css$/,
 								use: [
-									loaders.style(),
+									loaders.style( {}, config ),
 									loaders.css( {
 										options: {
 											sourceMap: true,
 										},
-									} ),
+									}, config ),
 									loaders.postcss( {
 										options: {
 											sourceMap: true,
 										},
-									} ),
+									}, config ),
 									loaders.sass( {
 										options: {
 											sourceMap: true,
 										},
-									} ),
+									}, config ),
 								],
 							},
-							'development'
+							'development',
+							config
 						),
 						// Resource loader makes sure any non-matching assets still get served.
 						// When you `import` an asset, you get its (virtual) filename.
-						loaders.resource(),
+						loaders.resource( {}, config ),
 					],
 				},
 			] ),
@@ -292,11 +293,11 @@ const production = ( config = {} ) => {
 					// back to the resource loader at the end of the loader list.
 					oneOf: [
 						// Enable processing TypeScript, if installed.
-						...ifInstalled( 'typescript', loaders.ts() ),
+						...ifInstalled( 'typescript', loaders.ts( {}, config ) ),
 						// Process JS with Babel.
-						loaders.js(),
+						loaders.js( {}, config ),
 						// Handle static asset files.
-						loaders.assets(),
+						loaders.assets( {}, config ),
 						// Parse styles using SASS, then PostCSS.
 						// Pass environment name as second parameter to give flexibility when filtering.
 						applyFilters(
@@ -307,16 +308,17 @@ const production = ( config = {} ) => {
 									// Extract CSS to its own file.
 									MiniCssExtractPlugin.loader,
 									// Process SASS into CSS.
-									loaders.css( cssOptions ),
-									loaders.postcss( cssOptions ),
-									loaders.sass( cssOptions ),
+									loaders.css( cssOptions, config ),
+									loaders.postcss( cssOptions, config ),
+									loaders.sass( cssOptions, config ),
 								],
 							},
-							'production'
+							'production',
+							config
 						),
 						// Resource loader makes sure any non-matching assets still get served.
 						// When you `import` an asset, you get its (virtual) filename.
-						loaders.resource(),
+						loaders.resource( {}, config ),
 					],
 				},
 			] ),
