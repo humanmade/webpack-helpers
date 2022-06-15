@@ -103,6 +103,12 @@ Filter the [`postcss-preset-env` plugin's](https://github.com/csstools/postcss-p
 
 Unlike the hooks above, callbacks added to this filter do not receive the preset configuration object.
 
+**Arguments:**
+
+ name | type | description
+----- | ---- | ------
+`pluginOptions` | `Object` | `postcss-preset-env` plugin options object.
+
 ```js
 addFilter( 'loaders/postcss/preset-env', ( pluginOptions ) => {
 	// Filter the PostCSS Preset Env plugin options.
