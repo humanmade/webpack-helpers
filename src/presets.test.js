@@ -282,7 +282,7 @@ describe( 'presets', () => {
 		} );
 
 		it( 'permits filtering the computed output of individual loaders', () => {
-			addFilter( 'loaders/assets', ( loader ) => {
+			addFilter( 'loaders/asset', ( loader ) => {
 				loader.test = /\.(png|jpg|jpeg|gif|svg)$/;
 				return loader;
 			} );
@@ -298,7 +298,7 @@ describe( 'presets', () => {
 				},
 			} );
 			const resourceLoader = getLoaderByName( config.module.rules, 'asset/resource' );
-			const assetsLoader = getLoaderByName( config.module.rules, 'asset' );
+			const assetLoader = getLoaderByName( config.module.rules, 'asset' );
 			const jsLoader = getLoaderByName( config.module.rules, 'babel-loader' );
 			expect( resourceLoader ).toEqual( expect.objectContaining( {
 				exclude: [ /^$/, /\.(js|mjs|jsx|ts|tsx)$/, /\.html?$/, /\.json$/ ],
@@ -307,7 +307,7 @@ describe( 'presets', () => {
 					publicPath: '../../',
 				},
 			} ) );
-			expect( assetsLoader ).toEqual( expect.objectContaining( {
+			expect( assetLoader ).toEqual( expect.objectContaining( {
 				test: /\.(png|jpg|jpeg|gif|svg)$/,
 				type: 'asset',
 				parser: {
@@ -431,7 +431,7 @@ describe( 'presets', () => {
 					{ type: options.type };
 			};
 			addFilter( 'loaders/js', filterToNullInBuild1 );
-			addFilter( 'loaders/assets', filterToNullInBuild1 );
+			addFilter( 'loaders/asset', filterToNullInBuild1 );
 			addFilter( 'loaders/resource', filterToNullInBuild1 );
 			addFilter( 'loaders/sourcemaps', filterToNullInBuild1 );
 
@@ -595,7 +595,7 @@ describe( 'presets', () => {
 		} );
 
 		it( 'permits filtering the computed output of individual loaders', () => {
-			addFilter( 'loaders/assets', ( loader ) => {
+			addFilter( 'loaders/asset', ( loader ) => {
 				loader.test = /\.(png|jpg|jpeg|gif|svg)$/;
 				return loader;
 			} );
@@ -611,7 +611,7 @@ describe( 'presets', () => {
 				},
 			} );
 			const resourceLoader = getLoaderByName( config.module.rules, 'asset/resource' );
-			const assetsLoader = getLoaderByName( config.module.rules, 'asset' );
+			const assetLoader = getLoaderByName( config.module.rules, 'asset' );
 			const jsLoader = getLoaderByName( config.module.rules, 'babel-loader' );
 			expect( resourceLoader ).toEqual( expect.objectContaining( {
 				exclude: [ /^$/, /\.(js|mjs|jsx|ts|tsx)$/, /\.html?$/, /\.json$/ ],
@@ -620,7 +620,7 @@ describe( 'presets', () => {
 					publicPath: '../../',
 				},
 			} ) );
-			expect( assetsLoader ).toEqual( expect.objectContaining( {
+			expect( assetLoader ).toEqual( expect.objectContaining( {
 				test: /\.(png|jpg|jpeg|gif|svg)$/,
 				type: 'asset',
 				parser: {
@@ -739,7 +739,7 @@ describe( 'presets', () => {
 				{ type: options.type };
 		};
 		addFilter( 'loaders/js', filterToNullInBuild1 );
-		addFilter( 'loaders/assets', filterToNullInBuild1 );
+		addFilter( 'loaders/asset', filterToNullInBuild1 );
 		addFilter( 'loaders/resource', filterToNullInBuild1 );
 
 		const config1 = production( { name: 'build1' } );

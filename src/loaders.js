@@ -54,11 +54,11 @@ const createLoaderFactory = loaderKey => {
 };
 
 // Define all supported loader factories within the loaders object.
-[ 'assets', 'js', 'ts', 'style', 'css', 'postcss', 'sass', 'sourcemaps', 'resource' ].forEach( loaderKey => {
+[ 'asset', 'js', 'ts', 'style', 'css', 'postcss', 'sass', 'sourcemaps', 'resource' ].forEach( loaderKey => {
 	loaders[ loaderKey ] = createLoaderFactory( loaderKey );
 } );
 
-loaders.assets.defaults = {
+loaders.asset.defaults = {
 	test: /\.(png|jpg|jpeg|gif|avif|webp|svg|woff|woff2|eot|ttf)$/,
 	type: 'asset',
 	parser: {

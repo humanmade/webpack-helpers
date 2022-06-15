@@ -144,7 +144,7 @@ const development = ( config = {} ) => {
 						// Process JS with Babel.
 						loaders.js( {}, config ),
 						// Handle static asset files.
-						loaders.assets( {}, config ),
+						loaders.asset( {}, config ),
 						/**
 						 * Filter the full stylesheet loader definition for this preset.
 						 *
@@ -305,7 +305,7 @@ const production = ( config = {} ) => {
 						// Process JS with Babel.
 						loaders.js( {}, config ),
 						// Handle static asset files.
-						loaders.assets( {}, config ),
+						loaders.asset( {}, config ),
 						/**
 						 * Filter the full stylesheet loader definition for this preset.
 						 *
