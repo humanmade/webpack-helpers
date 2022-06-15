@@ -145,8 +145,16 @@ const development = ( config = {} ) => {
 						loaders.js( {}, config ),
 						// Handle static asset files.
 						loaders.assets( {}, config ),
-						// Parse styles using SASS, then PostCSS.
-						// Pass environment name as second parameter to give flexibility when filtering.
+						/**
+						 * Filter the full stylesheet loader definition for this preset.
+						 *
+						 * By default parses styles using Sass and then PostCSS.
+						 *
+						 * @hook presets/stylesheet-loaders
+						 * @param {Object} loader      Stylesheet loader rule.
+						 * @param {string} environment "development" or "production".
+						 * @param {Object} config      Preset configuration object.
+						 */
 						applyFilters(
 							'presets/stylesheet-loaders',
 							{
@@ -298,8 +306,16 @@ const production = ( config = {} ) => {
 						loaders.js( {}, config ),
 						// Handle static asset files.
 						loaders.assets( {}, config ),
-						// Parse styles using SASS, then PostCSS.
-						// Pass environment name as second parameter to give flexibility when filtering.
+						/**
+						 * Filter the full stylesheet loader definition for this preset.
+						 *
+						 * By default parses styles using Sass and then PostCSS.
+						 *
+						 * @hook presets/stylesheet-loaders
+						 * @param {Object} loader      Stylesheet loader rule.
+						 * @param {string} environment "development" or "production".
+						 * @param {Object} config      Preset configuration object.
+						 */
 						applyFilters(
 							'presets/stylesheet-loaders',
 							{

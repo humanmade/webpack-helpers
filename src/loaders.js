@@ -32,8 +32,8 @@ const createLoaderFactory = loaderKey => {
 		 * the loader is invoked in the context of a preset.
 		 *
 		 * @hook loaders/{$loader_slug}
-		 * @param {Object}      loader   Loader definition object, after merging user-provided values with filtered defaults.
-		 * @param {Object|null} [config] Preset configuration object, if loader is called in context of preset.
+		 * @param {Object}      loader   Complete loader definition object, after merging user-provided values with filtered defaults.
+		 * @param {Object|null} [config] Configuration object for the preset being rendered, if loader is called while generating a preset.
 		 */
 		return applyFilters(
 			`loaders/${ loaderKey }`,
@@ -43,7 +43,7 @@ const createLoaderFactory = loaderKey => {
 				 *
 				 * @hook loaders/{$loader_slug}/defaults
 				 * @param {Object}      options  Loader default options object.
-				 * @param {Object|null} [config] Preset configuration object, if loader is called in context of preset.
+				 * @param {Object|null} [config] Configuration object for the preset being rendered, if loader is called while generating a preset.
 				 */
 				applyFilters( `loaders/${ loaderKey }/defaults`, loaders[ loaderKey ].defaults, config ),
 				options
