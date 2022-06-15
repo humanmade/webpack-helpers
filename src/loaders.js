@@ -15,26 +15,50 @@ const { applyFilters } = require( './helpers/filters' );
  */
 const loaders = {};
 
+/**
+ * Create a loader factory function for a given loader slug.
+ *
+ * @private
+ * @param {string} loaderKey Loader slug
+ * @returns {Function} Factory function to generate and filter a loader with the specified slug.
+ */
 const createLoaderFactory = loaderKey => {
-	return ( options ) => {
-		// Generate the requested loader definition. Expose filter seams both
-		// to customize the defaults, and to alter the final rendered output.
+	return ( options = {}, config = null ) => {
+		/**
+		 * Generate the requested loader definition.
+		 *
+		 * Allows customization of the final rendered loader via the loaders/{loaderslug}
+		 * filter, which also receives the configuration passed to a preset factory if
+		 * the loader is invoked in the context of a preset.
+		 *
+		 * @hook loaders/{$loader_slug}
+		 * @param {Object}      loader   Complete loader definition object, after merging user-provided values with filtered defaults.
+		 * @param {Object|null} [config] Configuration object for the preset being rendered, if loader is called while generating a preset.
+		 */
 		return applyFilters(
 			`loaders/${ loaderKey }`,
 			deepMerge(
-				applyFilters( `loaders/${ loaderKey }/defaults`, loaders[ loaderKey ].defaults ),
+				/**
+				 * Filter the loader's default configuration.
+				 *
+				 * @hook loaders/{$loader_slug}/defaults
+				 * @param {Object}      options  Loader default options object.
+				 * @param {Object|null} [config] Configuration object for the preset being rendered, if loader is called while generating a preset.
+				 */
+				applyFilters( `loaders/${ loaderKey }/defaults`, loaders[ loaderKey ].defaults, config ),
 				options
-			)
+			),
+			config
 		);
 	};
 };
 
 // Define all supported loader factories within the loaders object.
-[ 'assets', 'js', 'ts', 'style', 'css', 'postcss', 'sass', 'sourcemaps', 'resource' ].forEach( loaderKey => {
+[ 'asset', 'js', 'ts', 'style', 'css', 'postcss', 'sass', 'sourcemap', 'resource' ].forEach( loaderKey => {
 	loaders[ loaderKey ] = createLoaderFactory( loaderKey );
 } );
 
-loaders.assets.defaults = {
+loaders.asset.defaults = {
 	test: /\.(png|jpg|jpeg|gif|avif|webp|svg|woff|woff2|eot|ttf)$/,
 	type: 'asset',
 	parser: {
@@ -78,8 +102,20 @@ loaders.postcss.defaults = {
 	options: {
 		postcssOptions: {
 			ident: 'postcss',
+			/**
+			 * Filter the default PostCSS Plugins array.
+			 *
+			 * @hook loaders/postcss/plugins
+			 * @param {Array} plugins Array of PostCSS plugins.
+			 */
 			plugins: applyFilters( 'loaders/postcss/plugins', [
 				postcssFlexbugsFixes,
+				/**
+				 * Filter the default PostCSS Preset Env configuration.
+				 *
+				 * @hook loaders/postcss/preset-env
+				 * @param {Object} presetEnvConfig PostCSS Preset Env plugin configuration.
+				 */
 				postcssPresetEnv( applyFilters( 'loaders/postcss/preset-env', {
 					autoprefixer: {
 						flexbox: 'no-2009',
@@ -100,7 +136,7 @@ loaders.sass.defaults = {
 	},
 };
 
-loaders.sourcemaps.defaults = {
+loaders.sourcemap.defaults = {
 	test: /\.(js|mjs|jsx|ts|tsx|css)$/,
 	exclude: /@babel(?:\/|\\{1,2})runtime/,
 	enforce: 'pre',

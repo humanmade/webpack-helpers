@@ -65,9 +65,13 @@ const ifInstalled = ( packageName, loader ) => {
 const removeNullLoaders = ( moduleRules ) => moduleRules
 	.map( ( rule ) => {
 		if ( rule && Array.isArray( rule.oneOf ) ) {
+			const loaders = removeNullLoaders( rule.oneOf );
+			if ( ! Array.isArray( loaders ) || ! loaders.length ) {
+				return null;
+			}
 			return {
 				...rule,
-				oneOf: removeNullLoaders( rule.oneOf ),
+				oneOf: loaders,
 			};
 		}
 		if ( rule && Array.isArray( rule.use ) ) {
@@ -129,48 +133,57 @@ const development = ( config = {} ) => {
 			strictExportPresence: true,
 			rules: removeNullLoaders( [
 				// Handle node_modules packages that contain sourcemaps.
-				loaders.sourcemaps(),
+				loaders.sourcemap( {}, config ),
 				{
 					// "oneOf" will traverse all following loaders until one will
 					// match the requirements. If no loader matches, it will fall
 					// back to the resource loader at the end of the loader list.
 					oneOf: [
 						// Enable processing TypeScript, if installed.
-						...ifInstalled( 'typescript', loaders.ts() ),
+						...ifInstalled( 'typescript', loaders.ts( {}, config ) ),
 						// Process JS with Babel.
-						loaders.js(),
+						loaders.js( {}, config ),
 						// Handle static asset files.
-						loaders.assets(),
-						// Parse styles using SASS, then PostCSS.
-						// Pass environment name as second parameter to give flexibility when filtering.
+						loaders.asset( {}, config ),
+						/**
+						 * Filter the full stylesheet loader definition for this preset.
+						 *
+						 * By default parses styles using Sass and then PostCSS.
+						 *
+						 * @hook presets/stylesheet-loaders
+						 * @param {Object} loader      Stylesheet loader rule.
+						 * @param {string} environment "development" or "production".
+						 * @param {Object} config      Preset configuration object.
+						 */
 						applyFilters(
 							'presets/stylesheet-loaders',
 							{
 								test: /\.s?css$/,
 								use: [
-									loaders.style(),
+									loaders.style( {}, config ),
 									loaders.css( {
 										options: {
 											sourceMap: true,
 										},
-									} ),
+									}, config ),
 									loaders.postcss( {
 										options: {
 											sourceMap: true,
 										},
-									} ),
+									}, config ),
 									loaders.sass( {
 										options: {
 											sourceMap: true,
 										},
-									} ),
+									}, config ),
 								],
 							},
-							'development'
+							'development',
+							config
 						),
 						// Resource loader makes sure any non-matching assets still get served.
 						// When you `import` an asset, you get its (virtual) filename.
-						loaders.resource(),
+						loaders.resource( {}, config ),
 					],
 				},
 			] ),
@@ -288,13 +301,21 @@ const production = ( config = {} ) => {
 					// back to the resource loader at the end of the loader list.
 					oneOf: [
 						// Enable processing TypeScript, if installed.
-						...ifInstalled( 'typescript', loaders.ts() ),
+						...ifInstalled( 'typescript', loaders.ts( {}, config ) ),
 						// Process JS with Babel.
-						loaders.js(),
+						loaders.js( {}, config ),
 						// Handle static asset files.
-						loaders.assets(),
-						// Parse styles using SASS, then PostCSS.
-						// Pass environment name as second parameter to give flexibility when filtering.
+						loaders.asset( {}, config ),
+						/**
+						 * Filter the full stylesheet loader definition for this preset.
+						 *
+						 * By default parses styles using Sass and then PostCSS.
+						 *
+						 * @hook presets/stylesheet-loaders
+						 * @param {Object} loader      Stylesheet loader rule.
+						 * @param {string} environment "development" or "production".
+						 * @param {Object} config      Preset configuration object.
+						 */
 						applyFilters(
 							'presets/stylesheet-loaders',
 							{
@@ -303,16 +324,17 @@ const production = ( config = {} ) => {
 									// Extract CSS to its own file.
 									MiniCssExtractPlugin.loader,
 									// Process SASS into CSS.
-									loaders.css( cssOptions ),
-									loaders.postcss( cssOptions ),
-									loaders.sass( cssOptions ),
+									loaders.css( cssOptions, config ),
+									loaders.postcss( cssOptions, config ),
+									loaders.sass( cssOptions, config ),
 								],
 							},
-							'production'
+							'production',
+							config
 						),
 						// Resource loader makes sure any non-matching assets still get served.
 						// When you `import` an asset, you get its (virtual) filename.
-						loaders.resource(),
+						loaders.resource( {}, config ),
 					],
 				},
 			] ),

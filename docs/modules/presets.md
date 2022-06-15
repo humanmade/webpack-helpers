@@ -113,7 +113,8 @@ module.exports.optimization.minimizer = [
 Array values are _merged_ when processing a preset, not overwritten. This allows you to easily add plugins, but it can make it hard to _remove_ values from array properties like the module loader rules or plugins list. To change loader configuration options without completely removing a loader, or adjust loaders deep within a generated configuration tree, this library provides a `addFilter` helper function. `addFilter()` lets you register a callback which can transform the value of each computed loader, as well as some other useful configuration values.
 
 ```js
-const { addFilter } = require( 'helpers' );
+const { helpers, presets } = require( '@humanmade/webpack-helpers' );
+const { addFilter } = helpers;
 
 // Intercept the "sass" loader and replace it with a Stylus loader.
 addFilter( 'loaders/sass', () => {
@@ -128,15 +129,36 @@ addFilter( 'presets/stylesheet-loaders', ( loader ) => {
 } );
 
 // Now, use the preset as normal and it will pick up Stylus files instead!
-const config = production.preset(
+const config = presets.production(
 	{ /* ...normal configuration options as described above ... */ }
 );
 ```
 
-Available hooks:
+If you are using a multi-configuration Webpack setup where the config file exports an array of individual configurations, you may wish to filter a loader, preset chain, or other value for only one of those configuration objects. To permit this, each filter callback will be passed the preset's configuration object as a final argument when the filter or loader is called in the context of a preset. For example,
 
-- `loader/{loader name}`: Adjust the final output of [any of the methods on the `loaders` object](./loaders.html), for example `loader/sass` or `loader/js`.
-- `loader/{loader name}/default`: Alter the default values before passing it to the loader configuration merge function.
-- `loader/postcss/plugins`: Filter the list of PostCSS plugins used by that specific loader.
-- `loader/postcss/preset-env`: Filter the configuration object passed to the PostCSS Preset Env plugin.
-- `presets/stylesheet-loaders`: Filter the computed chain of stylesheet loaders output by the preset factories. This hook receives a second argument `environment` which will show either "production" or "development," to permit per-environment filtering.
+```js
+const { helpers, externals, presets } = require( '@humanmade/webpack-helpers' );
+const { addFilter } = helpers;
+
+// Do not use the JS loader in the frontend build.
+addFilter( 'presets/js', ( loader, config ) => {
+	if ( config.name === 'frontend' ) {
+		return null;
+	}
+	return frontend;
+} );
+
+module.exports = [
+	presets.production( {
+		name: 'frontend',
+		// ...
+	} ),
+	presets.production( {
+		name: 'editor',
+		externals,
+		// ...
+	} ),
+];
+```
+
+For more information, see [the full hooks reference.](https://humanmade.github.io/webpack-helpers/reference/hooks.html).
