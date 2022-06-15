@@ -65,9 +65,13 @@ const ifInstalled = ( packageName, loader ) => {
 const removeNullLoaders = ( moduleRules ) => moduleRules
 	.map( ( rule ) => {
 		if ( rule && Array.isArray( rule.oneOf ) ) {
+			const loaders = removeNullLoaders( rule.oneOf );
+			if ( ! Array.isArray( loaders ) || ! loaders.length ) {
+				return null;
+			}
 			return {
 				...rule,
-				oneOf: removeNullLoaders( rule.oneOf ),
+				oneOf: loaders,
 			};
 		}
 		if ( rule && Array.isArray( rule.use ) ) {
