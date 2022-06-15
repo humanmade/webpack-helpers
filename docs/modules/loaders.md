@@ -45,15 +45,24 @@ module.exports = {
 };
 ```
 
-To alter the configuration for a loader prior to use within a preset, you may mutate the `.defaults` property on the loader method.
+To alter the configuration for a loader prior to use within a preset, you may either [filter](https://humanmade.github.io/webpack-helpers/reference/hooks.html) the default loader options, or the final merged loader configuration.
 
 ```js
 const { helpers, loaders, presets } = require( '@humanmade/webpack-helpers' );
+const { addFilter } = helpers;
 
-// Mutate the loader defaults.
-loaders.js.defaults.include = helpers.filePath( 'themes/my-theme/src' );
-loaders.css.defaults.options.url = false;
+// Adjust the loader defaults.
+addFilter( 'loaders/js/defaults', ( defaults ) => ( {
+	...defaults,
+	include: helpers.filePath( 'themes/my-theme/src' ),
+} ) );
 
+addFilter( 'loaders/css/defaults', ( defaults ) => {
+	defaults.options.url = false;
+	return defaults;
+} );
+
+// The above customizations will now apply to all calls to loader or preset factories.
 module.exports = presets.development( { /* ... */ } );
 ```
 
