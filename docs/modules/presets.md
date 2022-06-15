@@ -161,10 +161,4 @@ module.exports = [
 ];
 ```
 
-#### Hooks list
-
-- `loader/{loader name}`: Adjust the final output of [any of the methods on the `loaders` object](./loaders.html), for example `loader/sass` or `loader/js`.
-- `loader/{loader name}/default`: Alter the default values before passing it to the loader configuration merge function.
-- `loader/postcss/plugins`: Filter the default list of PostCSS plugins used by the PostCSS loader.
-- `loader/postcss/preset-env`: Filter the default configuration object passed to the PostCSS Preset Env plugin.
-- `presets/stylesheet-loaders`: Filter the computed chain of stylesheet loaders output by the preset factories. This hook receives a second argument `environment` which will show either "production" or "development," to permit per-environment filtering, and a third argument `configuration` which contains the object passed to the preset factory.
+For more information, see [the full hooks reference.](https://humanmade.github.io/webpack-helpers/reference/hooks.html).

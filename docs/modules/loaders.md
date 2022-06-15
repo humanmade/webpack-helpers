@@ -6,19 +6,23 @@ nav_order: 3
 
 # Loaders Module
 
-`const { loaders } = require( '@humanmade/webpack-helpers' );`
+```js
+const { loaders } = require( '@humanmade/webpack-helpers' );
+```
 
 This module provides functions that generate configurations for commonly-needed Webpack loaders. Use them within the `.module.rules` array, or use `presets.development()`/`presets.production()` to opt-in to some opinionated defaults.
 
-- `loaders.asset()`: Return a configured Webpack module loader rule for [`asset` modules](https://webpack.js.org/guides/asset-modules/#inlining-assets) which will be inlined if small enough.
-- `loaders.js()`: Return a configured Webpack module loader rule for `js-loader`.
-- `loaders.ts()`: Return a configured Webpack module loader rule for `ts-loader`.
-- `loaders.style()`: Return a configured Webpack module loader rule for `style-loader`.
+- `loaders.asset()`: Return a configured Webpack module loader rule for [`asset` modules](https://webpack.js.org/guides/asset-modules/#inlining-assets) which will be inlined when small enough.
 - `loaders.css()`: Return a configured Webpack module loader rule for `css-loader`.
+- `loaders.js()`: Return a configured Webpack module loader rule for `js-loader`.
 - `loaders.postcss()`: Return a configured Webpack module loader rule for `postcss-loader`.
+- `loaders.resource()`: Return a configured Webpack module loader rule for [`asset/resource` modules](https://webpack.js.org/guides/asset-modules/#resource-assets).
 - `loaders.sass()`: Return a configured Webpack module loader rule for `sass-loader`.
 - `loaders.sourcemap()`: Return a configured Webpack module loader rule for `source-map-loader`.
-- `loaders.resource()`: Return a configured Webpack module loader rule for [`asset/resource` modules](https://webpack.js.org/guides/asset-modules/#resource-assets).
+- `loaders.style()`: Return a configured Webpack module loader rule for `style-loader`.
+- `loaders.ts()`: Return a configured Webpack module loader rule for `ts-loader`.
+
+The output from these loaders can optionally be [filtered](https://humanmade.github.io/webpack-helpers/reference/hooks.html).
 
 ## Customizing Loaders
 
@@ -53,4 +57,4 @@ loaders.css.defaults.options.url = false;
 module.exports = presets.development( { /* ... */ } );
 ```
 
-These loaders are also used by the [presets](https://humanmade.github.io/webpack-helpers/modules/presets.html) methods described above. To adjust the behavior of a loader for a specific configuration generated using a preset, you may pass a second argument to the preset defining a filter function which can modify loader options as they are computed. See ["Customizing Presets"](https://humanmade.github.io/webpack-helpers/modules/presets.html#customizing-presets) for more information.
+These loaders are also used by the [presets](https://humanmade.github.io/webpack-helpers/modules/presets.html) methods described above. To adjust the behavior of a loader for a specific configuration generated using a preset, see ["Customizing Presets"](https://humanmade.github.io/webpack-helpers/modules/presets.html#customizing-presets).
