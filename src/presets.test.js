@@ -433,7 +433,7 @@ describe( 'presets', () => {
 			addFilter( 'loaders/js', filterToNullInBuild1 );
 			addFilter( 'loaders/asset', filterToNullInBuild1 );
 			addFilter( 'loaders/resource', filterToNullInBuild1 );
-			addFilter( 'loaders/sourcemaps', filterToNullInBuild1 );
+			addFilter( 'loaders/sourcemap', filterToNullInBuild1 );
 
 			const config1 = development( { name: 'build1' } );
 			const config2 = development( { name: 'build2' } );

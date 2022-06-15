@@ -133,7 +133,7 @@ const development = ( config = {} ) => {
 			strictExportPresence: true,
 			rules: removeNullLoaders( [
 				// Handle node_modules packages that contain sourcemaps.
-				loaders.sourcemaps( {}, config ),
+				loaders.sourcemap( {}, config ),
 				{
 					// "oneOf" will traverse all following loaders until one will
 					// match the requirements. If no loader matches, it will fall

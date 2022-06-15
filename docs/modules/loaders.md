@@ -17,7 +17,7 @@ This module provides functions that generate configurations for commonly-needed 
 - `loaders.css()`: Return a configured Webpack module loader rule for `css-loader`.
 - `loaders.postcss()`: Return a configured Webpack module loader rule for `postcss-loader`.
 - `loaders.sass()`: Return a configured Webpack module loader rule for `sass-loader`.
-- `loaders.sourcemaps()`: Return a configured Webpack module loader rule for `source-map-loader`.
+- `loaders.sourcemap()`: Return a configured Webpack module loader rule for `source-map-loader`.
 - `loaders.resource()`: Return a configured Webpack module loader rule for [`asset/resource` modules](https://webpack.js.org/guides/asset-modules/#resource-assets).
 
 ## Customizing Loaders

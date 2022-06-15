@@ -54,7 +54,7 @@ const createLoaderFactory = loaderKey => {
 };
 
 // Define all supported loader factories within the loaders object.
-[ 'asset', 'js', 'ts', 'style', 'css', 'postcss', 'sass', 'sourcemaps', 'resource' ].forEach( loaderKey => {
+[ 'asset', 'js', 'ts', 'style', 'css', 'postcss', 'sass', 'sourcemap', 'resource' ].forEach( loaderKey => {
 	loaders[ loaderKey ] = createLoaderFactory( loaderKey );
 } );
 
@@ -136,7 +136,7 @@ loaders.sass.defaults = {
 	},
 };
 
-loaders.sourcemaps.defaults = {
+loaders.sourcemap.defaults = {
 	test: /\.(js|mjs|jsx|ts|tsx|css)$/,
 	exclude: /@babel(?:\/|\\{1,2})runtime/,
 	enforce: 'pre',
