@@ -1,3 +1,4 @@
+const { addFilter, setupRegistry } = require( './helpers/filters' );
 const loaders = require( './loaders' );
 
 describe( 'loaders', () => {
@@ -52,6 +53,24 @@ describe( 'loaders', () => {
 			].forEach( unacceptedFileType => {
 				expect( unacceptedFileType.match( loaders.asset().test ) ).toBeNull();
 			} );
+		} );
+	} );
+
+	describe( 'filtering', () => {
+		beforeEach( () => {
+			setupRegistry();
+		} );
+
+		it( 'does not mutate defaults', () => {
+			addFilter( 'loaders/js/defaults', ( defaults ) => {
+				defaults.test = /\.js$/;
+				return defaults;
+			} );
+
+			const loader = loaders.js();
+
+			expect( loader.test ).toEqual( /\.js$/ );
+			expect( loaders.js.defaults.test ).toEqual( /\.jsx?$/ );
 		} );
 	} );
 

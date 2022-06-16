@@ -1,6 +1,7 @@
 /**
  * Export generator functions for common Webpack loader configurations.
  */
+const cloneDeep = require( 'lodash.clonedeep' );
 const postcssFlexbugsFixes = require( 'postcss-flexbugs-fixes' );
 const postcssPresetEnv = require( 'postcss-preset-env' );
 
@@ -45,7 +46,7 @@ const createLoaderFactory = loaderKey => {
 				 * @param {Object}      options  Loader default options object.
 				 * @param {Object|null} [config] Configuration object for the preset being rendered, if loader is called while generating a preset.
 				 */
-				applyFilters( `loaders/${ loaderKey }/defaults`, loaders[ loaderKey ].defaults, config ),
+				applyFilters( `loaders/${ loaderKey }/defaults`, cloneDeep( loaders[ loaderKey ].defaults ), config ),
 				options
 			),
 			config
