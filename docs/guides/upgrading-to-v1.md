@@ -18,12 +18,23 @@ npm install --save-dev @humanmade/webpack-helpers@latest webpack@5 webpack-cli@4
 
 ### Handling multi-config arrays in DevServer
 
-In a large project you may have a Webpack configuration that [exports multiple separate Webpack configuration objects](https://webpack.js.org/configuration/configuration-types/#exporting-multiple-configurations) in a multi-config array. With Webpack 4 and the pre-1.0 version of this helper library, you may have code which maps over these arrays and adds a `devServer` property to each one:
+In a large project you may have a Webpack configuration that [exports multiple separate Webpack configuration objects](https://webpack.js.org/configuration/configuration-types/#exporting-multiple-configurations) in an array. The `presets.development()` helper adds a `devServer` property to each generated configuration, and with Webpack 4 and the pre-1.0 version of this helper library this was not a problem: if each entry in an exported array of configurations had its own `devServer` property, DevServer used the configuration in the first item in the exported array and ignored the rest.
+
+In Webpack 5 and the latest DevServer, however, it is an error to define `devServer` properties on any configuration but the first item in the exported array. This means that you may need to map over the exported configurations and unset the `devServer` property on subsequent configurations.
 
 ```js
+const configs = [
+	presets.development( { /* ... */ } ),
+	presets.development( { /* ... */ } ),
+	presets.development( { /* ... */ } ),
+];
+module.exports = configs.map( ( config, index ) => {
+	if ( index > 0 ) {
+		Reflect.deleteProperty( config, 'devServer' );
+	}
+	return config;
+} );
 ```
-
-Previously, if you exported an array of configurations from your Webpack development config, each one could have an identical `devServer` property and Webpack DevServer would handle all configs with the same server. This let us
 
 ### Goodbye `filterLoaders`, welcome `addFilter`
 
