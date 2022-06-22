@@ -7,7 +7,7 @@ const findInObject = require( './find-in-object' );
  * @param {webpack.Configuration} config     Webpack configuration object.
  * @param {Number}                port       Port to use for webpack-dev-server.
  * @param {Object}                [defaults] Optional config default values.
- * @return {String} Public path.
+ * @returns {String} Public path.
  */
 const inferPublicPath = ( config, port, defaults = {} ) => {
 	const protocol = ( findInObject( config, 'devServer.https' ) || findInObject( config, 'devServer.server' ) === 'https' ) ? 'https' : 'http';
