@@ -10,6 +10,7 @@ const plugins = require( './plugins' );
 const { ManifestPlugin, MiniCssExtractPlugin } = plugins.constructors;
 
 const isAnalyzeMode = process.argv.includes( '--analyze' );
+const isDevServer = ! ! process.env.WEBPACK_DEV_SERVER;
 
 /**
  * Dictionary of shared seed objects by path.
@@ -225,6 +226,9 @@ const development = ( config = {} ) => {
 	// If we had enough value to guess a publicPath, set that path as a default
 	// wherever appropriate so that it will be used in any generated manifests.
 	if ( publicPath ) {
+		if ( isDevServer && publicPath.includes( 'http' ) ) {
+			devDefaults.devServer.host = new URL( publicPath ).hostname;
+		}
 		devDefaults.output.publicPath = publicPath;
 	}
 
