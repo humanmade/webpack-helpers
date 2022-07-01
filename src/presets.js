@@ -226,7 +226,8 @@ const development = ( config = {} ) => {
 	// If we had enough value to guess a publicPath, set that path as a default
 	// wherever appropriate so that it will be used in any generated manifests.
 	if ( publicPath ) {
-		if ( isDevServer && publicPath.includes( 'http' ) ) {
+		// If publicPath is a URL, default the devServer host to match.
+		if ( publicPath.includes( 'http' ) ) {
 			devDefaults.devServer.host = new URL( publicPath ).hostname;
 		}
 		devDefaults.output.publicPath = publicPath;
