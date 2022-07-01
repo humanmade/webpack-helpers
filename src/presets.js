@@ -191,6 +191,7 @@ const development = ( config = {} ) => {
 
 		optimization: {
 			nodeEnv: 'development',
+			runtimeChunk: 'single',
 		},
 
 		devServer,
