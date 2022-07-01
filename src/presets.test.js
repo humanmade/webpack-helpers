@@ -4,6 +4,7 @@ const {
 } = require( './presets' );
 const plugins = require( './plugins' );
 const { addFilter, setupRegistry } = require( './helpers/filters' );
+const { resetPublicPathsCache } = require( './helpers/infer-public-path' );
 
 jest.mock( 'process', () => ( {
 	cwd: () => 'cwd',
@@ -78,6 +79,7 @@ const getLoaderByTest = ( rules, loaderTest ) => {
 describe( 'presets', () => {
 	beforeEach( () => {
 		setupRegistry();
+		resetPublicPathsCache();
 	} );
 
 	describe( 'development()', () => {
@@ -178,6 +180,24 @@ describe( 'presets', () => {
 				},
 			} );
 			expect( config.output.publicPath ).toBe( 'https://my-custom-domain.local/' );
+		} );
+
+		it( 're-uses previously inferred publicPath URIs in subsequent builds to the same directory', () => {
+			const config1 = development( {
+				devServer: {
+					port: 9090,
+				},
+				output: {
+					path: 'some/folder',
+				}
+			} );
+			const config2 = development( {
+				output: {
+					path: 'some/folder',
+				},
+			} );
+			expect( config1.output.publicPath ).toBe( 'http://localhost:9090/some/folder/' );
+			expect( config1.output.publicPath ).toBe( config2.output.publicPath );
 		} );
 
 		it( 'injects a ManifestPlugin if no manifest plugin is already present', () => {

@@ -2,7 +2,7 @@ const { devServer, stats } = require( './config' );
 const deepMerge = require( './helpers/deep-merge' );
 const filePath = require( './helpers/file-path' );
 const findInObject = require( './helpers/find-in-object' );
-const inferPublicPath = require( './helpers/infer-public-path' );
+const { inferPublicPath, getPublicPathForDirectory } = require( './helpers/infer-public-path' );
 const isInstalled = require( './helpers/is-installed' );
 const { applyFilters } = require( './helpers/filters' );
 const loaders = require( './loaders' );
@@ -221,11 +221,17 @@ const development = ( config = {} ) => {
 		publicPath = inferPublicPath( config, port, devDefaults );
 	}
 
-	// If we had enough value to guess a publicPath, set that path as a default
-	// wherever appropriate so that it will be used in any generated manifests.
+	const outputPath = ( config.output && config.output.path ) || devDefaults.output.path;
+	// If we used a publicPath for this outputPath before, re-use it.
+	if ( ! publicPath && outputPath ) {
+		publicPath = getPublicPathForDirectory( outputPath );
+	}
+
+	// If we had enough config values to guess a publicPath, set that path in
+	// the default config so it can be used in generated manifests.
 	if ( publicPath ) {
 		// If publicPath is a URL, default the devServer host to match.
-		if ( publicPath.includes( 'http' ) ) {
+		if ( typeof publicPath === 'string' && publicPath.includes( 'http' ) ) {
 			devDefaults.devServer.host = new URL( publicPath ).hostname;
 		}
 		devDefaults.output.publicPath = publicPath;
@@ -238,7 +244,6 @@ const development = ( config = {} ) => {
 	const hasManifestPlugin = plugins.findExistingInstance( config.plugins, ManifestPlugin );
 	// Add a manifest if none was present.
 	if ( ! hasManifestPlugin ) {
-		const outputPath = ( config.output && config.output.path ) || devDefaults.output.path;
 		/* eslint-disable function-paren-newline */
 		devDefaults.plugins.push( plugins.manifest(
 			/**

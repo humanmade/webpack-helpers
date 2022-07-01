@@ -1,6 +1,7 @@
 const withDynamicPort = require( './with-dynamic-port' );
 
 const choosePort = require( './choose-port' );
+const { resetPublicPathsCache } = require( './infer-public-path' );
 
 jest.mock( './choose-port', () => jest.fn() );
 
@@ -9,6 +10,7 @@ describe( 'withDynamicPort', () => {
 
 	beforeEach( () => {
 		oldArgv = process.argv;
+		resetPublicPathsCache();
 	} );
 
 	afterEach( () => {
