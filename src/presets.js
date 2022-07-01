@@ -10,7 +10,6 @@ const plugins = require( './plugins' );
 const { ManifestPlugin, MiniCssExtractPlugin } = plugins.constructors;
 
 const isAnalyzeMode = process.argv.includes( '--analyze' );
-const isDevServer = ! ! process.env.WEBPACK_DEV_SERVER;
 
 /**
  * Dictionary of shared seed objects by path.

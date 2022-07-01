@@ -16,6 +16,13 @@ module.exports = {
 		// Enable gzip compression of generated files.
 		compress: true,
 		hot: 'only',
+		client: {
+			// Do not show disruptive overlay for warnings.
+			overlay: {
+				errors: true,
+				warnings: false,
+			},
+		},
 	},
 
 	/**
