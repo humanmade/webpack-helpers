@@ -222,22 +222,42 @@ const development = ( config = {} ) => {
 	}
 
 	// If we had enough value to guess a publicPath, set that path as a default
-	// wherever appropriate and inject a ManifestPlugin instance to expose that
-	// public path to consuming applications. Any inferred values will still be
-	// overridden with their relevant values from `config`, when provided.
+	// wherever appropriate so that it will be used in any generated manifests.
 	if ( publicPath ) {
 		devDefaults.output.publicPath = publicPath;
+	}
 
-		// Check for an existing ManifestPlugin instance in config.plugins.
-		const hasManifestPlugin = plugins.findExistingInstance( config.plugins, ManifestPlugin );
-		// Add a manifest with the inferred publicPath if none was present.
-		if ( ! hasManifestPlugin ) {
-			const outputPath = ( config.output && config.output.path ) || devDefaults.output.path;
-			devDefaults.plugins.push( plugins.manifest( {
-				fileName: 'development-asset-manifest.json',
-				seed: getSeedByDirectory( outputPath ),
-			} ) );
-		}
+	// Check for an existing ManifestPlugin instance in config.plugins.
+	// Inject a ManifestPlugin instance if none is present to ensure generated
+	// files can be located by consuming aplications. Any inferred values will
+	// still be overridden with their relevant values from `config`, if provided.
+	const hasManifestPlugin = plugins.findExistingInstance( config.plugins, ManifestPlugin );
+	// Add a manifest if none was present.
+	if ( ! hasManifestPlugin ) {
+		const outputPath = ( config.output && config.output.path ) || devDefaults.output.path;
+		/* eslint-disable function-paren-newline */
+		devDefaults.plugins.push( plugins.manifest(
+			/**
+			 * Filter the full stylesheet loader definition for this preset.
+			 *
+			 * By default parses styles using Sass and then PostCSS.
+			 *
+			 * @hook presets/manifest-options
+			 * @param {Object} options     Manifest plugin options object.
+			 * @param {string} environment "development" or "production".
+			 * @param {Object} config      Preset configuration object.
+			 */
+			applyFilters(
+				'presets/manifest-options',
+				{
+					fileName: 'development-asset-manifest.json',
+					seed: getSeedByDirectory( outputPath ),
+				},
+				'development',
+				config
+			)
+		) );
+		/* eslint-enable */
 	}
 
 	return deepMerge( devDefaults, config );
@@ -386,10 +406,29 @@ const production = ( config = {} ) => {
 	// Add a manifest with the inferred publicPath if none was present.
 	if ( ! hasManifestPlugin ) {
 		const outputPath = ( config.output && config.output.path ) || prodDefaults.output.path;
-		prodDefaults.plugins.push( plugins.manifest( {
-			fileName: 'production-asset-manifest.json',
-			seed: getSeedByDirectory( outputPath ),
-		} ) );
+		/* eslint-disable function-paren-newline */
+		prodDefaults.plugins.push( plugins.manifest(
+			/**
+			 * Filter the full stylesheet loader definition for this preset.
+			 *
+			 * By default parses styles using Sass and then PostCSS.
+			 *
+			 * @hook presets/manifest-options
+			 * @param {Object} options     Manifest plugin options object.
+			 * @param {string} environment "development" or "production".
+			 * @param {Object} config      Preset configuration object.
+			 */
+			applyFilters(
+				'presets/manifest-options',
+				{
+					fileName: 'production-asset-manifest.json',
+					seed: getSeedByDirectory( outputPath ),
+				},
+				'production',
+				config
+			)
+		) );
+		/* eslint-enable */
 	}
 
 	return deepMerge( prodDefaults, config );

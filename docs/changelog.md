@@ -15,6 +15,7 @@ nav_order: 10
 - **Breaking**: Replace `filterLoaders` system with [individual hooks accesible via the new `addFilter` and `removeFilter` helpers](https://humanmade.github.io/webpack-helpers/modules/presets.html#customizing-presets).
 - **Breaking**: Remove deprecated `eslint-loader` and add `eslint-webpack-plugin` to presets as `plugins.eslint()`.
 - **Potentially Breaking**: Remove `loaders.url()` and `loaders.file()` in favor of Webpack 5 [`asset` modules](https://webpack.js.org/guides/asset-modules/), now usable by including `loaders.asset()` (for assets which can be inlined) and `loaders.resource()` (as a catch-all for other types) in your module rules list. Asset modules are handled automatically in both presets, so this is only breaking if `loaders.url()` or `loaders.file()` was used directly.
+- A `webpack-manifest-plugin` instance is now automatically injected in development mode even if `publicPath` is not specified.
 - A `webpack-bundle-analyzer` plugin is now automatically added to production builds when Webpack is invoked with the `--analyze` flag.
 - Add the [`simple-build-report-webpack-plugin`](https://github.com/kadamwhite/simple-build-report-webpack-plugin) as `plugins.simpleBuildReport()`
 - Include a `plugins.simpleBuildReport()` instance in production preset builds to improve legibility of Webpack console output.

@@ -180,7 +180,7 @@ describe( 'presets', () => {
 			expect( config.output.publicPath ).toBe( 'https://my-custom-domain.local/' );
 		} );
 
-		it( 'injects a ManifestPlugin if publicPath can be inferred and no manifest plugin is already present', () => {
+		it( 'injects a ManifestPlugin if no manifest plugin is already present', () => {
 			const { ManifestPlugin } = plugins.constructors;
 			const config = development( {
 				devServer: {
@@ -196,18 +196,6 @@ describe( 'presets', () => {
 			const manifestPlugins = config.plugins.filter( filterPlugins( ManifestPlugin ) );
 			expect( manifestPlugins.length ).toBe( 1 );
 			expect( manifestPlugins[ 0 ].options.fileName ).toEqual( 'development-asset-manifest.json' );
-		} );
-
-		it( 'does not inject a ManifestPlugin if publicPath cannot be inferred', () => {
-			const config = development( {
-				entry: {
-					main: 'some-file.css',
-				},
-			} );
-			expect( config.output ).not.toHaveProperty( 'publicPath' );
-			expect( config.plugins ).toEqual( expect.not.arrayContaining( [
-				expect.any( plugins.constructors.ManifestPlugin ),
-			] ) );
 		} );
 
 		it( 'does not override or duplicate existing ManifestPlugin instances', () => {

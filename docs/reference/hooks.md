@@ -78,6 +78,28 @@ addFilter( 'presets/stylesheet-loaders', ( loader, environment, config ) => {
 } );
 ```
 
+## `presets/manifest-options`
+
+Filter the [`webpack-manifest-plugin` options](https://github.com/shellscape/webpack-manifest-plugin#options) used when auto-injecting asset manifest plugins.
+
+The callback will receive the environment type of the preset being rendered as its second argument, and the preset's configuration object argument as a third argument.
+
+**Arguments:**
+
+ name | type | description
+----- | ---- | ------
+`options` | `Object` | Manifest plugin options object.
+`environment` | `string` | `'development'` or `'production'`.
+`config` | `Object` | Preset configuration object.
+
+```js
+addFilter( 'presets/manifest-options', ( loader, environment, config ) => {
+	// Filter the configured stylesheet loaders based on environment or the
+	// specific configuration options provided to the preset factory.
+	return loader;
+} );
+```
+
 ## `loaders/postcss/plugins`
 
 Filter the default list of PostCSS plugins used by the PostCSS loader.
