@@ -122,9 +122,9 @@ const development = ( config = {} ) => {
 			// Add /* filename */ comments to generated require()s in the output.
 			pathinfo: true,
 			// Provide a default output name.
-			filename: '[name].[contenthash].js',
+			filename: '[name].[fullhash].js',
 			// Provide chunk filename. Requires content hash for cache busting.
-			chunkFilename: '[name].[contenthash].chunk.js',
+			chunkFilename: '[name].[fullhash].chunk.js',
 			// `publicPath` will be inferred as a localhost URL based on output.path
 			// when a devServer.port value is available.
 		},
