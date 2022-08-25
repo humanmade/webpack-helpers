@@ -9,6 +9,7 @@ const RemoveEmptyScriptsPlugin = require( 'webpack-remove-empty-scripts' );
 const SimpleBuildReportPlugin = require( 'simple-build-report-webpack-plugin' );
 const TerserPlugin = require( 'terser-webpack-plugin' );
 const CssMinimizerPlugin = require( 'css-minimizer-webpack-plugin' );
+const ImageMinimizerPlugin = require( 'image-minimizer-webpack-plugin' );
 
 const { applyFilters } = require( './helpers/filters' );
 
@@ -168,6 +169,44 @@ module.exports = {
 	 * @returns {CssMinimizerPlugin} A configured CssMinimizerPlugin instance.
 	 */
 	cssMinimizer: ( options = {} ) => new CssMinimizerPlugin( options ),
+
+	/**
+	 * Image Minimizer Plugin.
+	 *
+	 * @returns {ImageMinimizerPlugin}
+	 */
+	imageMinimizer: () => {
+		// Svgo configuration.
+		// Reference: https://github.com/svg/svgo#configuration
+		// Example: https://github.com/svg/svgo#default-preset
+		const svgoConfig = {
+			plugins: [
+				{
+					name: 'preset-default',
+					params: {
+						overrides: {
+							'removeViewBox': false,
+						},
+					},
+				},
+			],
+		};
+
+		return new ImageMinimizerPlugin( {
+			minimizer: {
+				implementation: ImageMinimizerPlugin.imageminMinify,
+				options: {
+					plugins: [
+						[ 'gifsicle', { interlaced: true } ],
+						[ 'jpegtran', { progressive: true } ],
+						[ 'optipng', { optimizationLevel: 5 } ],
+						[ 'svgo', svgoConfig ],
+					],
+				},
+			},
+		} );
+
+	},
 
 	/**
 	 * Instantiate a SimpleBuildReportPlugin to render build output in a human-
