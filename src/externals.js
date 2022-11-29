@@ -30,6 +30,7 @@ module.exports = [
 	'dom',
 	'dom-ready',
 	'edit-post',
+	'edit-site',
 	'editor',
 	'element',
 	'escape-html',
