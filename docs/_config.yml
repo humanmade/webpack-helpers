@@ -16,7 +16,7 @@
 title: Webpack Helpers
 description: Human Made's toolkit for modern frontend asset bundling.
 author: Human Made
-baseurl: "/docs" # the subpath of your site, e.g. /blog
+baseurl: "/webpack-helpers" # the subpath of your site, e.g. /blog
 url: "https://humanmade.github.io" # the base hostname & protocol for your site, e.g. http://example.com
 
 # Set a path/url to a logo that will be displayed instead of the title
