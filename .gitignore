@@ -1,4 +1,9 @@
+# Local files
+.DS_Store
+.history
 node_modules
 *.log
+
+# Built files
 package-lock.json
 test/build

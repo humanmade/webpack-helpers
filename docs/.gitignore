@@ -1,2 +1,19 @@
-_site/
+# Local files
+.DS_Store
+.env
+.history
+*.log
+.env*.local
+
+# Vendor
+.ruby-version
+.jekyll-cache/
+.jekyll-metadata
+.sass-cache/
+node_modules/
+
+# Built files
+*.gem
 Gemfile.lock
+.bundle/
+_site/

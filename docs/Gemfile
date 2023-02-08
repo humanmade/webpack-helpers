@@ -1,2 +1,5 @@
 source 'https://rubygems.org'
 gem 'github-pages', group: :jekyll_plugins
+
+gem "webrick", "~> 1.8"
+gem "just-the-hm-docs", ">= 1.0.1.rc1"
