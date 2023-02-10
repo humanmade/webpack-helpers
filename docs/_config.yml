@@ -19,38 +19,17 @@ author: Human Made
 baseurl: "/webpack-helpers" # the subpath of your site, e.g. /blog
 url: "https://humanmade.github.io" # the base hostname & protocol for your site, e.g. http://example.com
 
-# Set a path/url to a logo that will be displayed instead of the title
-logo: "/assets/icons/hm-logo.svg"
-
-# Set a path/url to a favicon that will be displayed by the browser
-favicon_ico: "/assets/favicon/favicon.ico"
-
 # Theme settings
 theme: just-the-hm-docs
-color_scheme: hm
-permalink: pretty
 
 # Aux links for the upper right navigation
 aux_links:
-  Human Made:
-    - "//humanmade.com"
   Webpack-Helpers on GitHub:
     - "//github.com/humanmade/webpack-helpers"
 
-callouts_level: quiet # or loud
-callouts_opacity: 0.3
-callouts:
-  highlight:
-    color: yellow
-  important:
-    title: Important
-    color: hm-purple-callout
-  new:
-    title: New
-    color: hm-mint-callout
-  note:
-    title: Note
-    color: hm-blue-callout
-  warning:
-    title: Warning
-    color: hm-red-callout
+defaults:
+  -
+    scope:
+      path: "" # an empty string here means all files in the project
+    values:
+      layout: "default"
