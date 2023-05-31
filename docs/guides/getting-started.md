@@ -21,15 +21,14 @@ While this package depends in turn on a number of loaders and plugins, it delibe
 npm install --save-dev @humanmade/webpack-helpers webpack@4 webpack-cli@3 webpack-dev-server sass
 ```
 
+Note that we specify Webpack version 4. Support for Webpack 5 is anticipated in the v1.0 release of these helpers, but at present using Webpack 4 provides the most predictable and stable experience across our projects.
+
 ***❗ *Notice***
 This verson is outdated and might leave you with outdated versions of this library and associated Webpack tooling.
-There's a [pending release](https://github.com/humanmade/webpack-helpers/pull/205) that will fix this problem. But for now you should install humanmade/webpack-helpers@beta, webpack @5, webpack-cli@4, and webpack-dev-server@4. To do so runu the following command:
+There's a [pending release](https://github.com/humanmade/webpack-helpers/pull/205) that will fix this problem. But for now you should install humanmade/webpack-helpers@beta, webpack @5, webpack-cli@4, and webpack-dev-server@4. To do so run the following command:
 ```bash
 npm install --save-dev @humanmade/webpack-helpers@beta webpack@5 webpack-cli@4 webpack-dev-server@4
 ```
-
-
-Note that we specify Webpack version 4. Support for Webpack 5 is anticipated in the v1.0 release of these helpers, but at present using Webpack 4 provides the most predictable and stable experience across our projects.
 
 ## Configuring Webpack
 
