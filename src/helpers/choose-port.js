@@ -8,7 +8,7 @@
  *
  */
 const chalk = require( 'chalk' );
-const inquirer = require( 'inquirer' );
+const prompts = require( 'prompts' );
 const detect = require( 'detect-port-alt' );
 const isRoot = require( 'is-root' );
 
@@ -16,6 +16,8 @@ const getProcessForPort = require( '../vendor/get-process-for-port' );
 
 const DEFAULT_PORT = process.env.PORT || 8080;
 const HOST = process.env.HOST || '0.0.0.0';
+
+const isInteractive = process.stdout.isTTY;
 
 /**
  * choosePort method adapted from create-react-app's `react-dev-utils`.
@@ -33,25 +35,29 @@ const choosePort = ( host, defaultPort ) => detect( defaultPort, host ).then(
 		const message = process.platform !== 'win32' && defaultPort < 1024 && ! isRoot() ?
 			'Admin permissions are required to run a server on a port below 1024.' :
 			`Something is already running on port ${ defaultPort }.`;
-		// clearConsole();
-		const existingProcess = getProcessForPort( defaultPort );
-		const question = {
-			type: 'confirm',
-			name: 'shouldChangePort',
-			message: `${
-				chalk.yellow( `${ message }${
-					existingProcess ? ` Probably:\n  ${ existingProcess }` : ''
-				}` )
-			}\n\nWould you like to run the app on another port instead?`,
-			default: true,
-		};
-		inquirer.prompt( question ).then( answer => {
-			if ( answer.shouldChangePort ) {
-				resolve( port );
-			} else {
-				resolve( null );
-			}
-		} );
+		if ( isInteractive ) {
+			const existingProcess = getProcessForPort( defaultPort );
+			const question = {
+				type: 'confirm',
+				name: 'shouldChangePort',
+				message: `${
+					chalk.yellow( `${ message }${
+						existingProcess ? ` Probably:\n  ${ existingProcess }` : ''
+					}` )
+				}\n\nWould you like to run the app on another port instead?`,
+				initial: true,
+			};
+			prompts( question ).then( answer => {
+				if ( answer.shouldChangePort ) {
+					resolve( port );
+				} else {
+					resolve( null );
+				}
+			} );
+		} else {
+			console.log( chalk.red( message ) );
+			resolve( null );
+		}
 	} ),
 	err => {
 		throw new Error( `${

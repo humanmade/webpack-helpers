@@ -1,6 +1,7 @@
 const withDynamicPort = require( './with-dynamic-port' );
 
 const choosePort = require( './choose-port' );
+const { resetPublicPathsCache } = require( './infer-public-path' );
 
 jest.mock( './choose-port', () => jest.fn() );
 
@@ -9,6 +10,7 @@ describe( 'withDynamicPort', () => {
 
 	beforeEach( () => {
 		oldArgv = process.argv;
+		resetPublicPathsCache();
 	} );
 
 	afterEach( () => {
@@ -151,7 +153,7 @@ describe( 'withDynamicPort', () => {
 		it( 'does not overwrite existing config properties', async () => {
 			const config = {
 				devServer: {
-					https: true,
+					server: 'https',
 				},
 				entry: {
 					'name': './bundle.js',
@@ -167,7 +169,7 @@ describe( 'withDynamicPort', () => {
 			choosePort.mockImplementationOnce( () => Promise.resolve( 8082 ) );
 			expect( await withDynamicPort( 9090, config ) ).toEqual( {
 				devServer: {
-					https: true,
+					server: 'https',
 					port: 8082,
 				},
 				entry: {

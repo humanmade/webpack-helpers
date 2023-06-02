@@ -35,4 +35,19 @@ describe( 'helpers/deep-merge', () => {
 			},
 		} );
 	} );
+
+	it( 'can remove a property by specifying `undefined` in the second merged object', () => {
+		const obj1 = {
+			test: '.jsx?$',
+			devServer: {
+				port: 9191,
+			},
+		};
+		const obj2 = {
+			devServer: undefined,
+		};
+		expect( deepMerge( obj1, obj2 ) ).toEqual( {
+			test: '.jsx?$',
+		} );
+	} );
 } );

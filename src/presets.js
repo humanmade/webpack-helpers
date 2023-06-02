@@ -2,11 +2,14 @@ const { devServer, stats } = require( './config' );
 const deepMerge = require( './helpers/deep-merge' );
 const filePath = require( './helpers/file-path' );
 const findInObject = require( './helpers/find-in-object' );
-const inferPublicPath = require( './helpers/infer-public-path' );
+const { inferPublicPath, getPublicPathForDirectory } = require( './helpers/infer-public-path' );
 const isInstalled = require( './helpers/is-installed' );
+const { applyFilters } = require( './helpers/filters' );
 const loaders = require( './loaders' );
 const plugins = require( './plugins' );
 const { ManifestPlugin, MiniCssExtractPlugin } = plugins.constructors;
+
+const isAnalyzeMode = process.argv.includes( '--analyze' );
 
 /**
  * Dictionary of shared seed objects by path.
@@ -30,11 +33,11 @@ const getSeedByDirectory = ( path ) => {
 
 /**
  * Helper to detect whether a given package is installed, and return a spreadable
- * array containing an appropriate loader if so.
+ * array containing an appropriate loader or plugin if so.
  *
  * @example
- *     rules: [
- *         ...ifInstalled( 'eslint', loaders.eslint() ),
+ *     plugins: [
+ *         ...ifInstalled( 'eslint', plugins.eslint() ),
  *     ],
  *
  * @param {String} packageName The string name of the dependency for which to test.
@@ -50,38 +53,36 @@ const ifInstalled = ( packageName, loader ) => {
 };
 
 /**
- * Given a reference to a (possibly-undefined) filtering method, return a pair
- * of helper functions to filter a loader definition object, or to get a loader
- * definition object by its loaders dictionary key and then filter it.
+ * Remove null entries from Webpack loaders array, in case a user returned null
+ * from a filter to opt out of a given loader in the preset.
  *
- * @param {Function} [filterLoaders] An optional filterLoaders function. Defaults
- *                                   to the identity function.
- * @returns {Object} Object with `filterLoaders` and `getFilteredLoader` methods.
+ * Detects and removes null entries from nested .oneOf or .use arrays.
+ *
+ * @param {Object[]} moduleRules Array of Webpack loader rules.
+ *
+ * @returns {Object[]} Filtered array with null items removed.
  */
-const createFilteringHelpers = ( filterLoaders = ( input ) => input ) => ( {
-	/**
-	 * Given a loader object and its key string, pass that object through the
-	 * filterLoaders method (if one was provided) and return the filtered output.
-	 *
-	 * @param {Object} loader    Webpack loader configuration object.
-	 * @param {String} loaderKey String identifying which loader is being filtered.
-	 * @returns {Object} Filtered loader object.
-	 */
-	filterLoaders: ( loader, loaderKey ) => {
-		return filterLoaders( loader, loaderKey );
-	},
-
-	/**
-	 * Helper method to reduce duplication when accessing and invoking loader factories.
-	 *
-	 * @param {String} loaderKey String key of a loader factory in the loaders object.
-	 * @param {Object} [options] Options for this loader (optional).
-	 * @returns {Object} Configured and filtered loader definition.
-	 */
-	getFilteredLoader: ( loaderKey, options ) => {
-		return filterLoaders( loaders[ loaderKey ]( options ), loaderKey );
-	},
-} );
+const removeNullLoaders = ( moduleRules ) => moduleRules
+	.map( ( rule ) => {
+		if ( rule && Array.isArray( rule.oneOf ) ) {
+			const loaders = removeNullLoaders( rule.oneOf );
+			if ( ! Array.isArray( loaders ) || ! loaders.length ) {
+				return null;
+			}
+			return {
+				...rule,
+				oneOf: loaders,
+			};
+		}
+		if ( rule && Array.isArray( rule.use ) ) {
+			return {
+				...rule,
+				use: removeNullLoaders( rule.use ),
+			};
+		}
+		return rule;
+	} )
+	.filter( Boolean );
 
 /**
  * Promote a partial Webpack config into a full development-oriented configuration.
@@ -95,17 +96,10 @@ const createFilteringHelpers = ( filterLoaders = ( input ) => input ) => ( {
  * - an `.output.publicPath` string (unless a devServer.port is specified,
  *   in which case publicPath defaults to `http://localhost:${ port }`)
  *
- * @param {webpack.Configuration} config                  Configuration options to deeply merge into the defaults.
- * @param {Object}                [options]               Optional options to modify configuration generation.
- * @param {Function}              [options.filterLoaders] An optional filter function that receives each
- *                                                        computed loader definition and the name of that
- *                                                        loader as it is generated, to permit per-config
- *                                                        customization of loader options.
+ * @param {webpack.Configuration} config Configuration options to deeply merge into the defaults.
  * @returns {webpack.Configuration} A merged Webpack configuration object.
  */
-const development = ( config = {}, options = {} ) => {
-	const { filterLoaders, getFilteredLoader } = createFilteringHelpers( options.filterLoaders );
-
+const development = ( config = {} ) => {
 	/**
 	 * Default development environment-oriented Webpack options. This object is
 	 * defined at the time of function execution so that any changes to the
@@ -128,75 +122,88 @@ const development = ( config = {}, options = {} ) => {
 			// Add /* filename */ comments to generated require()s in the output.
 			pathinfo: true,
 			// Provide a default output name.
-			filename: '[name].js',
+			filename: '[name].[fullhash].js',
 			// Provide chunk filename. Requires content hash for cache busting.
-			chunkFilename: '[name].[contenthash].chunk.js',
+			chunkFilename: '[name].[fullhash].chunk.js',
 			// `publicPath` will be inferred as a localhost URL based on output.path
 			// when a devServer.port value is available.
 		},
 
 		module: {
 			strictExportPresence: true,
-			rules: [
-				// Run all JS files through ESLint, if installed.
-				...ifInstalled( 'eslint', getFilteredLoader( 'eslint', {
-					options: {
-						emitWarning: true,
-					},
-				} ) ),
+			rules: removeNullLoaders( [
+				// Handle node_modules packages that contain sourcemaps.
+				loaders.sourcemap( {}, config ),
 				{
 					// "oneOf" will traverse all following loaders until one will
 					// match the requirements. If no loader matches, it will fall
-					// back to the "file" loader at the end of the loader list.
+					// back to the resource loader at the end of the loader list.
 					oneOf: [
 						// Enable processing TypeScript, if installed.
-						...ifInstalled( 'typescript', getFilteredLoader( 'ts' ) ),
+						...ifInstalled( 'typescript', loaders.ts( {}, config ) ),
 						// Process JS with Babel.
-						getFilteredLoader( 'js' ),
-						// Convert small files to data URIs.
-						getFilteredLoader( 'url' ),
-						// Parse styles using SASS, then PostCSS.
-						filterLoaders( {
-							test: /\.s?css$/,
-							use: [
-								getFilteredLoader( 'style' ),
-								getFilteredLoader( 'css', {
-									options: {
-										sourceMap: true,
-									},
-								} ),
-								getFilteredLoader( 'postcss', {
-									options: {
-										sourceMap: true,
-									},
-								} ),
-								getFilteredLoader( 'sass', {
-									options: {
-										sourceMap: true,
-									},
-								} ),
-							],
-						}, 'stylesheet' ),
-						// "file" loader makes sure any non-matching assets still get served.
-						// When you `import` an asset you get its filename.
-						getFilteredLoader( 'file' ),
+						loaders.js( {}, config ),
+						// Handle static asset files.
+						loaders.asset( {}, config ),
+						/**
+						 * Filter the full stylesheet loader definition for this preset.
+						 *
+						 * By default parses styles using Sass and then PostCSS.
+						 *
+						 * @hook presets/stylesheet-loaders
+						 * @param {Object} loader      Stylesheet loader rule.
+						 * @param {string} environment "development" or "production".
+						 * @param {Object} config      Preset configuration object.
+						 */
+						applyFilters(
+							'presets/stylesheet-loaders',
+							{
+								test: /\.s?css$/,
+								use: [
+									loaders.style( {}, config ),
+									loaders.css( {
+										options: {
+											sourceMap: true,
+										},
+									}, config ),
+									loaders.postcss( {
+										options: {
+											sourceMap: true,
+										},
+									}, config ),
+									loaders.sass( {
+										options: {
+											sourceMap: true,
+										},
+									}, config ),
+								],
+							},
+							'development',
+							config
+						),
+						// Resource loader makes sure any non-matching assets still get served.
+						// When you `import` an asset, you get its (virtual) filename.
+						loaders.resource( {}, config ),
 					],
 				},
-			],
+			] ),
 		},
 
 		optimization: {
-			nodeEnv: 'development',
+			nodeEnv: 'development'
 		},
 
-		devServer: {
-			...devServer,
-			stats,
-		},
+		devServer,
+
+		stats,
 
 		plugins: [
-			plugins.hotModuleReplacement(),
-		],
+			// Run all JS files through ESLint, if installed.
+			...ifInstalled( 'eslint', plugins.eslint( {
+				// But don't let errors block the build.
+				failOnError: false,
+			} ) ),
+		].filter( Boolean ),
 	};
 
 	// If no entry was provided, inject a default entry value.
@@ -214,23 +221,52 @@ const development = ( config = {}, options = {} ) => {
 		publicPath = inferPublicPath( config, port, devDefaults );
 	}
 
-	// If we had enough value to guess a publicPath, set that path as a default
-	// wherever appropriate and inject a ManifestPlugin instance to expose that
-	// public path to consuming applications. Any inferred values will still be
-	// overridden with their relevant values from `config`, when provided.
-	if ( publicPath ) {
-		devDefaults.output.publicPath = publicPath;
+	const outputPath = ( config.output && config.output.path ) || devDefaults.output.path;
+	// If we used a publicPath for this outputPath before, re-use it.
+	if ( ! publicPath && outputPath ) {
+		publicPath = getPublicPathForDirectory( outputPath );
+	}
 
-		// Check for an existing ManifestPlugin instance in config.plugins.
-		const hasManifestPlugin = plugins.findExistingInstance( config.plugins, ManifestPlugin );
-		// Add a manifest with the inferred publicPath if none was present.
-		if ( ! hasManifestPlugin ) {
-			const outputPath = ( config.output && config.output.path ) || devDefaults.output.path;
-			devDefaults.plugins.push( plugins.manifest( {
-				fileName: 'asset-manifest.json',
-				seed: getSeedByDirectory( outputPath ),
-			} ) );
+	// If we had enough config values to guess a publicPath, set that path in
+	// the default config so it can be used in generated manifests.
+	if ( publicPath ) {
+		// If publicPath is a URL, default the devServer host to match.
+		if ( typeof publicPath === 'string' && publicPath.includes( 'http' ) ) {
+			devDefaults.devServer.host = new URL( publicPath ).hostname;
 		}
+		devDefaults.output.publicPath = publicPath;
+	}
+
+	// Check for an existing ManifestPlugin instance in config.plugins.
+	// Inject a ManifestPlugin instance if none is present to ensure generated
+	// files can be located by consuming aplications. Any inferred values will
+	// still be overridden with their relevant values from `config`, if provided.
+	const hasManifestPlugin = plugins.findExistingInstance( config.plugins, ManifestPlugin );
+	// Add a manifest if none was present.
+	if ( ! hasManifestPlugin ) {
+		/* eslint-disable function-paren-newline */
+		devDefaults.plugins.push( plugins.manifest(
+			/**
+			 * Filter the full stylesheet loader definition for this preset.
+			 *
+			 * By default parses styles using Sass and then PostCSS.
+			 *
+			 * @hook presets/manifest-options
+			 * @param {Object} options     Manifest plugin options object.
+			 * @param {string} environment "development" or "production".
+			 * @param {Object} config      Preset configuration object.
+			 */
+			applyFilters(
+				'presets/manifest-options',
+				{
+					fileName: 'development-asset-manifest.json',
+					seed: getSeedByDirectory( outputPath ),
+				},
+				'development',
+				config
+			)
+		) );
+		/* eslint-enable */
 	}
 
 	return deepMerge( devDefaults, config );
@@ -243,17 +279,10 @@ const development = ( config = {}, options = {} ) => {
  * merges specified options into an opinionated default production configuration
  * template.
  *
- * @param {webpack.Configuration} config                  Configuration options to deeply merge into the defaults.
- * @param {Object}                [options]               Optional options to modify configuration generation.
- * @param {Function}              [options.filterLoaders] An optional filter function that receives each
- *                                                        computed loader definition and the name of that
- *                                                        loader as it is generated, to permit per-config
- *                                                        customization of loader options.
+ * @param {webpack.Configuration} config Configuration options to deeply merge into the defaults.
  * @returns {webpack.Configuration} A merged Webpack configuration object.
  */
-const production = ( config = {}, options = {} ) => {
-	const { filterLoaders, getFilteredLoader } = createFilteringHelpers( options.filterLoaders );
-
+const production = ( config = {} ) => {
 	// Determine whether source maps have been requested, and prepare an options
 	// object to be passed to all CSS loaders to honor that request.
 	const cssOptions = config.devtool ?
@@ -281,74 +310,91 @@ const production = ( config = {}, options = {} ) => {
 		// Inject a default entry point later on if none was specified.
 
 		output: {
+			// Webpack 5 defaults "publicPath" to "auto," which we are not set up to handle.
+			publicPath: '',
 			// Provide a default output path.
 			path: filePath( 'build' ),
 			pathinfo: false,
 			// Provide a default output name.
-			filename: '[name].js',
+			filename: '[name].[contenthash].js',
 			// Provide chunk filename. Requires content hash for cache busting.
 			chunkFilename: '[name].[contenthash].chunk.js',
 		},
 
 		module: {
 			strictExportPresence: true,
-			rules: [
-				// Run all JS files through ESLint, if installed.
-				...ifInstalled( 'eslint', getFilteredLoader( 'eslint' ) ),
+			rules: removeNullLoaders( [
 				{
 					// "oneOf" will traverse all following loaders until one will
 					// match the requirements. If no loader matches, it will fall
-					// back to the "file" loader at the end of the loader list.
+					// back to the resource loader at the end of the loader list.
 					oneOf: [
 						// Enable processing TypeScript, if installed.
-						...ifInstalled( 'typescript', getFilteredLoader( 'ts' ) ),
+						...ifInstalled( 'typescript', loaders.ts( {}, config ) ),
 						// Process JS with Babel.
-						getFilteredLoader( 'js' ),
-						// Convert small files to data URIs.
-						getFilteredLoader( 'url' ),
-						// Parse styles using SASS, then PostCSS.
-						filterLoaders( {
-							test: /\.s?css$/,
-							use: [
-								// Extract CSS to its own file.
-								MiniCssExtractPlugin.loader,
-								// Process SASS into CSS.
-								getFilteredLoader( 'css', cssOptions ),
-								getFilteredLoader( 'postcss', cssOptions ),
-								getFilteredLoader( 'sass', cssOptions ),
-							],
-						}, 'stylesheet' ),
-						// "file" loader makes sure any non-matching assets still get served.
-						// When you `import` an asset you get its filename.
-						getFilteredLoader( 'file' ),
+						loaders.js( {}, config ),
+						// Handle static asset files.
+						loaders.asset( {}, config ),
+						/**
+						 * Filter the full stylesheet loader definition for this preset.
+						 *
+						 * By default parses styles using Sass and then PostCSS.
+						 *
+						 * @hook presets/stylesheet-loaders
+						 * @param {Object} loader      Stylesheet loader rule.
+						 * @param {string} environment "development" or "production".
+						 * @param {Object} config      Preset configuration object.
+						 */
+						applyFilters(
+							'presets/stylesheet-loaders',
+							{
+								test: /\.s?css$/,
+								use: [
+									// Extract CSS to its own file.
+									MiniCssExtractPlugin.loader,
+									// Process SASS into CSS.
+									loaders.css( cssOptions, config ),
+									loaders.postcss( cssOptions, config ),
+									loaders.sass( cssOptions, config ),
+								],
+							},
+							'production',
+							config
+						),
+						// Resource loader makes sure any non-matching assets still get served.
+						// When you `import` an asset, you get its (virtual) filename.
+						loaders.resource( {}, config ),
 					],
 				},
-			],
+			] ),
 		},
 
 		optimization: {
+			minimize: true,
 			minimizer: [
 				plugins.terser(),
-				plugins.optimizeCssAssets( (
-					// Set option to output source maps if devtool is set.
-					config.devtool && ! ( /inline-/ ).test( config.devtool ) ?
-						{
-							cssProcessorOptions: {
-								map: {
-									inline: false,
-								},
-							},
-						} :
-						undefined
-				) ),
+				plugins.cssMinimizer(),
 			],
-			nodeEnv: 'production',
-			noEmitOnErrors: true,
+			emitOnErrors: false,
 		},
 
 		stats,
 
-		plugins: [],
+		plugins: [
+			// Run all JS files through ESLint, if installed.
+			...ifInstalled( 'eslint', plugins.eslint() ),
+			// Use the simple build report plugin to clean up Webpack's terminal output.
+			plugins.simpleBuildReport(),
+			// If webpack was invoked with the --analyze flag, include a bundleAnalyzer
+			// in production builds. Use the configuration name when present to separate
+			// output files for each webpack build in multi-configuration setups.
+			isAnalyzeMode ?
+				plugins.bundleAnalyzer( {
+					reportFilename: config.name ? `${ config.name }-analyzer-report.html` : 'bundle-analyzer-report.html',
+					statsFilename: config.name ? `${ config.name }-stats.json` : 'stats.json',
+				} ) :
+				null,
+		].filter( Boolean ),
 	};
 
 	// If no entry was provided, inject a default entry value.
@@ -369,10 +415,29 @@ const production = ( config = {}, options = {} ) => {
 	// Add a manifest with the inferred publicPath if none was present.
 	if ( ! hasManifestPlugin ) {
 		const outputPath = ( config.output && config.output.path ) || prodDefaults.output.path;
-		prodDefaults.plugins.push( plugins.manifest( {
-			fileName: 'production-asset-manifest.json',
-			seed: getSeedByDirectory( outputPath ),
-		} ) );
+		/* eslint-disable function-paren-newline */
+		prodDefaults.plugins.push( plugins.manifest(
+			/**
+			 * Filter the full stylesheet loader definition for this preset.
+			 *
+			 * By default parses styles using Sass and then PostCSS.
+			 *
+			 * @hook presets/manifest-options
+			 * @param {Object} options     Manifest plugin options object.
+			 * @param {string} environment "development" or "production".
+			 * @param {Object} config      Preset configuration object.
+			 */
+			applyFilters(
+				'presets/manifest-options',
+				{
+					fileName: 'production-asset-manifest.json',
+					seed: getSeedByDirectory( outputPath ),
+				},
+				'production',
+				config
+			)
+		) );
+		/* eslint-enable */
 	}
 
 	return deepMerge( prodDefaults, config );

@@ -33,15 +33,15 @@ module.exports = presets.production( {
 ## `cleanOnExit`
 
 
-When using the `presets.development()` generator, an `asset-manifest.json` will automatically be generated so long as a `publicPath` URI can be determined. When working with an `asset-manifest.json` file, the `manifest` module provides a `cleanOnExit` method to easily remove manifests once the `webpack-dev-server` shuts down.
+When using the `presets.development()` generator, a `development-asset-manifest.json` will automatically be generated so long as a `publicPath` URI can be determined. When working with a `development-asset-manifest.json` file, the `manifest` module provides a `cleanOnExit` method to easily remove manifests once the `webpack-dev-server` shuts down.
 
 ```js
 const { join } = require( 'path' );
 const { helpers } = require( '@humanmade/webpack-helpers' );
 
 helpers.cleanOnExit( [
-	join( process.cwd(), 'content/mu-plugins/custom-blocks/build/asset-manifest.json' ),
-	join( process.cwd(), 'content/themes/my-theme/build/asset-manifest.json' ),
+	join( process.cwd(), 'content/mu-plugins/custom-blocks/build/development-asset-manifest.json' ),
+	join( process.cwd(), 'content/themes/my-theme/build/development-asset-manifest.json' ),
 ] );
 ```
 
@@ -98,3 +98,69 @@ module.exports = helpers.choosePort( 9090 ).then( port => [
 	} ),
 ] );
 ```
+
+## Filters
+
+Webpack Helpers v1.0 introduced a new system for altering the behavior of bundled loaders, plugins, and presets, also covered under [Customizing Presets](./presets.html#customizing-presets). This system uses a filtering approach similar to [the way PHP filters work within WordPress](https://developer.wordpress.org/reference/functions/add_filter/), with `addFilter` and `removeFilter` helpers you can use to modify various types of internal data at runtime.
+
+```js
+// webpack.config.js
+const { helpers } = require( '@humanmade/webpack-helpers' );
+
+const { addFilter, removeFilter } = helpers;
+
+// Hook onto a specific filter by name, and provide a callback function to
+// alter the value returned from that filter.
+addFilter( 'filter/name', function( value ) {
+	return 'modified value';
+} );
+
+// To filter only some values, you can remove a filter by passing the same
+// function reference to removeFilter.
+const filterFunction = ( value ) => 'modified value';
+
+addFilter( 'filter/name', filterFunction );
+
+// Do something where the filter gets applied.
+
+removeFilter( 'filter/name', filterFunction );
+
+// Now if you do that same thing, the filter will no longer apply.
+```
+
+### Filter List
+
+Each [loader](./loaders.html) exposes at minimum two filters, `loaders/{name}` and `loaders/{name}/defaults`. For example, the defaults for `loaders.ts()` can be filtered using
+
+```js
+addFilter( 'loaders/ts/defaults', ( loaderDefaultsObject ) => {
+	// return a filtered value
+} );
+```
+or the computed final loader object can be modified after the fact with
+
+```js
+addFilter( 'loaders/ts', ( loaderObject ) => {
+	// return a filtered value
+} );
+```
+
+If you return `null` from the `loaders/{name}` filter, it will remove that loader from the preset entirely.
+
+Additional filters provided by Webpack Helpers:
+
+**`presets/stylesheet-loaders`**
+
+Filter the [stylesheet loader chain](https://webpack.js.org/concepts/loaders/#configuration) used in the `presets.production()` and `presets.development()` helpers. Functions added to this filter receive the stylesheet chain as their first argument, and the name of the compilation mode (`production` or `development`) as the second argument.
+
+**`plugins/terser/defaults`**
+
+Filter the [TerserPlugin default options object](https://webpack.js.org/plugins/terser-webpack-plugin/#options) if you wish to alter the minification settings used by the production preset.
+
+**`loaders/postcss/plugins`**
+
+Filter the list of [PostCSS plugins](https://github.com/postcss/postcss/blob/main/docs/plugins.md) used by the `loaders.postcss()` loader.
+
+**`loaders/postcss/preset-env`**
+
+Filter the [`postcss-preset-env` options](https://github.com/csstools/postcss-preset-env#options) used by the `loaders.postcss()` loader.

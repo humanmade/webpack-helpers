@@ -10,5 +10,4 @@ docs/
 src/vendor
 
 # The test folder uses ES modules
-test/src
 test/build

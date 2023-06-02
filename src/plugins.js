@@ -1,15 +1,18 @@
 const { BundleAnalyzerPlugin } = require( 'webpack-bundle-analyzer' );
 const { CleanWebpackPlugin } = require( 'clean-webpack-plugin' );
-const { HotModuleReplacementPlugin } = require( 'webpack' );
 const BellOnBundleErrorPlugin = require( 'bell-on-bundler-error-plugin' );
 const CopyPlugin = require( 'copy-webpack-plugin' );
-const FixStyleOnlyEntriesPlugin = require( 'webpack-fix-style-only-entries' );
+const ESLintPlugin = require( 'eslint-webpack-plugin' );
 const { WebpackManifestPlugin: ManifestPlugin } = require( 'webpack-manifest-plugin' );
 const MiniCssExtractPlugin = require( 'mini-css-extract-plugin' );
+const RemoveEmptyScriptsPlugin = require( 'webpack-remove-empty-scripts' );
+const SimpleBuildReportPlugin = require( 'simple-build-report-webpack-plugin' );
 const TerserPlugin = require( 'terser-webpack-plugin' );
-const OptimizeCssAssetsPlugin = require( 'optimize-css-assets-webpack-plugin' );
+const CssMinimizerPlugin = require( 'css-minimizer-webpack-plugin' );
 
-const deepMerge = require( './helpers/deep-merge' );
+const { applyFilters } = require( './helpers/filters' );
+
+const isProfileMode = process.argv.includes( '--profile' );
 
 module.exports = {
 	/**
@@ -22,11 +25,12 @@ module.exports = {
 		BundleAnalyzerPlugin,
 		CleanWebpackPlugin,
 		CopyPlugin,
-		FixStyleOnlyEntriesPlugin,
-		HotModuleReplacementPlugin,
+		ESLintPlugin,
 		ManifestPlugin,
 		MiniCssExtractPlugin,
-		OptimizeCssAssetsPlugin,
+		CssMinimizerPlugin,
+		RemoveEmptyScriptsPlugin,
+		SimpleBuildReportPlugin,
 		TerserPlugin,
 	},
 
@@ -47,14 +51,14 @@ module.exports = {
 	},
 
 	/**
-	 * Create a new BundleAnalyzerPlugin instance. The analyzer is enabled by default
-	 * only if `--analyze` is passed on the command line.
+	 * Create a new BundleAnalyzerPlugin instance.
 	 *
 	 * @param {Object} [options] Optional plugin options object.
 	 * @returns {BundleAnalyzerPlugin} A configured BundleAnalyzerPlugin instance.
 	 */
 	bundleAnalyzer: ( options = {} ) => new BundleAnalyzerPlugin( {
-		analyzerMode: process.argv.indexOf( '--analyze' ) >= 0 ? 'static' : 'disabled',
+		analyzerMode: 'static',
+		generateStatsFile: true,
 		openAnalyzer: false,
 		reportFilename: 'bundle-analyzer-report.html',
 		...options,
@@ -99,22 +103,26 @@ module.exports = {
 	errorBell: () => new BellOnBundleErrorPlugin(),
 
 	/**
-	 * Create a new FixStyleOnlyEntriesPlugin instance to remove unnecessary JS
+	 * Create a new ESLintPlugin instance to check your build for syntax or style issues.
+	 *
+	 * @param {Object} options Optional plugin options object.
+	 * @returns {ESLintPlugin} A configured ESLintPlugin instance.
+	 */
+	eslint: ( options ) => new ESLintPlugin( {
+		extensions: [ 'js', 'jsx', 'ts', 'tsx' ],
+		exclude: [ 'node_modules', 'vendor', '*.min.js', '*.min.jsx' ],
+		...options,
+	} ),
+
+	/**
+	 * Create a new RemoveEmptyScriptsPlugin instance to remove unnecessary JS
 	 * files generated for style-only bundle entries.
 	 *
 	 * @param {Object} [options]         Optional plugin options object.
 	 * @param {RegExp} [options.exclude] Regular expression to filter what gets cleaned.
-	 * @returns {FixStyleOnlyEntriesPlugin} A configured FixStyleOnlyEntriesPlugin instance.
+	 * @returns {RemoveEmptyScriptsPlugin} A configured RemoveEmptyScriptsPlugin instance.
 	 */
-	fixStyleOnlyEntries: ( options ) => new FixStyleOnlyEntriesPlugin( options ),
-
-	/**
-	 * Create a webpack.HotModuleReplacementPlugin instance.
-	 *
-	 * @param {Object} [options] Optional plugin options object.
-	 * @returns {HotModuleReplacementPlugin} A configured HMR Plugin instance.
-	 */
-	hotModuleReplacement: ( options = {} ) => new HotModuleReplacementPlugin( options ),
+	fixStyleOnlyEntries: ( options ) => new RemoveEmptyScriptsPlugin( options ),
 
 	/**
 	 * Create a new ManifestPlugin instance to output an asset-manifest.json
@@ -154,12 +162,20 @@ module.exports = {
 	} ),
 
 	/**
-	 * Create a new OptimizeCssAssetsPlugin instance.
+	 * Create a new CssMinimizerPlugin instance.
 	 *
 	 * @param {Object} [options] Optional plugin configuration options.
-	 * @returns {OptimizeCssAssetsPlugin} A configured OptimizeCssAssetsPlugin instance.
+	 * @returns {CssMinimizerPlugin} A configured CssMinimizerPlugin instance.
 	 */
-	optimizeCssAssets: ( options = {} ) => new OptimizeCssAssetsPlugin( options ),
+	cssMinimizer: ( options = {} ) => new CssMinimizerPlugin( options ),
+
+	/**
+	 * Instantiate a SimpleBuildReportPlugin to render build output in a human-
+	 * oriented fashion.
+	 *
+	 * @returns {SimpleBuildReportPlugin} Output formatter plugin instance.
+	 */
+	simpleBuildReport: () => new SimpleBuildReportPlugin(),
 
 	/**
 	 * Create a new TerserPlugin instance, defaulting to a set of options
@@ -170,41 +186,46 @@ module.exports = {
 	 * @param {Object} [options.terserOptions] Terser compressor options object.
 	 * @returns {TerserPlugin} A configured TerserPlugin instance.
 	 */
-	terser: ( options = {} ) => new TerserPlugin( deepMerge( {
-		terserOptions: {
-			parse: {
-				// we want terser to parse ecma 8 code. However, we don't want it
-				// to apply any minfication steps that turns valid ecma 5 code
-				// into invalid ecma 5 code. This is why the 'compress' and 'output'
-				// sections only apply transformations that are ecma 5 safe
-				// https://github.com/facebook/create-react-app/pull/4234
-				ecma: 8,
+	terser: ( options = {} ) => new TerserPlugin( {
+		...applyFilters( 'plugins/terser/defaults', {
+			terserOptions: {
+				parse: {
+					// We want terser to parse ecma 8 code. However, we don't want it
+					// to apply any minification steps that turns valid ecma 5 code
+					// into invalid ecma 5 code. This is why the 'compress' and 'output'
+					// sections only apply transformations that are ecma 5 safe
+					// https://github.com/facebook/create-react-app/pull/4234
+					ecma: 8,
+				},
+				compress: {
+					ecma: 5,
+					warnings: false,
+					// Disabled because of an issue with Uglify breaking seemingly valid code:
+					// https://github.com/facebook/create-react-app/issues/2376
+					// Pending further investigation:
+					// https://github.com/mishoo/UglifyJS2/issues/2011
+					comparisons: false,
+					// Disabled because of an issue with Terser breaking valid code:
+					// https://github.com/facebook/create-react-app/issues/5250
+					// Pending further investigation:
+					// https://github.com/terser-js/terser/issues/120
+					inline: 2,
+				},
+				mangle: {
+					safari10: true,
+				},
+				// Added for profiling in devtools
+				keep_classnames: isProfileMode,
+				keep_fnames: isProfileMode,
+				output: {
+					ecma: 5,
+					comments: false,
+					// Turned on because emoji and regex is not minified properly using default
+					// https://github.com/facebook/create-react-app/issues/2488
+					ascii_only: true,
+				},
 			},
-			compress: {
-				ecma: 5,
-				warnings: false,
-				// Disabled because of an issue with Uglify breaking seemingly valid code:
-				// https://github.com/facebook/create-react-app/issues/2376
-				// Pending further investigation:
-				// https://github.com/mishoo/UglifyJS2/issues/2011
-				comparisons: false,
-				// Disabled because of an issue with Terser breaking valid code:
-				// https://github.com/facebook/create-react-app/issues/5250
-				// Pending futher investigation:
-				// https://github.com/terser-js/terser/issues/120
-				inline: 2,
-			},
-			mangle: {
-				safari10: true,
-			},
-			output: {
-				ecma: 5,
-				comments: false,
-				// Turned on because emoji and regex is not minified properly using default
-				// https://github.com/facebook/create-react-app/issues/2488
-				ascii_only: true,
-			},
-		},
-		extractComments: false,
-	}, options ) ),
+		} ),
+		...options,
+	} ),
 };

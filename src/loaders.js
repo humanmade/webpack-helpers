@@ -1,43 +1,73 @@
 /**
  * Export generator functions for common Webpack loader configurations.
  */
+const cloneDeep = require( 'lodash.clonedeep' );
 const postcssFlexbugsFixes = require( 'postcss-flexbugs-fixes' );
 const postcssPresetEnv = require( 'postcss-preset-env' );
 
 const deepMerge = require( './helpers/deep-merge' );
+const { applyFilters } = require( './helpers/filters' );
 
 /**
  * Export an object of named methods that generate corresponding loader config
- * objects. To customize the default values of the loader, mutate the .defaults
- * property exposed on each method (or pass a filterLoaders option to a preset).
+ * objects. To customize the default values of the loader, use addFilter() on
+ * either the hook `loader/loadername/defaults` (to adjust the default loader
+ * configuration) or `loader/loadername` (to alter the final, computed loader).
  */
 const loaders = {};
 
+/**
+ * Create a loader factory function for a given loader slug.
+ *
+ * @private
+ * @param {string} loaderKey Loader slug
+ * @returns {Function} Factory function to generate and filter a loader with the specified slug.
+ */
 const createLoaderFactory = loaderKey => {
-	const getFilteredLoader = ( options ) => {
-		// Handle missing options object.
-		if ( typeof options === 'function' ) {
-			return getFilteredLoader( {}, options );
-		}
-
-		// Generate the requested loader definition.
-		return deepMerge( loaders[ loaderKey ].defaults, options );
+	return ( options = {}, config = null ) => {
+		/**
+		 * Generate the requested loader definition.
+		 *
+		 * Allows customization of the final rendered loader via the loaders/{loaderslug}
+		 * filter, which also receives the configuration passed to a preset factory if
+		 * the loader is invoked in the context of a preset.
+		 *
+		 * @hook loaders/{$loader_slug}
+		 * @param {Object}      loader   Complete loader definition object, after merging user-provided values with filtered defaults.
+		 * @param {Object|null} [config] Configuration object for the preset being rendered, if loader is called while generating a preset.
+		 */
+		return applyFilters(
+			`loaders/${ loaderKey }`,
+			deepMerge(
+				/**
+				 * Filter the loader's default configuration.
+				 *
+				 * @hook loaders/{$loader_slug}/defaults
+				 * @param {Object}      options  Loader default options object.
+				 * @param {Object|null} [config] Configuration object for the preset being rendered, if loader is called while generating a preset.
+				 */
+				applyFilters( `loaders/${ loaderKey }/defaults`, cloneDeep( loaders[ loaderKey ].defaults ), config ),
+				options
+			),
+			config
+		);
 	};
-
-	return getFilteredLoader;
 };
 
 // Define all supported loader factories within the loaders object.
-[ 'eslint', 'js', 'ts', 'url', 'style', 'css', 'postcss', 'sass', 'file' ].forEach( loaderKey => {
+[ 'asset', 'js', 'ts', 'style', 'css', 'postcss', 'sass', 'sourcemap', 'resource' ].forEach( loaderKey => {
 	loaders[ loaderKey ] = createLoaderFactory( loaderKey );
 } );
 
-loaders.eslint.defaults = {
-	test: /\.jsx?$/,
-	exclude: /(node_modules|bower_components)/,
-	enforce: 'pre',
-	loader: require.resolve( 'eslint-loader' ),
-	options: {},
+loaders.asset.defaults = {
+	test: /\.(png|jpg|jpeg|gif|avif|webp|svg|woff|woff2|eot|ttf)$/,
+	type: 'asset',
+	parser: {
+		dataUrlCondition: {
+			// Inline if less than 10kb.
+			maxSize: 10 * 1024,
+		},
+	},
 };
 
 loaders.js.defaults = {
@@ -56,14 +86,6 @@ loaders.ts.defaults = {
 	loader: require.resolve( 'ts-loader' ),
 };
 
-loaders.url.defaults = {
-	test: /\.(png|jpg|jpeg|gif|svg|woff|woff2|eot|ttf)$/,
-	loader: require.resolve( 'url-loader' ),
-	options: {
-		limit: 10000,
-	},
-};
-
 loaders.style.defaults = {
 	loader: require.resolve( 'style-loader' ),
 	options: {},
@@ -80,15 +102,28 @@ loaders.postcss.defaults = {
 	loader: require.resolve( 'postcss-loader' ),
 	options: {
 		postcssOptions: {
-			plugins: [
+			ident: 'postcss',
+			/**
+			 * Filter the default PostCSS Plugins array.
+			 *
+			 * @hook loaders/postcss/plugins
+			 * @param {Array} plugins Array of PostCSS plugins.
+			 */
+			plugins: applyFilters( 'loaders/postcss/plugins', [
 				postcssFlexbugsFixes,
-				postcssPresetEnv( {
+				/**
+				 * Filter the default PostCSS Preset Env configuration.
+				 *
+				 * @hook loaders/postcss/preset-env
+				 * @param {Object} presetEnvConfig PostCSS Preset Env plugin configuration.
+				 */
+				postcssPresetEnv( applyFilters( 'loaders/postcss/preset-env', {
 					autoprefixer: {
 						flexbox: 'no-2009',
 					},
 					stage: 3,
-				} ),
-			],
+				} ) ),
+			] ),
 		},
 	},
 };
@@ -102,11 +137,21 @@ loaders.sass.defaults = {
 	},
 };
 
-loaders.file.defaults = {
-	// Exclude `js`, `html` and `json`, but match anything else.
-	exclude: /\.(js|html|json)$/,
-	loader: require.resolve( 'file-loader' ),
+loaders.sourcemap.defaults = {
+	test: /\.(js|mjs|jsx|ts|tsx|css)$/,
+	exclude: /@babel(?:\/|\\{1,2})runtime/,
+	enforce: 'pre',
+	loader: require.resolve( 'source-map-loader' ),
 	options: {},
+};
+
+loaders.resource.defaults = {
+	// Exclude `js` files to keep "css" loader working as it injects
+	// its runtime that would otherwise be processed through "file" loader.
+	// Also exclude `html` and `json` extensions so they get processed
+	// by webpacks internal loaders.
+	exclude: [ /^$/, /\.(js|mjs|jsx|ts|tsx)$/, /\.html?$/, /\.json$/ ],
+	type: 'asset/resource',
 };
 
 module.exports = loaders;

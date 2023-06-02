@@ -6,7 +6,7 @@
 const choosePort = require( './choose-port' );
 const filePath = require( './file-path' );
 const findInObject = require( './find-in-object' );
-const inferPublicPath = require( './infer-public-path' );
+const { inferPublicPath } = require( './infer-public-path' );
 
 const DEFAULT_PORT = 9090;
 

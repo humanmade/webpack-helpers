@@ -7,13 +7,21 @@ module.exports = {
 	 * @type {Object}
 	 */
 	devServer: {
-		disableHostCheck: true,
+		allowedHosts: 'all',
 		headers: {
 			'Access-Control-Allow-Origin': '*',
+			'Access-Control-Allow-Methods': '*',
+			'Access-Control-Allow-Headers': '*',
 		},
-		hotOnly: true,
-		watchOptions: {
-			aggregateTimeout: 300,
+		// Enable gzip compression of generated files.
+		compress: true,
+		hot: 'only',
+		client: {
+			// Do not show disruptive overlay for warnings.
+			overlay: {
+				errors: true,
+				warnings: false,
+			},
 		},
 	},
 
@@ -22,12 +30,10 @@ module.exports = {
 	 * @type {Object}
 	 */
 	stats: {
-		all: false,
+		preset: 'summary',
 		assets: true,
 		colors: true,
 		errors: true,
-		performance: true,
-		timings: true,
 		warnings: true,
 	},
 };

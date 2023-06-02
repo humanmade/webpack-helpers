@@ -91,7 +91,6 @@ module.exports = {
 
 [Read up on the `...` "spread operator"](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax#Spread_in_object_literals) if this syntax is unfamiliar to you; it's quite useful!
 
-
 Customize a generated production configuration by object mutation:
 
 ```js
@@ -109,27 +108,57 @@ module.exports.optimization.minimizer = [
 ];
 ```
 
-Note that array values are _merged_, not overwritten. This allows you to easily add plugins, but it can make it hard to _remove_ values from array properties like the module loader rules. To change loader configuration options without completely removing a loader, we recommend the approach described below in "Customizing Loaders". However, if you do need to completely change or remove the loaders from a default, you may overwrite the `.module.rules` array using one of the above methods.
+### Filtering values
 
-### Modify loaders within a generated configuration
-
-Adjusting loaders within a generated configuration tree is difficult because loader arrays are not keyed and module rules may be nested. Instead, each `preset` generator accepts a second argument in which you can pass a callback function that will be run on the output of each computed loader definition.
+Array values are _merged_ when processing a preset, not overwritten. This allows you to easily add plugins, but it can make it hard to _remove_ values from array properties like the module loader rules or plugins list. To change loader configuration options without completely removing a loader, or adjust loaders deep within a generated configuration tree, this library provides a `addFilter` helper function. `addFilter()` lets you register a callback which can transform the value of each computed loader, as well as some other useful configuration values.
 
 ```js
-// Alter the publicPath value of the files-loader and url-loader.
-const config = production.preset(
-	{ /* ...configuration options described above ... */ },
-	{
-		filterLoaders: ( loader, loaderType ) => {
-			if ( loaderType === 'file' || loaderType === 'url' ) {
-				loader.options.publicPath = '../../';
-			}
-			return loader;
-		}
-	}
+const { helpers, presets } = require( '@humanmade/webpack-helpers' );
+const { addFilter } = helpers;
+
+// Intercept the "sass" loader and replace it with a Stylus loader.
+addFilter( 'loaders/sass', () => {
+	return {
+		loader: require.resolve( 'stylus-loader' ),
+	};
+} );
+// Alter presets to use a different targeting regular expression.
+addFilter( 'presets/stylesheet-loaders', ( loader ) => {
+	loader.test = /.\styl$/;
+	return loader;
+} );
+
+// Now, use the preset as normal and it will pick up Stylus files instead!
+const config = presets.production(
+	{ /* ...normal configuration options as described above ... */ }
 );
 ```
 
-The `loaderType` option will be [one of the keys in the `loaders` object](./loaders.html), or else the special key `stylesheet` which will be passed alongside the entire computed stylesheet loader chain. Filter on `stylesheet` to, for example, completely replace the Sass stylesheet support with a different preprocessor like Stylus.
+If you are using a multi-configuration Webpack setup where the config file exports an array of individual configurations, you may wish to filter a loader, preset chain, or other value for only one of those configuration objects. To permit this, each filter callback will be passed the preset's configuration object as a final argument when the filter or loader is called in the context of a preset. For example,
 
-The values of the `loaderType` argument in this callback correspond to the names of the available [loader factory functions](https://humanmade.github.io/webpack-helpers/modules/loaders.html).
+```js
+const { helpers, externals, presets } = require( '@humanmade/webpack-helpers' );
+const { addFilter } = helpers;
+
+// Do not use the JS loader in the frontend build.
+addFilter( 'presets/js', ( loader, config ) => {
+	if ( config.name === 'frontend' ) {
+		return null;
+	}
+	return frontend;
+} );
+
+module.exports = [
+	presets.production( {
+		name: 'frontend',
+		// ...
+	} ),
+	presets.production( {
+		name: 'editor',
+		externals,
+		// ...
+	} ),
+];
+```
+
+For more information, see [the full hooks reference.](https://humanmade.github.io/webpack-helpers/reference/hooks.html).
