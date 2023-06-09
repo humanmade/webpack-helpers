@@ -374,6 +374,7 @@ const production = ( config = {} ) => {
 			minimizer: [
 				plugins.terser(),
 				plugins.cssMinimizer(),
+				plugins.imageMinimizer(),
 			],
 			emitOnErrors: false,
 		},
