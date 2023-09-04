@@ -7,3 +7,4 @@ node_modules
 # Built files
 package-lock.json
 test/build
+.DS_Store
