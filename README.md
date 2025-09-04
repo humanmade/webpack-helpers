@@ -1,6 +1,6 @@
 # Webpack Helpers
 
-A [Human Made](https://humanmade.com) project. [![Build Status](https://app.travis-ci.com/humanmade/webpack-helpers.svg?token=xNUfWUZqcGkpUy3iiQyu&branch=main)
+A [Human Made](https://humanmade.com) project. ![Build Status](https://app.travis-ci.com/humanmade/webpack-helpers.svg?token=xNUfWUZqcGkpUy3iiQyu&branch=main)
 
 ## Background
 
