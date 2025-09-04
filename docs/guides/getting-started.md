@@ -18,7 +18,7 @@ While this package depends in turn on a number of loaders and plugins, it delibe
 
 ** *Check notice before proceeding:**
 ```bash
-npm install --save-dev @humanmade/webpack-helpers webpack@5 webpack-cli@5 webpack-dev-server@5 sass
+npm install --save-dev @humanmade/webpack-helpers webpack@5 webpack-cli@6 webpack-dev-server@5 sass
 ```
 
 **Webpack 5 Support:** This package now fully supports Webpack 5 with all the latest features and optimizations. We recommend using Webpack 5 for all new projects as it provides better performance, improved tree shaking, and enhanced module federation capabilities.
