@@ -6,9 +6,50 @@ nav_order: 10
 
 # Changelog
 
-## Next
+## v1.0.0-alpha
 
-- Include the `contenthash` in generated CSS filenames. [#204](https://github.com/humanmade/webpack-helpers/pull/204)
+### Added
+
+- Full Webpack 5 support with modern optimizations and performance improvements
+- ESLint 9+ support with flat configuration format (`eslint.config.js`)
+- Modern `eslint-webpack-plugin` replacing deprecated `eslint-loader`
+- Enhanced TypeScript support for `.ts` and `.tsx` files
+- Updated peer dependencies to latest stable versions
+- Improved build performance with Webpack 5's enhanced tree shaking
+- Module federation capabilities support
+
+### Changed
+
+- **BREAKING**: Upgraded from Webpack 4 to Webpack 5
+- **BREAKING**: Updated ESLint support to use ESLint 9+ flat configuration format
+- **BREAKING**: Replaced deprecated `eslint-loader` with `eslint-webpack-plugin`
+- **BREAKING**: Updated minimum Node.js requirement to align with Webpack 5
+- Updated all bundled dependencies to latest stable versions
+- Improved error handling and debugging capabilities
+- Enhanced development server performance
+
+### Removed
+
+- Support for legacy `.eslintrc.*` configuration files (use `eslint.config.js` instead)
+- Webpack 4 compatibility and related legacy code
+- `eslint-loader` dependency (replaced with `eslint-webpack-plugin`)
+- Outdated peer dependency constraints
+
+### Migration Guide
+
+- Update your `package.json` to use `webpack@5`, `webpack-cli@5`, and `webpack-dev-server@5`
+- If using ESLint, migrate from `.eslintrc.*` files to `eslint.config.js` using the flat configuration format
+- Review and update any custom webpack configurations to ensure Webpack 5 compatibility
+- Update Node.js to a supported version if needed
+
+## v0.12.0
+
+* Include contenthash in generated CSS filenames by @kadamwhite in https://github.com/humanmade/webpack-helpers/pull/204
+* Use Just the HM Docs theme by @joeleenk in https://github.com/humanmade/webpack-helpers/pull/210
+* Add workflow to deploy GH pages by @joeleenk in https://github.com/humanmade/webpack-helpers/pull/212
+* Update to Jekyll 4, inherit from theme by @joeleenk in https://github.com/humanmade/webpack-helpers/pull/213
+* Update getting-started.md by @pamprn09 in https://github.com/humanmade/webpack-helpers/pull/216
+* Update externals for WP 6.2 and add snapshot update command by @Sephsekla in https://github.com/humanmade/webpack-helpers/pull/217
 
 ## v0.11.1
 

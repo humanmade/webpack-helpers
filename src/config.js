@@ -7,14 +7,15 @@ module.exports = {
 	 * @type {Object}
 	 */
 	devServer: {
-		disableHostCheck: true,
+		allowedHosts: 'all',
 		headers: {
 			'Access-Control-Allow-Origin': '*',
 		},
-		hotOnly: true,
-		watchOptions: {
-			aggregateTimeout: 300,
-		},
+		hot: true,
+	},
+
+	watchOptions: {
+		aggregateTimeout: 300,
 	},
 
 	/**

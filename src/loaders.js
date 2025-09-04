@@ -28,17 +28,9 @@ const createLoaderFactory = loaderKey => {
 };
 
 // Define all supported loader factories within the loaders object.
-[ 'eslint', 'js', 'ts', 'url', 'style', 'css', 'postcss', 'sass', 'file' ].forEach( loaderKey => {
+[ 'js', 'ts', 'style', 'css', 'postcss', 'sass', 'asset', 'assetResource', 'assetInline' ].forEach( loaderKey => {
 	loaders[ loaderKey ] = createLoaderFactory( loaderKey );
 } );
-
-loaders.eslint.defaults = {
-	test: /\.jsx?$/,
-	exclude: /(node_modules|bower_components)/,
-	enforce: 'pre',
-	loader: require.resolve( 'eslint-loader' ),
-	options: {},
-};
 
 loaders.js.defaults = {
 	test: /\.jsx?$/,
@@ -56,12 +48,25 @@ loaders.ts.defaults = {
 	loader: require.resolve( 'ts-loader' ),
 };
 
-loaders.url.defaults = {
+// Asset modules replace url-loader and file-loader in Webpack 5
+loaders.asset.defaults = {
 	test: /\.(png|jpg|jpeg|gif|svg|woff|woff2|eot|ttf)$/,
-	loader: require.resolve( 'url-loader' ),
-	options: {
-		limit: 10000,
+	type: 'asset',
+	parser: {
+		dataUrlCondition: {
+			maxSize: 10000,
+		},
 	},
+};
+
+loaders.assetResource.defaults = {
+	test: /\.(png|jpg|jpeg|gif|svg|woff|woff2|eot|ttf)$/,
+	type: 'asset/resource',
+};
+
+loaders.assetInline.defaults = {
+	test: /\.(png|jpg|jpeg|gif|svg|woff|woff2|eot|ttf)$/,
+	type: 'asset/inline',
 };
 
 loaders.style.defaults = {
@@ -100,13 +105,6 @@ loaders.sass.defaults = {
 			outputStyle: 'expanded'
 		},
 	},
-};
-
-loaders.file.defaults = {
-	// Exclude `js`, `html` and `json`, but match anything else.
-	exclude: /\.(js|html|json)$/,
-	loader: require.resolve( 'file-loader' ),
-	options: {},
 };
 
 module.exports = loaders;
