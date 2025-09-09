@@ -6,6 +6,9 @@
   "main": "index.js",
   "author": "Human Made",
   "license": "MIT",
+  "engines": {
+    "node": ">=22.0.0"
+  },
   "homepage": "https://github.com/humanmade/webpack-helpers#readme",
   "repository": {
     "type": "git",

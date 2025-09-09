@@ -12,6 +12,16 @@ Visit [humanmade.github.io/webpack-helpers](https://humanmade.github.io/webpack-
 
 Visit the [`docs/`](./docs) folder to view or modify the content used to generate this documentation site.
 
+## Requirements
+
+- Node.js >= 22.0.0
+
+This project includes an `.nvmrc` file specifying Node.js 22. If you use nvm, you can run:
+
+```bash
+nvm use
+```
+
 ## What's In The Box
 
 ### [Opinionated Configuration Presets](https://humanmade.github.io/webpack-helpers/modules/presets)
