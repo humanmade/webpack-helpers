@@ -54,7 +54,8 @@ The included presets provide the following out of the box:
 - Automatic inlining of small image and font assets as Data URI strings.
 - PostCSS [Autoprefixer](https://github.com/postcss/autoprefixer#readme) support and Flexbox bug fixes.
 - [TypeScript](https://www.typescriptlang.org/) compilation for `.ts` and `.tsx` files, if the `typescript` npm package is installed.
-- Automatic [ESLint](https://eslint.org/) linting on build, if the `eslint` npm package is installed.
+- Automatic [ESLint](https://eslint.org/) linting on build using ESLint 9+ with flat configuration format, if the `eslint` npm package is installed.
+- Full Webpack 5 support with modern optimizations and module federation capabilities.
 
 ### WordPress Core Externals
 

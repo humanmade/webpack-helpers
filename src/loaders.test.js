@@ -22,23 +22,16 @@ describe( 'loaders', () => {
 		expect( result.value ).toBe( 42 );
 	} );
 
-	describe( '.eslint()', () => {
-		it( 'tests for .js or .jsx files', () => {
-			expect( 'file.js'.match( loaders.eslint().test ) ).not.toBeNull();
-			expect( 'file.jsx'.match( loaders.eslint().test ) ).not.toBeNull();
-			expect( 'file.scss'.match( loaders.eslint().test ) ).toBeNull();
-		} );
-	} );
 
 	describe( '.js()', () => {
 		it( 'tests for .js or .jsx files', () => {
-			expect( 'file.js'.match( loaders.eslint().test ) ).not.toBeNull();
-			expect( 'file.jsx'.match( loaders.eslint().test ) ).not.toBeNull();
-			expect( 'file.scss'.match( loaders.eslint().test ) ).toBeNull();
+			expect( 'file.js'.match( loaders.js().test ) ).not.toBeNull();
+			expect( 'file.jsx'.match( loaders.js().test ) ).not.toBeNull();
+			expect( 'file.scss'.match( loaders.js().test ) ).toBeNull();
 		} );
 	} );
 
-	describe( '.url()', () => {
+	describe( '.asset()', () => {
 		it( 'tests for static assets', () => {
 			[
 				'file.png',
@@ -51,15 +44,18 @@ describe( 'loaders', () => {
 				'file.eot',
 				'file.ttf',
 			].forEach( acceptedFileType => {
-				expect( acceptedFileType.match( loaders.url().test ) ).not.toBeNull();
+				expect( acceptedFileType.match( loaders.asset().test ) ).not.toBeNull();
 			} );
 			[
 				'file.js',
 				'file.css',
 				'file.html',
 			].forEach( unacceptedFileType => {
-				expect( unacceptedFileType.match( loaders.url().test ) ).toBeNull();
+				expect( unacceptedFileType.match( loaders.asset().test ) ).toBeNull();
 			} );
+		} );
+		it( 'uses asset module type', () => {
+			expect( loaders.asset().type ).toBe( 'asset' );
 		} );
 	} );
 

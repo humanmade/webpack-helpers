@@ -18,7 +18,7 @@ const cleanOnExit = ( paths = [] ) => {
 		paths.forEach( path => {
 			try {
 				unlinkSync( path );
-			} catch ( err ) {
+			} catch ( err ) { // eslint-disable-line no-unused-vars
 				// Silently ignore unlinking errors: so long as the file is gone, that is ok.
 			}
 		} );

@@ -1,6 +1,6 @@
-import { getResults } from './helpers';
-
 import './style.scss';
+
+import { getResults } from './helpers';
 
 ( async () => {
 	const results = await getResults();

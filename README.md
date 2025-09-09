@@ -1,6 +1,6 @@
 # Webpack Helpers
 
-A [Human Made](https://humanmade.com) project. [![Build Status](https://travis-ci.com/humanmade/webpack-helpers.svg?branch=main)](https://travis-ci.com/humanmade/webpack-helpers)
+A [Human Made](https://humanmade.com) project. ![Build Status](https://app.travis-ci.com/humanmade/webpack-helpers.svg?token=xNUfWUZqcGkpUy3iiQyu&branch=main)
 
 ## Background
 
@@ -11,6 +11,16 @@ A WordPress project can encompass a number of individual themes & plugins, and a
 Visit [humanmade.github.io/webpack-helpers](https://humanmade.github.io/webpack-helpers) to view the complete project documentation, including a guide to each included module and getting-started instructions.
 
 Visit the [`docs/`](./docs) folder to view or modify the content used to generate this documentation site.
+
+## Requirements
+
+- Node.js >= 22.0.0
+
+This project includes an `.nvmrc` file specifying Node.js 22. If you use nvm, you can run:
+
+```bash
+nvm use
+```
 
 ## What's In The Box
 

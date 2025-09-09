@@ -1,4 +1,4 @@
-const { devServer, stats } = require( './config' );
+const { devServer, stats, watchOptions } = require( './config' );
 const deepMerge = require( './helpers/deep-merge' );
 const filePath = require( './helpers/file-path' );
 const findInObject = require( './helpers/find-in-object' );
@@ -7,6 +7,7 @@ const isInstalled = require( './helpers/is-installed' );
 const loaders = require( './loaders' );
 const plugins = require( './plugins' );
 const { ManifestPlugin, MiniCssExtractPlugin } = plugins.constructors;
+
 
 /**
  * Dictionary of shared seed objects by path.
@@ -138,23 +139,15 @@ const development = ( config = {}, options = {} ) => {
 		module: {
 			strictExportPresence: true,
 			rules: [
-				// Run all JS files through ESLint, if installed.
-				...ifInstalled( 'eslint', getFilteredLoader( 'eslint', {
-					options: {
-						emitWarning: true,
-					},
-				} ) ),
 				{
 					// "oneOf" will traverse all following loaders until one will
 					// match the requirements. If no loader matches, it will fall
-					// back to the "file" loader at the end of the loader list.
+					// back to the asset modules at the end of the loader list.
 					oneOf: [
 						// Enable processing TypeScript, if installed.
 						...ifInstalled( 'typescript', getFilteredLoader( 'ts' ) ),
 						// Process JS with Babel.
 						getFilteredLoader( 'js' ),
-						// Convert small files to data URIs.
-						getFilteredLoader( 'url' ),
 						// Parse styles using SASS, then PostCSS.
 						filterLoaders( {
 							test: /\.s?css$/,
@@ -177,9 +170,8 @@ const development = ( config = {}, options = {} ) => {
 								} ),
 							],
 						}, 'stylesheet' ),
-						// "file" loader makes sure any non-matching assets still get served.
-						// When you `import` an asset you get its filename.
-						getFilteredLoader( 'file' ),
+						// Asset modules handle images, fonts, etc. (replaces url-loader and file-loader)
+						getFilteredLoader( 'asset' ),
 					],
 				},
 			],
@@ -191,8 +183,11 @@ const development = ( config = {}, options = {} ) => {
 
 		devServer: {
 			...devServer,
-			stats,
 		},
+
+		watchOptions,
+
+		stats,
 
 		plugins: [
 			plugins.hotModuleReplacement(),
@@ -293,19 +288,15 @@ const production = ( config = {}, options = {} ) => {
 		module: {
 			strictExportPresence: true,
 			rules: [
-				// Run all JS files through ESLint, if installed.
-				...ifInstalled( 'eslint', getFilteredLoader( 'eslint' ) ),
 				{
 					// "oneOf" will traverse all following loaders until one will
 					// match the requirements. If no loader matches, it will fall
-					// back to the "file" loader at the end of the loader list.
+					// back to the asset modules at the end of the loader list.
 					oneOf: [
 						// Enable processing TypeScript, if installed.
 						...ifInstalled( 'typescript', getFilteredLoader( 'ts' ) ),
 						// Process JS with Babel.
 						getFilteredLoader( 'js' ),
-						// Convert small files to data URIs.
-						getFilteredLoader( 'url' ),
 						// Parse styles using SASS, then PostCSS.
 						filterLoaders( {
 							test: /\.s?css$/,
@@ -318,9 +309,8 @@ const production = ( config = {}, options = {} ) => {
 								getFilteredLoader( 'sass', cssOptions ),
 							],
 						}, 'stylesheet' ),
-						// "file" loader makes sure any non-matching assets still get served.
-						// When you `import` an asset you get its filename.
-						getFilteredLoader( 'file' ),
+						// Asset modules handle images, fonts, etc. (replaces url-loader and file-loader)
+						getFilteredLoader( 'asset' ),
 					],
 				},
 			],
@@ -329,29 +319,36 @@ const production = ( config = {}, options = {} ) => {
 		optimization: {
 			minimizer: [
 				plugins.terser(),
-				plugins.optimizeCssAssets( (
+				plugins.cssMinimizer( (
 					// Set option to output source maps if devtool is set.
 					config.devtool && ! ( /inline-/ ).test( config.devtool ) ?
 						{
-							cssProcessorOptions: {
-								map: {
-									inline: false,
-								},
+							minimizerOptions: {
+								preset: [
+									'default',
+									{
+										map: {
+											inline: false,
+										},
+									},
+								],
 							},
 						} :
 						undefined
 				) ),
 			],
 			nodeEnv: 'production',
-			noEmitOnErrors: true,
+			emitOnErrors: false,
 		},
 
-		stats,
+	stats,
 
-		plugins: [],
-	};
+	plugins: [
+		// Plugins will be added conditionally below
+	],
+};
 
-	// If no entry was provided, inject a default entry value.
+// If no entry was provided, inject a default entry value.
 	if ( ! config.entry ) {
 		prodDefaults.entry = {
 			index: filePath( 'src/index.js' ),

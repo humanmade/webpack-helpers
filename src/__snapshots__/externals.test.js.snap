@@ -1,7 +1,7 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`externals contains entries for all core WordPress JS global members 1`] = `
-Object {
+{
   "@wordpress/a11y": "wp.a11y",
   "@wordpress/annotations": "wp.annotations",
   "@wordpress/api-fetch": "wp.apiFetch",

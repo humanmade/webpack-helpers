@@ -18,17 +18,10 @@ While this package depends in turn on a number of loaders and plugins, it delibe
 
 ** *Check notice before proceeding:**
 ```bash
-npm install --save-dev @humanmade/webpack-helpers webpack@4 webpack-cli@3 webpack-dev-server sass
+npm install --save-dev @humanmade/webpack-helpers webpack@5 webpack-cli@6 webpack-dev-server@5 sass
 ```
 
-Note that we specify Webpack version 4. Support for Webpack 5 is anticipated in the v1.0 release of these helpers, but at present using Webpack 4 provides the most predictable and stable experience across our projects.
-
-***❗ *Notice***
-This verson is outdated and might leave you with outdated versions of this library and associated Webpack tooling.
-There's a [pending release](https://github.com/humanmade/webpack-helpers/pull/205) that will fix this problem. But for now you should install humanmade/webpack-helpers@beta, webpack @5, webpack-cli@4, and webpack-dev-server@4. To do so run the following command:
-```bash
-npm install --save-dev @humanmade/webpack-helpers@beta webpack@5 webpack-cli@4 webpack-dev-server@4
-```
+**Webpack 5 Support:** This package now fully supports Webpack 5 with all the latest features and optimizations. We recommend using Webpack 5 for all new projects as it provides better performance, improved tree shaking, and enhanced module federation capabilities.
 
 ## Configuring Webpack
 
@@ -54,7 +47,41 @@ By the end of this guide Webpack will take our source JavaScript files from thes
 
 **ESLint**
 
-If [ESLint](https://eslint.org/) is installed, `eslint-loader` will be used to validate that your code compiles and passes required style rules before the bundle is generated. While ESLint will be used if present, these helpers do not assume any specific configuration or rules. If you aren't using ESLint you may install and configure it with basic syntax and style rules by following the [official getting started guide](https://eslint.org/docs/user-guide/getting-started), or by installing Human Made's [`@humanmade/eslint-config`](https://www.npmjs.com/package/@humanmade/eslint-config) preset.
+If [ESLint](https://eslint.org/) is installed, the webpack plugin `eslint-webpack-plugin` will be used to validate that your code compiles and passes required style rules before the bundle is generated. This package now supports ESLint 9+ with the modern flat configuration format.
+
+To configure ESLint for your project, create an `eslint.config.js` file in your project root:
+
+```js
+// eslint.config.js
+import js from '@eslint/js';
+
+export default [
+  js.configs.recommended,
+  {
+    files: ['**/*.js', '**/*.jsx'],
+    languageOptions: {
+      ecmaVersion: 2024,
+      sourceType: 'module',
+      globals: {
+        // Browser globals
+        window: 'readonly',
+        document: 'readonly',
+        // WordPress globals
+        wp: 'readonly',
+        jQuery: 'readonly',
+        $: 'readonly'
+      }
+    },
+    rules: {
+      // Add your custom rules here
+      'no-console': 'warn',
+      'no-unused-vars': 'warn'
+    }
+  }
+];
+```
+
+**Note:** ESLint 9 uses the new flat configuration format. The old `.eslintrc.*` files are no longer supported. If you need to migrate from an older ESLint configuration, refer to the [ESLint migration guide](https://eslint.org/docs/latest/use/configure/migration-guide).
 
 **Babel**
 
