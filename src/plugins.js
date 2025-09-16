@@ -150,7 +150,7 @@ module.exports = {
 		 * These come after ...options to ensure they take precedence
 		 */
 		basePath: options.basePath === undefined ? '' : options.basePath,
-		publicPath: options.publicPath !== undefined ? options.publicPath : '',
+		publicPath: options.publicPath === undefined ? '' : options.publicPath,
 	} ),
 
 	/**
