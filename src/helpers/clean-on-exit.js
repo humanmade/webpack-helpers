@@ -1,5 +1,5 @@
 const { unlinkSync } = require( 'fs' );
-const onExit = require( 'signal-exit' );
+const { onExit } = require( 'signal-exit' );
 
 /**
  * Register an onExit handler to remove one or more files when the server exits.
