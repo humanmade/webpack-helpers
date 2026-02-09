@@ -33,7 +33,7 @@
     ]
   },
   "devDependencies": {
-    "@eslint/js": "^9.34.0",
+    "@eslint/js": "^10.0.1",
     "eslint": "^9.34.0",
     "eslint-webpack-plugin": "^5.0.2",
     "globals": "^16.3.0",
