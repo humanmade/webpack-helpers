@@ -6,41 +6,40 @@ nav_order: 10
 
 # Changelog
 
-## v1.0.0-alpha
+## v1.0.0
+
+This is a major release that migrates the package from Webpack 4 to Webpack 5, removes several legacy loaders and plugins, and raises the minimum Node.js version to 22. See the [migration guide](https://humanmade.github.io/webpack-helpers/guides/migrating-from-0x) for step-by-step upgrade instructions.
 
 ### Added
 
-- Full Webpack 5 support with modern optimizations and performance improvements
-- ESLint 9+ support with flat configuration format (`eslint.config.js`)
-- Modern `eslint-webpack-plugin` replacing deprecated `eslint-loader`
-- Enhanced TypeScript support for `.ts` and `.tsx` files
-- Updated peer dependencies to latest stable versions
-- Improved build performance with Webpack 5's enhanced tree shaking
-- Module federation capabilities support
+- **`loaders.asset()`**: New loader factory using Webpack 5's native `asset` module type. Files under 10 KB are inlined as data URLs; larger files are emitted as separate resources. Replaces the removed `loaders.url()`.
+- **`loaders.assetResource()`**: New loader factory using Webpack 5's `asset/resource` type. Always emits the file as a separate resource. Replaces the removed `loaders.file()`.
+- **`loaders.assetInline()`**: New loader factory using Webpack 5's `asset/inline` type. Always inlines the file as a data URL.
+- **`plugins.eslint()`**: New plugin factory wrapping [`eslint-webpack-plugin`](https://github.com/webpack-contrib/eslint-webpack-plugin). Replaces the removed `loaders.eslint()`. Requires ESLint 9+ with flat configuration format.
+- **`plugins.cssMinimizer()`**: New plugin factory wrapping [`css-minimizer-webpack-plugin`](https://github.com/webpack-contrib/css-minimizer-webpack-plugin). Replaces the removed `plugins.optimizeCssAssets()`. Included in `presets.production()`.
 
 ### Changed
 
-- **BREAKING**: Upgraded from Webpack 4 to Webpack 5
-- **BREAKING**: Updated ESLint support to use ESLint 9+ flat configuration format
-- **BREAKING**: Replaced deprecated `eslint-loader` with `eslint-webpack-plugin`
-- **BREAKING**: Updated minimum Node.js requirement to align with Webpack 5
-- Updated all bundled dependencies to latest stable versions
-- Improved error handling and debugging capabilities
-- Enhanced development server performance
+- **BREAKING**: Minimum Node.js version is now **22.0.0**.
+- **BREAKING**: Webpack 5 is now required. Update your project's peer dependencies to `webpack@^5`, `webpack-cli@^5`, and `webpack-dev-server@^5`.
+- **BREAKING**: `loaders.url()` has been removed. Use `loaders.asset()` or `loaders.assetInline()` instead.
+- **BREAKING**: `loaders.file()` has been removed. Use `loaders.assetResource()` instead.
+- **BREAKING**: `loaders.eslint()` has been removed. Add `plugins.eslint()` to your `plugins` array instead.
+- **BREAKING**: `plugins.optimizeCssAssets()` has been removed. Use `plugins.cssMinimizer()` instead.
+- **BREAKING**: `plugins.constructors.OptimizeCssAssetsPlugin` has been removed. Use `plugins.constructors.CssMinimizerPlugin` instead.
+- **BREAKING**: ESLint 9+ is now required. The flat configuration format (`eslint.config.js` / `eslint.config.mjs`) is required; legacy `.eslintrc.*` files are not supported.
+- **BREAKING**: If you have custom `optimization` configuration that sets `noEmitOnErrors: true`, rename the option to `emitOnErrors: false` (the Webpack 5 equivalent).
+- `eslint-webpack-plugin` moved from `devDependencies` to `dependencies`, ensuring it is available to consuming projects at load time.
+- `eslint@^9.0.0` declared as an optional peer dependency, surfacing the ESLint version requirement and avoiding `ajv` version conflicts with other plugins.
+- All bundled loader and plugin dependencies updated to current major versions.
 
 ### Removed
 
-- Support for legacy `.eslintrc.*` configuration files (use `eslint.config.js` instead)
-- Webpack 4 compatibility and related legacy code
-- `eslint-loader` dependency (replaced with `eslint-webpack-plugin`)
-- Outdated peer dependency constraints
-
-### Migration Guide
-
-- Update your `package.json` to use `webpack@5`, `webpack-cli@5`, and `webpack-dev-server@5`
-- If using ESLint, migrate from `.eslintrc.*` files to `eslint.config.js` using the flat configuration format
-- Review and update any custom webpack configurations to ensure Webpack 5 compatibility
-- Update Node.js to a supported version if needed
+- `loaders.url()` — replaced by `loaders.asset()` / `loaders.assetInline()`
+- `loaders.file()` — replaced by `loaders.assetResource()`
+- `loaders.eslint()` — replaced by `plugins.eslint()`
+- `plugins.optimizeCssAssets()` — replaced by `plugins.cssMinimizer()`
+- `plugins.constructors.OptimizeCssAssetsPlugin` — replaced by `plugins.constructors.CssMinimizerPlugin`
 
 ## v0.12.0
 

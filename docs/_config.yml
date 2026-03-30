@@ -22,6 +22,9 @@ url: "https://humanmade.github.io" # the base hostname & protocol for your site,
 # Theme settings
 theme: just-the-hm-docs
 
+plugins:
+  - jekyll-include-cache
+
 # Aux links for the upper right navigation
 aux_links:
   Webpack-Helpers on GitHub:
