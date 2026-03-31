@@ -126,8 +126,9 @@ module.exports = {
 	 * assets from the development server. A publicPath matching the URL
 	 * in the configuration's output.publicPath is required.
 	 *
-	 * @param {Object} options            Plugin options overrides.
-	 * @param {String} options.publicPath The base URI to prepend to build asset URIs.
+	 * @param {Object} options             Plugin options overrides.
+	 * @param {String} [options.publicPath] The base URI to prepend to build asset URIs
+	 * @param {String} [options.basePath]  Base path for manifest entries
 	 * @returns {ManifestPlugin} A configured ManifestPlugin instance.
 	 */
 	manifest: ( options = {} ) => new ManifestPlugin( {
@@ -143,6 +144,13 @@ module.exports = {
 			return file;
 		},
 		...options,
+		/**
+		 * Set basePath and publicPath to empty strings to prevent webpack-manifest-plugin v5+ from
+		 * adding 'auto/' prefix to asset paths, which doesn't match build output structure
+		 * These come after ...options to ensure they take precedence
+		 */
+		basePath: options.basePath === undefined ? '' : options.basePath,
+		publicPath: options.publicPath === undefined ? '' : options.publicPath,
 	} ),
 
 	/**

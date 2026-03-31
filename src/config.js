@@ -12,6 +12,9 @@ module.exports = {
 			'Access-Control-Allow-Origin': '*',
 		},
 		hot: true,
+		devMiddleware: {
+			writeToDisk: true,
+		},
 	},
 
 	watchOptions: {
