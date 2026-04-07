@@ -10,7 +10,7 @@ module.exports = [
 		},
 		output: {
 			path: filePath( 'test/build/prod' ),
-		}
+		},
 	} ),
 	// This second build targets the same output directory as 'production-test'
 	// to demonstrate whether the asset manifest is correctly shared between
@@ -23,7 +23,7 @@ module.exports = [
 		},
 		output: {
 			path: filePath( 'test/build/prod' ),
-		}
+		},
 	} ),
 	// This third build targets a different output directory than the others
 	// to make sure that manifests are not shared _between_ directories.
@@ -35,7 +35,7 @@ module.exports = [
 		},
 		output: {
 			path: filePath( 'test/build/prod-alternate' ),
-		}
+		},
 	} ),
 	// This build uses a development configuration instead of a prod one.
 	presets.development( {

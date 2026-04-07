@@ -116,13 +116,17 @@ Note that array values are _merged_, not overwritten. This allows you to easily 
 Adjusting loaders within a generated configuration tree is difficult because loader arrays are not keyed and module rules may be nested. Instead, each `preset` generator accepts a second argument in which you can pass a callback function that will be run on the output of each computed loader definition.
 
 ```js
-// Alter the publicPath value of the files-loader and url-loader.
-const config = production.preset(
+// Restrict the JS loader to a specific source directory, and lower the
+// size threshold below which asset files are inlined as data URLs.
+const config = presets.production(
 	{ /* ...configuration options described above ... */ },
 	{
 		filterLoaders: ( loader, loaderType ) => {
-			if ( loaderType === 'file' || loaderType === 'url' ) {
-				loader.options.publicPath = '../../';
+			if ( loaderType === 'js' ) {
+				loader.include = helpers.filePath( 'themes/my-theme/src' );
+			}
+			if ( loaderType === 'asset' ) {
+				loader.parser.dataUrlCondition.maxSize = 5000;
 			}
 			return loader;
 		}

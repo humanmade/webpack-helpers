@@ -6,9 +6,49 @@ nav_order: 10
 
 # Changelog
 
-## Next
+## v1.0.0
 
-- Include the `contenthash` in generated CSS filenames. [#204](https://github.com/humanmade/webpack-helpers/pull/204)
+This is a major release that migrates the package from Webpack 4 to Webpack 5, removes several legacy loaders and plugins, and raises the minimum Node.js version to 22. See the [migration guide](https://humanmade.github.io/webpack-helpers/guides/migrating-from-0x) for step-by-step upgrade instructions.
+
+### Added
+
+- **`loaders.asset()`**: New loader factory using Webpack 5's native `asset` module type. Files under 10 KB are inlined as data URLs; larger files are emitted as separate resources. Replaces the removed `loaders.url()`.
+- **`loaders.assetResource()`**: New loader factory using Webpack 5's `asset/resource` type. Always emits the file as a separate resource. Replaces the removed `loaders.file()`.
+- **`loaders.assetInline()`**: New loader factory using Webpack 5's `asset/inline` type. Always inlines the file as a data URL.
+- **`plugins.eslint()`**: New plugin factory wrapping [`eslint-webpack-plugin`](https://github.com/webpack-contrib/eslint-webpack-plugin). Replaces the removed `loaders.eslint()`. Requires ESLint 9+ with flat configuration format.
+- **`plugins.cssMinimizer()`**: New plugin factory wrapping [`css-minimizer-webpack-plugin`](https://github.com/webpack-contrib/css-minimizer-webpack-plugin). Replaces the removed `plugins.optimizeCssAssets()`. Included in `presets.production()`.
+
+### Changed
+
+- **BREAKING**: Minimum Node.js version is now **22.0.0**.
+- **BREAKING**: Webpack 5 is now required. Update your project's peer dependencies to `webpack@^5`, `webpack-cli@^5`, and `webpack-dev-server@^5`.
+- **BREAKING**: `loaders.url()` has been removed. Use `loaders.asset()` or `loaders.assetInline()` instead.
+- **BREAKING**: `loaders.file()` has been removed. Use `loaders.assetResource()` instead.
+- **BREAKING**: `loaders.eslint()` has been removed. Add `plugins.eslint()` to your `plugins` array instead.
+- **BREAKING**: `plugins.optimizeCssAssets()` has been removed. Use `plugins.cssMinimizer()` instead.
+- **BREAKING**: `plugins.constructors.OptimizeCssAssetsPlugin` has been removed. Use `plugins.constructors.CssMinimizerPlugin` instead.
+- **BREAKING**: ESLint 9+ is now required. The flat configuration format (`eslint.config.js` / `eslint.config.mjs`) is required; legacy `.eslintrc.*` files are not supported.
+- **BREAKING**: If you have custom `optimization` configuration that sets `noEmitOnErrors: true`, rename the option to `emitOnErrors: false` (the Webpack 5 equivalent).
+- `eslint-webpack-plugin` moved from `devDependencies` to `dependencies`, ensuring it is available to consuming projects at load time.
+- `eslint@^9.0.0` declared as an optional peer dependency, surfacing the ESLint version requirement and avoiding `ajv` version conflicts with other plugins.
+- All bundled loader and plugin dependencies updated to current major versions.
+
+### Removed
+
+- `loaders.url()` — replaced by `loaders.asset()` / `loaders.assetInline()`
+- `loaders.file()` — replaced by `loaders.assetResource()`
+- `loaders.eslint()` — replaced by `plugins.eslint()`
+- `plugins.optimizeCssAssets()` — replaced by `plugins.cssMinimizer()`
+- `plugins.constructors.OptimizeCssAssetsPlugin` — replaced by `plugins.constructors.CssMinimizerPlugin`
+
+## v0.12.0
+
+* Include contenthash in generated CSS filenames by @kadamwhite in https://github.com/humanmade/webpack-helpers/pull/204
+* Use Just the HM Docs theme by @joeleenk in https://github.com/humanmade/webpack-helpers/pull/210
+* Add workflow to deploy GH pages by @joeleenk in https://github.com/humanmade/webpack-helpers/pull/212
+* Update to Jekyll 4, inherit from theme by @joeleenk in https://github.com/humanmade/webpack-helpers/pull/213
+* Update getting-started.md by @pamprn09 in https://github.com/humanmade/webpack-helpers/pull/216
+* Update externals for WP 6.2 and add snapshot update command by @Sephsekla in https://github.com/humanmade/webpack-helpers/pull/217
 
 ## v0.11.1
 

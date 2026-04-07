@@ -5,12 +5,11 @@
  * @returns {Boolean} Whether the package is available via `require()`.
  */
 module.exports = ( packageName ) => {
-	/* eslint-disable global-require */
+	const checkRequire = require;
 	try {
-		require( packageName );
+		checkRequire( packageName );
 		return true;
-	} catch ( err ) {
+	} catch ( err ) { // eslint-disable-line no-unused-vars
 		return false;
 	}
-	/* eslint-enable */
 };

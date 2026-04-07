@@ -1,15 +1,18 @@
 const { BundleAnalyzerPlugin } = require( 'webpack-bundle-analyzer' );
 const { CleanWebpackPlugin } = require( 'clean-webpack-plugin' );
 const { HotModuleReplacementPlugin } = require( 'webpack' );
+const { WebpackManifestPlugin: ManifestPlugin } = require( 'webpack-manifest-plugin' );
+
 const BellOnBundleErrorPlugin = require( 'bell-on-bundler-error-plugin' );
 const CopyPlugin = require( 'copy-webpack-plugin' );
+const CssMinimizerPlugin = require( 'css-minimizer-webpack-plugin' );
+const ESLintPlugin = require( 'eslint-webpack-plugin' );
 const FixStyleOnlyEntriesPlugin = require( 'webpack-fix-style-only-entries' );
-const { WebpackManifestPlugin: ManifestPlugin } = require( 'webpack-manifest-plugin' );
 const MiniCssExtractPlugin = require( 'mini-css-extract-plugin' );
 const TerserPlugin = require( 'terser-webpack-plugin' );
-const OptimizeCssAssetsPlugin = require( 'optimize-css-assets-webpack-plugin' );
 
 const deepMerge = require( './helpers/deep-merge' );
+
 
 module.exports = {
 	/**
@@ -22,11 +25,12 @@ module.exports = {
 		BundleAnalyzerPlugin,
 		CleanWebpackPlugin,
 		CopyPlugin,
+		ESLintPlugin,
 		FixStyleOnlyEntriesPlugin,
 		HotModuleReplacementPlugin,
 		ManifestPlugin,
 		MiniCssExtractPlugin,
-		OptimizeCssAssetsPlugin,
+		CssMinimizerPlugin,
 		TerserPlugin,
 	},
 
@@ -154,12 +158,28 @@ module.exports = {
 	} ),
 
 	/**
-	 * Create a new OptimizeCssAssetsPlugin instance.
+	 * Create a new CssMinimizerPlugin instance (replaces OptimizeCssAssetsPlugin in Webpack 5).
 	 *
 	 * @param {Object} [options] Optional plugin configuration options.
-	 * @returns {OptimizeCssAssetsPlugin} A configured OptimizeCssAssetsPlugin instance.
+	 * @returns {CssMinimizerPlugin} A configured CssMinimizerPlugin instance.
 	 */
-	optimizeCssAssets: ( options = {} ) => new OptimizeCssAssetsPlugin( options ),
+	cssMinimizer: ( options = {} ) => new CssMinimizerPlugin( options ),
+
+
+	/**
+	 * Create a new ESLintPlugin instance.
+	 *
+	 * @param {Object} [options] Optional plugin configuration options.
+	 * @returns {ESLintPlugin} A configured ESLintPlugin instance.
+	 */
+	eslint: ( options = {} ) => new ESLintPlugin( {
+		extensions: [ 'js', 'jsx', 'ts', 'tsx' ],
+		files: [ 'src/**/*' ],
+		eslintPath: 'eslint/use-at-your-own-risk',
+		overrideConfigFile: 'eslint.config.mjs',
+		failOnError: true,
+		...options,
+	} ),
 
 	/**
 	 * Create a new TerserPlugin instance, defaulting to a set of options

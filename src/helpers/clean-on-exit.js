@@ -1,5 +1,5 @@
 const { unlinkSync } = require( 'fs' );
-const onExit = require( 'signal-exit' );
+const { onExit } = require( 'signal-exit' );
 
 /**
  * Register an onExit handler to remove one or more files when the server exits.
@@ -18,7 +18,7 @@ const cleanOnExit = ( paths = [] ) => {
 		paths.forEach( path => {
 			try {
 				unlinkSync( path );
-			} catch ( err ) {
+			} catch ( err ) { // eslint-disable-line no-unused-vars
 				// Silently ignore unlinking errors: so long as the file is gone, that is ok.
 			}
 		} );

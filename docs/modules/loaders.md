@@ -10,15 +10,15 @@ nav_order: 3
 
 This module provides functions that generate configurations for commonly-needed Webpack loaders. Use them within the `.module.rules` array, or use `presets.development()`/`presets.production()` to opt-in to some opinionated defaults.
 
-- `loaders.eslint()`: Return a configured Webpack module loader rule for `eslint-loader`.
-- `loaders.js()`: Return a configured Webpack module loader rule for `js-loader`.
-- `loaders.ts()`: Return a configured Webpack module loader rule for `ts-loader`.
-- `loaders.url()`: Return a configured Webpack module loader rule for `url-loader`.
-- `loaders.style()`: Return a configured Webpack module loader rule for `style-loader`.
-- `loaders.css()`: Return a configured Webpack module loader rule for `css-loader`.
-- `loaders.postcss()`: Return a configured Webpack module loader rule for `postcss-loader`.
-- `loaders.sass()`: Return a configured Webpack module loader rule for `sass-loader`.
-- `loaders.file()`: Return a configured Webpack module loader rule for `file-loader`.
+- `loaders.js()`: Return a configured Webpack module rule for `babel-loader`.
+- `loaders.ts()`: Return a configured Webpack module rule for `ts-loader`. Only injected by presets if the `typescript` package is installed.
+- `loaders.asset()`: Return a Webpack 5 [asset module](https://webpack.js.org/guides/asset-modules/) rule using type `asset`. Files under 10 KB are inlined as data URLs; larger files are emitted as separate resources. Replaces the removed `url-loader`.
+- `loaders.assetResource()`: Return a Webpack 5 asset module rule using type `asset/resource`. Always emits the file as a separate resource. Replaces the removed `file-loader`.
+- `loaders.assetInline()`: Return a Webpack 5 asset module rule using type `asset/inline`. Always inlines the file as a data URL.
+- `loaders.style()`: Return a configured Webpack module rule for `style-loader`.
+- `loaders.css()`: Return a configured Webpack module rule for `css-loader`.
+- `loaders.postcss()`: Return a configured Webpack module rule for `postcss-loader`.
+- `loaders.sass()`: Return a configured Webpack module rule for `sass-loader`.
 
 ## Customizing Loaders
 

@@ -2,10 +2,10 @@ module.exports = ( api ) => {
 	api.cache.forever();
 
 	return {
-		presets: [ '@wordpress/default' ],
+		presets: [ '@wordpress/babel-preset-default' ],
 		plugins: [
 			'@babel/plugin-proposal-class-properties',
-			[ 'transform-react-jsx', {
+			[ '@babel/plugin-transform-react-jsx', {
 				pragma: 'wp.element.createElement',
 			} ],
 		],

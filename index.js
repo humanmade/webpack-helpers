@@ -1,18 +1,28 @@
 /**
  * Expose public package API.
  */
+const config = require( './src/config' );
+const externals = require( './src/externals' );
+const choosePort = require( './src/helpers/choose-port' );
+const cleanOnExit = require( './src/helpers/clean-on-exit' );
+const filePath = require( './src/helpers/file-path' );
+const findInObject = require( './src/helpers/find-in-object' );
+const withDynamicPort = require( './src/helpers/with-dynamic-port' );
+const loaders = require( './src/loaders' );
+const plugins = require( './src/plugins' );
+const presets = require( './src/presets' );
+
 module.exports = {
-	/* eslint-disable global-require */
-	config: require( './src/config' ),
-	externals: require( './src/externals' ),
+	config,
+	externals,
 	helpers: {
-		choosePort: require( './src/helpers/choose-port' ),
-		cleanOnExit: require( './src/helpers/clean-on-exit' ),
-		filePath: require( './src/helpers/file-path' ),
-		findInObject: require( './src/helpers/find-in-object' ),
-		withDynamicPort: require( './src/helpers/with-dynamic-port' ),
+		choosePort,
+		cleanOnExit,
+		filePath,
+		findInObject,
+		withDynamicPort,
 	},
-	loaders: require( './src/loaders' ),
-	plugins: require( './src/plugins' ),
-	presets: require( './src/presets' ),
+	loaders,
+	plugins,
+	presets,
 };
