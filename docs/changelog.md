@@ -6,6 +6,10 @@ nav_order: 10
 
 # Changelog
 
+## v1.0.1
+
+- Update Babel JSX plugin to correctly process syntax like optional?.chaining. [#255](https://github.com/humanmade/webpack-helpers/pull/255)
+
 ## v1.0.0
 
 This is a major release that migrates the package from Webpack 4 to Webpack 5, removes several legacy loaders and plugins, and raises the minimum Node.js version to 22. See the [migration guide](https://humanmade.github.io/webpack-helpers/guides/migrating-from-0x) for step-by-step upgrade instructions.
